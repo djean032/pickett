@@ -30,4 +30,3 @@ add_executable(spcat)
 
 target_link_libraries(spfit calfit subfit spinv spinit ulib cnjj slibgcc catutil lsqfit -lcblas -lm)
 target_link_libraries(spcat calcat sortsub spinv spinit ulib cnjj slibgcc catutil lsqfit -lcblas -lm)
-
