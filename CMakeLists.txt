@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O2")
+
+project(calpgm C)
+
+add_library(calfit OBJECT calfit.c calpgm.h)
+add_library(subfit OBJECT subfit.c calpgm.h)
+add_library(lsqfit OBJECT lsqfit.c lsqfit.h)
+add_library(calcat OBJECT calcat.c calpgm.h)
+add_library(sortsub OBJECT sortsub.c calpgm.h)
+add_library(calmrg OBJECT calmrg.c calpgm.h)
+add_library(termval OBJECT termval.c calpgm.h)
+add_library(stark OBJECT stark.c calpgm.h)
+add_library(iamcalc OBJECT iamcalc.c calpgm.h)
+add_library(moiam OBJECT moiam.c calpgm.h)
+add_library(ulib OBJECT ulib.c calpgm.h)
+add_library(cnjj OBJECT cnjj.c cnjj.h)
+add_library(slibgcc OBJECT slibgcc.c calpgm.h)
+add_library(spinv OBJECT spinv.c calpgm.h spinit.h)
+add_library(spinit OBJECT spinit.c calpgm.h spinit.h)
+add_library(catutil OBJECT catutil.c catutil.h calpgm.h)
+add_library(dpi OBJECT dpi.c calpgm.h)
+add_library(ftran OBJECT ftran.c)
+add_library(sortn OBJECT sortn.c)
+add_library(dblas OBJECT dblas.c)
+add_library(calbak OBJECT calbak.c)
+
+add_executable(spfit)
+add_executable(spcat)
+
+target_link_libraries(spfit calfit subfit spinv spinit ulib cnjj slibgcc catutil lsqfit -lcblas -lm)
+target_link_libraries(spcat calcat sortsub spinv spinit ulib cnjj slibgcc catutil lsqfit -lcblas -lm)
+
