@@ -31,3 +31,6 @@ spcat
 spfit
 spinit.h.gch
 spinv.c:Zone.Identifier
+*.a
+*.o
+cmake_install.cmake
