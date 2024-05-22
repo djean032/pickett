@@ -391,13 +391,6 @@ int main(int argc, char *argv[]) {
     k = (lblk - 1) / nblkpf;
     printf("Finished Quantum %3d\n", k);
     fflush(stdout);
-    // TODO
-    for (i = 0; i < nline; i++) {
-            SXLINE *f_line = lbufof(0, i);
-            printf("%d\n", i);
-            printf("%f\n", f_line->xfrq);
-            printf("%f\n", f_line->cfrq);
-    };
     /*   initialize least squares matrix */
     xsqir = xsqmw = avgmw = avgir = 0.;
     pfitb = fitbgn;
@@ -670,6 +663,15 @@ int main(int argc, char *argv[]) {
 
   /*  end of iteration */
 
+  // TODO
+  for (i = 1; i < nline; i++) {
+    SXLINE *f_line = lbufof(0, i);
+    f_line->xfrq = 0.0;
+    printf("%d\n", i);
+    char quanta[6 * MAXQN + 2];
+    qnfmt2(nqn, f_line->qn, quanta);
+    printf("%s\n", quanta);
+  };
   /************************************************************************/
 
   linebuf = lbufof(-1, 0);                       /* release storage */
