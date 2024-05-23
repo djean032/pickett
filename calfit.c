@@ -664,14 +664,13 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < nline; i++) {
       SXLINE *f_line = lbufof(0, i);
       flex_lines[i] = *f_line;
+      f_line->xfrq = 0;
     };
     // sort lines by frequency
     sort_lines(flex_lines, nline);
     //  TODO: Blends need to be grouped
     for (i = 1; i < nline; i++) {
-        int tmp = nearest_calc_freq(flex_lines, nline, flex_lines[i].xfrq);
-        printf("Line %d: ", i);
-        printf("nearest_calc_freq: %d\n", tmp);
+        printf("nearest_calc_freq: %f\n", flex_lines[i].xfrq);
     };
   } while (itr < nitr && 0.999999 * xsqt > xsqbest);
 
