@@ -391,13 +391,6 @@ int main(int argc, char *argv[]) {
     k = (lblk - 1) / nblkpf;
     printf("Finished Quantum %3d\n", k);
     fflush(stdout);
-    // TODO
-    for (i = 0; i < nline; i++) {
-            SXLINE *f_line = lbufof(0, i);
-            printf("%d\n", i);
-            printf("%f\n", f_line->xfrq);
-            printf("%f\n", f_line->cfrq);
-    };
     /*   initialize least squares matrix */
     xsqir = xsqmw = avgmw = avgir = 0.;
     pfitb = fitbgn;
@@ -666,6 +659,24 @@ int main(int argc, char *argv[]) {
     fprintf(lufit, " END OF ITERATION %2d OLD, NEW RMS ERROR=%15.5f %15.5f\n",
             itr, xsqt, xsqbest);
     fflush(stdout);
+    // read lines into array for sorting & processing
+    SXLINE flex_lines[nline];
+    for (i = 0; i < nline; i++) {
+      SXLINE *f_line = lbufof(0, i);
+      flex_lines[i] = *f_line;
+    };
+    // sort lines by frequency
+    sort_lines(flex_lines, nline);
+    //  TODO: Blends need to be grouped
+    for (i = 1; i < nline; i++) {
+      int j = flex_lines[i].bln;
+      int tmp = i - (j >> 1);
+      if (j == 0) {
+        printf("Line %d: No Blend.\n", i); 
+      } else {
+        printf("Line %d: Blend with Line %d.\n", i, j);
+      }
+    };
   } while (itr < nitr && 0.999999 * xsqt > xsqbest);
 
   /*  end of iteration */

@@ -122,8 +122,5 @@ int frqdat(int line, /*@out@*/ int *ibln, /*@out@*/ double *xfrq,
 int lnlink(int *prvblk, int nblk, int iblk, int line);
 /************** SORTSUB interfaces ***********************************/
 int sortn(char *inpname, char *outname, BOOL dokey);
-
-
-
-
-
+/************** FLEXOPS interfaces ***********************************/
+#include "flexops.h"
