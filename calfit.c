@@ -669,13 +669,9 @@ int main(int argc, char *argv[]) {
     sort_lines(flex_lines, nline);
     //  TODO: Blends need to be grouped
     for (i = 1; i < nline; i++) {
-      int j = flex_lines[i].bln;
-      int tmp = i - (j >> 1);
-      if (j == 0) {
-        printf("Line %d: No Blend.\n", i); 
-      } else {
-        printf("Line %d: Blend with Line %d.\n", i, j);
-      }
+        int tmp = nearest_calc_freq(flex_lines, nline, flex_lines[i].xfrq);
+        printf("Line %d: ", i);
+        printf("nearest_calc_freq: %d\n", tmp);
     };
   } while (itr < nitr && 0.999999 * xsqt > xsqbest);
 
