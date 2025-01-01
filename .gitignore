@@ -34,3 +34,4 @@ spinv.c:Zone.Identifier
 *.a
 *.o
 cmake_install.cmake
+build/*
