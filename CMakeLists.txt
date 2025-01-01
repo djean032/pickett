@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.23.0)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O2")
+
 
 project(calpgm C)
 
@@ -28,5 +30,5 @@ add_library(calbak OBJECT calbak.c)
 add_executable(spfit)
 add_executable(spcat)
 
-target_link_libraries(spfit calfit subfit spinv spinit ulib cnjj slibgcc catutil lsqfit -lcblas -lm)
-target_link_libraries(spcat calcat sortsub spinv spinit ulib cnjj slibgcc catutil lsqfit -lcblas -lm)
+target_link_libraries(spfit calfit subfit spinv spinit ulib cnjj slibgcc catutil lsqfit dblas)
+target_link_libraries(spcat calcat sortsub spinv spinit ulib cnjj slibgcc catutil lsqfit dblas)

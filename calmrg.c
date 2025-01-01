@@ -46,7 +46,7 @@ int lposn(const short *ikey, const int nkey, const int *k12,
           PEXPT *head, /*@out@*/ PDEXPT *ppexpt);
 void dolink(PEXPT *head, PDEXPT pexpt,
             const double xfrq, const double xerr, const short *iqn);
-void unlink(PEXPT *head, /*@notnull@*/ EXPT *pexpt, 
+void custom_unlink(PEXPT *head, /*@notnull@*/ EXPT *pexpt, 
             /*@out@*/ int *jmin,/*@out@*/ int *jmax);
 BOOL mrglin(char *line2, char *line);
 
@@ -298,10 +298,10 @@ char *argv[];
           prline(lunew, nqn2, iqn1, xfrq, xerr, st, "q");
           strcpy(line1, tmpstr);
           ++nmatch;
-          unlink(jhash, pexpt, &jmin, &jmax);
+          custom_unlink(jhash, pexpt, &jmin, &jmax);
           if (k12[0] >= 0 && lposn(iqn1, nqn2, k12, jhash, &pexpt) == 0) {
             ++nmatch;
-            unlink(jhash, pexpt, &jmin, &jmax);
+            custom_unlink(jhash, pexpt, &jmin, &jmax);
           }
         } else {
           fputs(" Above Experiment not used\n", lulog);
@@ -412,7 +412,7 @@ char *argv[];
           prline(lunew, nqnlin2, pqn, xfrq, xerr, st, "u");
           pqn = NULL;
         }
-        unlink(jhash, pexpt, &jmin, &jmax);
+        custom_unlink(jhash, pexpt, &jmin, &jmax);
         pexpt = pexptp;
       }
     }
@@ -506,7 +506,7 @@ const short *iqn;
   }
 }
 
-void unlink(head, pexpt, jmin, jmax)
+void custom_unlink(head, pexpt, jmin, jmax)
 PEXPT *head;
 EXPT *pexpt;
 int *jmin, *jmax;

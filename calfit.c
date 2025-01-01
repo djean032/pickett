@@ -85,18 +85,31 @@ int main(int argc, char *argv[])
   nsize_p = maxmem(&nl);
 
   /*     open read and write files */
-
+/**
+ * @note The following gets the filenames from the command line arguments.
+ * The .par file is backed up to a .bak file.
+ * Then the .fit and .bak files are opened for writing and reading, respectively.
+ */
   filget(argc, argv, NFILE, fname, ext);
   filbak(fname[epar], fname[ebak]);
   lubak = fopenq(fname[ebak], "r");
   lufit = fopenq(fname[efit], "w");
 
   /*     read in run parameters */
+/**
+ * @note
+ * The first line of the .par file is attempted to be read.
+ */
 
   if (fgetstr(card, NDCARD, lubak) <= 0) {
     puts(" Unable to read title of .par file");
     exit(EXIT_FAILURE);
   }
+/**
+ * @note
+ * The dvec array is initialized and then the second line of the .par file is attempted to be read.
+ * If the second line read is successful then the values are read into dvec.
+ */
   chtime(card, 82);
   fputs(card, lufit);
   puts(card);
@@ -116,6 +129,18 @@ int main(int argc, char *argv[])
     puts(" Unable to read second line of .par file");
     exit(EXIT_FAILURE);
   }
+/**
+ * @note
+ * The values of the dvec array are assigned to the corresponding variables.
+ * number of params dvec[0]
+ * number of lines dvec[1]
+ * number of iterations dvec[2]
+ * number of excluded params dvec[3]
+ * marquardt parameter dvec[4]
+ * error max dvec[5]
+ * scaling factor for paramter errors dvec[6]
+ * scaling factor for frequency errors dvec[7]
+ */
   npar = (int) dvec[0];
   if (dvec[1] < 0.) {
     catqn = MAXQN; dvec[1] = -dvec[1];
@@ -139,10 +164,22 @@ int main(int argc, char *argv[])
     if (parfac < 0.) fputs(" times the standard error",lufit);
     fputc('\n', lufit);
   }
+  /**
+   * @note
+   * Checking the available memory. Doesn't seem like the best way to do this..
+   * 
+   */
   if ((long) nline != (long) nl) {
     puts(" number of lines too big for this computer ");
     exit(EXIT_FAILURE);
   }
+  /**
+   * @note 
+   * Reads in options.
+   * Setopt sets most of the global options for the main program.adif
+   * Setfmt sets the quantum number format.
+   */
+
   /*  read in option card(s) */
   iqnfmt = 0; nfmt = catqn;
   noptn = setopt(lubak, &nfmt, &itd, &ndbcd, namfil);
@@ -160,6 +197,15 @@ int main(int argc, char *argv[])
   printf(       "%11.4E max (OBS-CALC)/ERROR =%10.4E\n", marqp[0], xerrmx);
   fprintf(lufit,"%11.4E max (OBS-CALC)/ERROR =%10.4E\n", marqp[0], xerrmx);
   fflush(stdout);
+  /**
+   * @note 
+   * nl is reused here. It is sized to the length of a parameter label * the number of params + 1.
+   * parlbl is allocated for the parameter labels.
+   * par is allocated for the parameters
+   * erp is allocated for the parameter errors
+   * nl is again used to allocate memory for the idpar array.
+   * idpar[0] is set to the number of pars.
+   */
   nl = (size_t) (LBLEN * npar + 1);
   parlbl = (char *) mallocq(nl);
   nl = (size_t) npar * sizeof(double);

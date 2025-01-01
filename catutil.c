@@ -7,10 +7,7 @@
 #endif
 #define TRUE  1
 #define FALSE 0
-int readqn(qnstr, iqn, n)
-const char *qnstr;
-short *iqn;
-const int n;
+int readqn(const char *qnstr, short *iqn, const int n)
 { /* read n quanta from string to iqn */
   const char *pqn;
   int i, ich, ic, ival;
@@ -83,11 +80,7 @@ void gupfmt(int igup, char *sgup)
   }
 }
 
-int pcard(card, val, nval, fmtlen)
-const char *card;
-double *val;
-const int nval;
-const int *fmtlen;
+int pcard(const char *card, double *val, const int nval, const int *fmtlen)
 {                               /* parses a card for NVAL numbers */
   /*
    * ndec = -2 for comma detected, ndec = -1 indicates looking for 
