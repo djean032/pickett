@@ -8,7 +8,7 @@
 /*   30 Dec.  1999: include changes for dlsq */
 /*   10 Oct.  2001: change fit diverging code */
 /*   21 Sept. 2002: fix NRJ criterion */
-/*   18 Aug.  2003: code cleanup, @comment@ is for splint */ 
+/*   18 Aug.  2003: code cleanup, @comment@ is for splint */
 
 /**************************************************************************/
 /*                                                                        */
@@ -23,25 +23,24 @@
 /* Robert B. Schnabel, Numerical Methods for Unsconstrained Optimization  */
 /* and Non-linear Equations, Prentice-Hall, 1983.                         */
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
 #include "calpgm.h"
 #include "lsqfit.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #define NDCARD 130
-#define PR_DELAY 6    /* seconds delay between informational messages */
+#define PR_DELAY 6 /* seconds delay between informational messages */
 /************** CALFIT interfaces ***********************************/
 int qnfmt2(int nqn, short *qnum, /*@out@*/ char *aqnum);
-int parer(double par, double errx, double dif, 
-                 /*@out@*/ char *ptmp);
-int linein(FILE * luin, int *nline, int iqnfmt);
-int lineix(FILE * lu, int flg, int nline, int nblkpf, int iqnfmt);
+int parer(double par, double errx, double dif,
+          /*@out@*/ char *ptmp);
+int linein(FILE *luin, int *nline, int iqnfmt);
+int lineix(FILE *lu, int flg, int nline, int nblkpf, int iqnfmt);
 /********************************************************************/
 static char card[NDCARD];
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 #define NFILE 5
 #define LBLEN 10
 #define FMT_xbgnMW "%5d: %s%14.5f%14.5f %10.5f %10.5f %9.5f"
@@ -50,8 +49,8 @@ int main(int argc, char *argv[])
 #define FMT_xblnIR "%14.7f %10.7f %6.4f\n"
   static double zero = 0.;
   static double tiny = 1.5e-38;
-  static const char *ext[NFILE] = { "par", "lin", "fit", "bak", "var" };
-  enum efile {epar, elin, efit, ebak, evar};
+  static const char *ext[NFILE] = {"par", "lin", "fit", "bak", "var"};
+  enum efile { epar, elin, efit, ebak, evar };
   /*@dependent@*/ SXLINE *linebuf;
   /*@owned@*/ bcd_t *idpar;
   /*@owned@*/ double *par, *erp, *oldpar, *erpar, *dpar, *delbgn;
@@ -61,7 +60,7 @@ int main(int argc, char *argv[])
   FILE *lupar, *lulin, *lufit, *lubak, *luvar;
   double *egy, *egyder;
   double *pvar, *pfit, *pfitb, *pfitd;
-  char *fname[NFILE+1], *tlbl, *tlblnxt;
+  char *fname[NFILE + 1], *tlbl, *tlblnxt;
   double dvec[8], fqfac[4], varv[5], adif, cerr, afrq, rerr, xsqbest, cwid;
   double parfac, ex, xsqir, xsqmw, xerr, xfrq, xsqt, scale, avgir, xwid;
   double avgmw, fqfacq, xerrmx, dif, marqp[3], frq, val, xwt, marqlast, parfac0;
@@ -72,8 +71,8 @@ int main(int argc, char *argv[])
   int nsize, nxpar, nxfit, lnext, noptn, ibase, nf, nblkpf, itd, ibcd, nfmt;
   int limlin, iqnfmt, maxdm, maxf, nrj, nqn, itr, npar, nsize_p, ndbcd;
   int supblnd, catqn, ndfree, ndfree0;
-  short qnum[2*MAXQN];
-  char ch, pare[64], aqnum[6*MAXQN+2], namfil[NDCARD];
+  short qnum[2 * MAXQN];
+  char ch, pare[64], aqnum[6 * MAXQN + 2], namfil[NDCARD];
 
   bigdIR = 9.9999999;
   bigdMW = 100. * bigdIR;
@@ -116,13 +115,14 @@ int main(int argc, char *argv[])
     puts(" Unable to read second line of .par file");
     exit(EXIT_FAILURE);
   }
-  npar = (int) dvec[0];
+  npar = (int)dvec[0];
   if (dvec[1] < 0.) {
-    catqn = MAXQN; dvec[1] = -dvec[1];
+    catqn = MAXQN;
+    dvec[1] = -dvec[1];
   }
-  nl = (size_t) dvec[1];
-  nitr = (int) dvec[2];
-  nxpar = (int) dvec[3];
+  nl = (size_t)dvec[1];
+  nitr = (int)dvec[2];
+  nxpar = (int)dvec[3];
   marqp[0] = dvec[4];
   xerrmx = dvec[5];
   parfac = dvec[6];
@@ -133,80 +133,81 @@ int main(int argc, char *argv[])
   marqp[1] = -1;
   if (marqp[0] < 0.)
     marqp[0] = 0.;
-  limlin = nline = (int) nl;
+  limlin = nline = (int)nl;
   if (fabs(parfac - 1.) > 1e-10) {
     fprintf(lufit, "PARAMETER ERRORS SCALED BY %15.6f", fabs(parfac));
-    if (parfac < 0.) fputs(" times the standard error",lufit);
+    if (parfac < 0.)
+      fputs(" times the standard error", lufit);
     fputc('\n', lufit);
   }
-  if ((long) nline != (long) nl) {
+  if ((long)nline != (long)nl) {
     puts(" number of lines too big for this computer ");
     exit(EXIT_FAILURE);
   }
   /*  read in option card(s) */
-  iqnfmt = 0; nfmt = catqn;
+  iqnfmt = 0;
+  nfmt = catqn;
   noptn = setopt(lubak, &nfmt, &itd, &ndbcd, namfil);
   if (noptn <= 0) {
     puts("Error reading option lines");
     exit(EXIT_FAILURE);
   }
   nqn = setfmt(&iqnfmt, 1);
-  if (nqn > MAXCAT) catqn = nqn;
+  if (nqn > MAXCAT)
+    catqn = nqn;
   nqn = nqn + nqn;
-  printf(       "LINES REQUESTED=%5d NUMBER OF PARAMETERS=%3d", limlin, npar);
-  fprintf(lufit,"LINES REQUESTED=%5d NUMBER OF PARAMETERS=%3d", limlin, npar);
-  printf(       " NUMBER OF ITERATIONS=%3d\n  MARQUARDT PARAMETER =", nitr);
-  fprintf(lufit," NUMBER OF ITERATIONS=%3d\n  MARQUARDT PARAMETER =", nitr);
-  printf(       "%11.4E max (OBS-CALC)/ERROR =%10.4E\n", marqp[0], xerrmx);
-  fprintf(lufit,"%11.4E max (OBS-CALC)/ERROR =%10.4E\n", marqp[0], xerrmx);
+  printf("LINES REQUESTED=%5d NUMBER OF PARAMETERS=%3d", limlin, npar);
+  fprintf(lufit, "LINES REQUESTED=%5d NUMBER OF PARAMETERS=%3d", limlin, npar);
+  printf(" NUMBER OF ITERATIONS=%3d\n  MARQUARDT PARAMETER =", nitr);
+  fprintf(lufit, " NUMBER OF ITERATIONS=%3d\n  MARQUARDT PARAMETER =", nitr);
+  printf("%11.4E max (OBS-CALC)/ERROR =%10.4E\n", marqp[0], xerrmx);
+  fprintf(lufit, "%11.4E max (OBS-CALC)/ERROR =%10.4E\n", marqp[0], xerrmx);
   fflush(stdout);
-  nl = (size_t) (LBLEN * npar + 1);
-  parlbl = (char *) mallocq(nl);
-  nl = (size_t) npar * sizeof(double);
-  par = (double *) mallocq(nl);
-  erp = (double *) mallocq(nl);
-  nl = (size_t) (npar * ndbcd + ndbcd + 3);
-  idpar = (bcd_t *) mallocq(nl);
-  idpar[0] = (bcd_t) ndbcd;
+  nl = (size_t)(LBLEN * npar + 1);
+  parlbl = (char *)mallocq(nl);
+  nl = (size_t)npar * sizeof(double);
+  par = (double *)mallocq(nl);
+  erp = (double *)mallocq(nl);
+  nl = (size_t)(npar * ndbcd + ndbcd + 3);
+  idpar = (bcd_t *)mallocq(nl);
+  idpar[0] = (bcd_t)ndbcd;
   /* read in parameters  ( and return true if variance ) */
-  inpcor =
-      getpar(lubak, lufit, &nfit, &npar, idpar, par, erp, parlbl, LBLEN);
-  nl = (size_t) npar * sizeof(double);
-  oldpar = (double *) mallocq(nl);
-  erpar = (double *) mallocq(nl);
+  inpcor = getpar(lubak, lufit, &nfit, &npar, idpar, par, erp, parlbl, LBLEN);
+  nl = (size_t)npar * sizeof(double);
+  oldpar = (double *)mallocq(nl);
+  erpar = (double *)mallocq(nl);
   ndfit = nfit + 1;
   ndiag = ndfit + 1;
   if (ndfit > nsize_p) {
-    printf("number of independent parameters is too big: %d %d\n",
-           nfit, nsize_p - 1);
+    printf("number of independent parameters is too big: %d %d\n", nfit,
+           nsize_p - 1);
     exit(EXIT_FAILURE);
   }
-  nl = (size_t) nfit * sizeof(int);
-  iperm = (int *) mallocq(nl);
-  nl = (size_t) ndfit * sizeof(double);
-  dpar = (double *) mallocq(nl);
-  delbgn = (double *) mallocq(nl);
+  nl = (size_t)nfit * sizeof(int);
+  iperm = (int *)mallocq(nl);
+  nl = (size_t)ndfit * sizeof(double);
+  dpar = (double *)mallocq(nl);
+  delbgn = (double *)mallocq(nl);
   if ((nfit & 1) == 0) {
-    nlsq = (size_t) ((unsigned) nfit >> 1) * sizeof(double);
-    nlsq *= (size_t) ndfit;
+    nlsq = (size_t)((unsigned)nfit >> 1) * sizeof(double);
+    nlsq *= (size_t)ndfit;
   } else {
-    nlsq = (size_t) ((unsigned) ndfit >> 1) * sizeof(double);
-    nlsq *= (size_t) nfit;
+    nlsq = (size_t)((unsigned)ndfit >> 1) * sizeof(double);
+    nlsq *= (size_t)nfit;
   }
-  fitbgn = (double *) mallocq(nlsq);
-  var = (double *) mallocq(nlsq);
-  nl = (size_t) nfit * sizeof(double);
+  fitbgn = (double *)mallocq(nlsq);
+  var = (double *)mallocq(nlsq);
+  nl = (size_t)nfit * sizeof(double);
   nlsq += nl;
-  oldfit = (double *) mallocq(nlsq);
-  nl *= (size_t) ndfit;
-  fit = (double *) mallocq(nl);
+  oldfit = (double *)mallocq(nlsq);
+  nl *= (size_t)ndfit;
+  fit = (double *)mallocq(nl);
   inpcor = getvar(lubak, nfit, var, idpar, erp, inpcor);
   /*  fixup supplied values */
   if (nxpar > npar || nxpar < 0)
     nxpar = 0;
   if (nxpar > 0) {
-    fprintf(lufit, "NUMBER OF PARAMETERS EXCLUDED IF INDEX < 0 =%5d\n",
-            nxpar);
+    fprintf(lufit, "NUMBER OF PARAMETERS EXCLUDED IF INDEX < 0 =%5d\n", nxpar);
   }
   nxpar = npar - nxpar;
   nxfit = nfit;
@@ -221,15 +222,17 @@ int main(int argc, char *argv[])
     fprintf(lufit, " IR Frequencies Scaled by %12.10f\n", fqfacq);
   }
   ndfree0 = 0;
-  if (inpcor != 0) {            /* initialize fit from supplied variance */
+  if (inpcor != 0) { /* initialize fit from supplied variance */
     pvar = var;
     pfit = fit;
-    for (n = 1; n <= nfit; ++n) {      /* copy from var */
+    for (n = 1; n <= nfit; ++n) { /* copy from var */
       dcopy(n, pvar, 1, pfit, ndfit);
-      pvar += n; ++pfit;
+      pvar += n;
+      ++pfit;
     }
     pvar = NULL;
-    fit[0] = var[0]; dpar[0] = 1.;
+    fit[0] = var[0];
+    dpar[0] = 1.;
     pfit = fit;
     for (i = 0; i < nfit; ++i) { /* scale */
       if (i != 0) {
@@ -240,7 +243,8 @@ int main(int argc, char *argv[])
       pfitd = pfit + i;
       val = dnrm2(n, pfitd, 1);
       if (val < tiny) {
-        dpar[i] = 1.; scale = 0.;
+        dpar[i] = 1.;
+        scale = 0.;
       } else {
         dpar[i] = scale = 1. / val;
       }
@@ -248,7 +252,7 @@ int main(int argc, char *argv[])
     }
     pfitd = NULL;
     pfit = fit;
-    for (i = 0; i < nfit; ++i) {  
+    for (i = 0; i < nfit; ++i) {
       n = i + 1;
       erpar[i] = ddot(n, pfit, ndfit, pfit, ndfit);
       ++pfit;
@@ -260,7 +264,7 @@ int main(int argc, char *argv[])
     }
     dqrsolv(fit, ndfit, n, nfit, 0, iperm);
     pfit = fit;
-    for (n = 1; i <= nfit; ++n) {       /* unscale */
+    for (n = 1; i <= nfit; ++n) { /* unscale */
       scale = dpar[n - 1];
       dscal(n, scale, pfit, ndfit);
       ++pfit;
@@ -268,7 +272,7 @@ int main(int argc, char *argv[])
     fitbgn[0] = fit[0];
     pfit = fit;
     pfitb = fitbgn;
-    for (i = 0; i < nfit; ++i) {        /* store in fitbgn */
+    for (i = 0; i < nfit; ++i) { /* store in fitbgn */
       if (i != 0)
         pfit += ndiag;
       n = nfit - i;
@@ -276,7 +280,7 @@ int main(int argc, char *argv[])
       pfitb += n;
     }
     pfit = pfitb = NULL;
-  } else {   /* initialize fit when there is no supplied variance */
+  } else { /* initialize fit when there is no supplied variance */
     pvar = var;
     pfitb = fitbgn;
     fitbgn[0] = 1. / var[0];
@@ -287,7 +291,7 @@ int main(int argc, char *argv[])
       pvar += (n + 1);
       pfitb += n;
       *pfitb = 1. / (*pvar);
-      if (*pfitb < 1.e-15) 
+      if (*pfitb < 1.e-15)
         --ndfree0;
       *pvar = 0.;
     }
@@ -307,7 +311,7 @@ int main(int argc, char *argv[])
   if (nline <= 0) {
     puts("no lines read");
     exit(EXIT_FAILURE);
-  }  
+  }
   /* initialize block structure */
   nblkpf = maxf;
   maxdm = nsize_p;
@@ -324,12 +328,12 @@ int main(int argc, char *argv[])
     printf(" Hamiltonian dinension is too big: %d %d\n", maxdm, nsize_p);
     exit(EXIT_FAILURE);
   }
-  nlsq = (size_t) maxdm;
+  nlsq = (size_t)maxdm;
   nl = nlsq * sizeof(double);
   nlsq *= nl;
-  teig = (double *) mallocq(nlsq);
-  nl *= (size_t) (nfit + 2);
-  pmix = (double *) mallocq(nl);
+  teig = (double *)mallocq(nlsq);
+  nl *= (size_t)(nfit + 2);
+  pmix = (double *)mallocq(nl);
   pmix[0] = 1.;
   egy = pmix + maxdm;
   egyder = egy + maxdm;
@@ -339,13 +343,14 @@ int main(int argc, char *argv[])
   /**********************************************************************/
   /* START ITERATION */
   itr = 0;
-  dpar[0] = 0.; 
+  dpar[0] = 0.;
   if (nitr < 0)
     nitr = -nitr;
   nsize = 0;
   /* find energies and derivatives */
   do {
-    k = 0; ibcd = nxpar * ndbcd;
+    k = 0;
+    ibcd = nxpar * ndbcd;
     for (i = nxpar; i < npar; ++i, ibcd += ndbcd) {
       if (NEGBCD(idpar[ibcd]) == 0)
         dpar[k++] = par[i];
@@ -354,17 +359,16 @@ int main(int argc, char *argv[])
     getdbk(&lnext, &iblk, &indx, &initl, &ifac);
     do {
       line = getdbk(&lnext, &iblk, &indx, &initl, &ifac);
-      if (iblk != lblk) {       /*  get size of block */
+      if (iblk != lblk) { /*  get size of block */
         if (rqexit(0) != 0)
-          break;                /*  check operator interrupt */
+          break; /*  check operator interrupt */
         getqn(iblk, 0, 0, qnum, &nsize);
         if (nsize == 0)
           continue;
         lblk = iblk;
         if (nsize > maxdm) {
-          printf
-              ("WARNING .. SIZE OF BLOCK %d2 IS %d AND EXCEEDS DIMENSIONS\n",
-               iblk, nsize);
+          printf("WARNING .. SIZE OF BLOCK %d2 IS %d AND EXCEEDS DIMENSIONS\n",
+                 iblk, nsize);
           exit(EXIT_FAILURE);
         }
         k = (iblk - 1) / nblkpf;
@@ -376,13 +380,12 @@ int main(int argc, char *argv[])
         /*  get energies and derivatives */
         egy = pmix + nsize;
         egyder = egy + nsize;
-        hamx(iblk, nsize, npar, idpar, par, egy, teig, egyder, pmix,
-             FALSE);
+        hamx(iblk, nsize, npar, idpar, par, egy, teig, egyder, pmix, FALSE);
       }
       /* save energies and derivatives for lines in this block */
-      dnuadd(nfit, nxfit, initl, indx, ifac, egy, egyder, nsize, line,
-             dpar, fqfac);
-    } while (lnext != 0);       /* repeat until no more energies */
+      dnuadd(nfit, nxfit, initl, indx, ifac, egy, egyder, nsize, line, dpar,
+             fqfac);
+    } while (lnext != 0); /* repeat until no more energies */
     if (lnext != 0)
       break;
     k = (lblk - 1) / nblkpf;
@@ -403,14 +406,15 @@ int main(int argc, char *argv[])
     }
     xsqt = ddot(nfit, pfitd, ndfit, pfitd, ndfit);
     pfitb = pfitd = pfit = NULL;
-    nf = nrj = nfir = 0; 
+    nf = nrj = nfir = 0;
     icnt = -1;
     for (i = 0; i < 40; ++i)
       fputc(' ', lufit);
     fputs("EXP.FREQ.  -  CALC.FREQ. -   DIFF.  - EXP.ERR.- ", lufit);
     fputs("EST.ERR.-AVG. CALC.FREQ. -  DIFF. - WT.\n", lufit);
-    line = 1; ex = 1.;
-    do {                        /*   form least squares matrix, LOOP over lines */
+    line = 1;
+    ex = 1.;
+    do { /*   form least squares matrix, LOOP over lines */
       if (icnt <= 0 && caldelay(PR_DELAY) != 0) {
         printf("Fitting Line %d\n", line);
         fflush(stdout);
@@ -418,13 +422,17 @@ int main(int argc, char *argv[])
       }
       lblnd = line;
       scale = rerr = 0;
-      iflg = 0; supblnd = 0; xwid = 1.;
-      do {                      /*    UNTIL all elements of blend are found */
+      iflg = 0;
+      supblnd = 0;
+      xwid = 1.;
+      do { /*    UNTIL all elements of blend are found */
         i = frqdat(lblnd, &iblnd, &xfrq, &xwt, &xerr, qnum);
         if ((iblnd & 1) != 0) {
-          supblnd = 1; xwid = xerr;
+          supblnd = 1;
+          xwid = xerr;
           val = 1. / (scale * xwid);
-          val = sqrt(1. - val * val); scale *= val;
+          val = sqrt(1. - val * val);
+          scale *= val;
           dscal(nfit + 1, val, dpar, 1);
         } else if (i != 0) {
           ex = fabs(xwt / xerr);
@@ -460,7 +468,8 @@ int main(int argc, char *argv[])
         ++nf;
       } else {
         fputs(" ***** NEXT LINE NOT USED IN FIT\n", lufit);
-        ++nrj; supblnd = 0;
+        ++nrj;
+        supblnd = 0;
       }
       if (xerr < 0.) {
         bigf = bigfIR;
@@ -478,23 +487,23 @@ int main(int argc, char *argv[])
       if (iflg == 1) {
         qnfmt2(nqn, qnum, aqnum);
         if (xerr < 0.) {
-          fprintf(lufit, FMT_xbgnIR, line, aqnum, xfrq, afrq, adif, xerr,
-                  cerr);
+          fprintf(lufit, FMT_xbgnIR, line, aqnum, xfrq, afrq, adif, xerr, cerr);
         } else {
-          fprintf(lufit, FMT_xbgnMW, line, aqnum, xfrq, afrq, adif, xerr,
-                  cerr);
+          fprintf(lufit, FMT_xbgnMW, line, aqnum, xfrq, afrq, adif, xerr, cerr);
         }
         fputc('\n', lufit);
         lblnd = line + 1;
       } else {
-        lblnd = line; cwid = 0.;
-        do {                    /* UNTIL all elements of blend are printed */
+        lblnd = line;
+        cwid = 0.;
+        do { /* UNTIL all elements of blend are printed */
           i = frqdat(lblnd, &iblnd, &xfrq, &xwt, &xerr, qnum);
           if ((iblnd & 1) != 0) {
-            xfrq = 0.; frq = sqrt(cwid);
-            if (supblnd != 0) 
+            xfrq = 0.;
+            frq = sqrt(cwid);
+            if (supblnd != 0)
               xsqt += cwid / (xwid * xwid);
-            qnfmt2(0, qnum, aqnum); 
+            qnfmt2(0, qnum, aqnum);
             if (xerr < 0.) {
               fprintf(lufit, FMT_xbgnIR, lblnd, aqnum, xfrq, frq, frq, xwid,
                       xfrq);
@@ -534,10 +543,10 @@ int main(int argc, char *argv[])
         } while (iblnd < 0);
       }
       line = lblnd;
-    } while (line <= nline);    /* end loop over lines */
+    } while (line <= nline); /* end loop over lines */
     if (nrj > 0) {
-      printf(       "%5d Lines rejected from fit\n", nrj);
-      fprintf(lufit,"%5d Lines rejected from fit\n", nrj);
+      printf("%5d Lines rejected from fit\n", nrj);
+      fprintf(lufit, "%5d Lines rejected from fit\n", nrj);
     }
     if (nf < 1)
       nf = 1;
@@ -547,10 +556,10 @@ int main(int argc, char *argv[])
       pfit += ndfit;
       dcopy(k, &zero, 0, pfit, 1);
     }
-    varv[0] = xsqt + nrj * xerrmx * xerrmx; 
+    varv[0] = xsqt + nrj * xerrmx * xerrmx;
     marqlast = marqp[0];
-    marqflg = lsqfit(fit, ndfit, nfit, 1, marqp, varv, 
-                     oldfit, erpar, dpar, iperm);
+    marqflg =
+        lsqfit(fit, ndfit, nfit, 1, marqp, varv, oldfit, erpar, dpar, iperm);
     if (marqflg != 0) {
       dcopy(npar, oldpar, 1, par, 1);
       strcpy(card, "Fit Diverging: restore parameters\n");
@@ -573,23 +582,22 @@ int main(int argc, char *argv[])
       if (icnt > 0)
         fputc('\n', lufit);
     }
-    printf(       "MARQUARDT PARAMETER = %g, TRUST EXPANSION = %4.2f\n",
-              marqp[0], marqp[2]);
-    fprintf(lufit,"MARQUARDT PARAMETER = %g, TRUST EXPANSION = %4.2f\n",
-              marqp[0], marqp[2]);
+    printf("MARQUARDT PARAMETER = %g, TRUST EXPANSION = %4.2f\n", marqp[0],
+           marqp[2]);
+    fprintf(lufit, "MARQUARDT PARAMETER = %g, TRUST EXPANSION = %4.2f\n",
+            marqp[0], marqp[2]);
     if (parfac0 < 0. && xsqt >= 0.) {
       ndfree = nf + ndfree0;
-      if (ndfree <= 0) 
+      if (ndfree <= 0)
         ndfree = 1;
       parfac = -parfac0 * sqrt(xsqt / ndfree);
-      fputs("WARNING: parameter errors multiplied by ",lufit);
-      fprintf(lufit, "%15.5f for %8d degrees of freedom\n",
-              parfac, ndfree);
+      fputs("WARNING: parameter errors multiplied by ", lufit);
+      fprintf(lufit, "%15.5f for %8d degrees of freedom\n", parfac, ndfree);
     }
     xsqt = xsqt / nf;
     if (xsqt > 0.)
       xsqt = sqrt(xsqt);
-    if (xsqbest > xsqt) 
+    if (xsqbest > xsqt)
       xsqbest = xsqt;
     /*   get estimated errors  and print parameters */
     for (i = 0; i < 32; ++i)
@@ -613,9 +621,9 @@ int main(int argc, char *argv[])
         dscal(n, parfac, pfitd, 1);
         parer(par[i], erpar[i], dif, pare);
         putbcd(card, NDCARD, &idpar[ibcd]);
-        ch = (*tlblnxt); *tlblnxt = '\0';
-        fprintf(lufit, "%4d %s %10.10s %s\n", ++k, card, tlbl,
-                pare);
+        ch = (*tlblnxt);
+        *tlblnxt = '\0';
+        fprintf(lufit, "%4d %s %10.10s %s\n", ++k, card, tlbl, pare);
         *tlblnxt = ch;
         ibase = i;
       }
@@ -623,35 +631,33 @@ int main(int argc, char *argv[])
     pfitd = NULL;
     pfit = fit;
     pvar = var;
-    for (n = 1; n <= nfit; ++n) {       /* copy to var */
+    for (n = 1; n <= nfit; ++n) { /* copy to var */
       dcopy(n, pfit, ndfit, pvar, 1);
       ++pfit;
       pvar += n;
     }
     pfit = NULL;
     if (nf > nfir) {
-      scale = 1. / (double) (nf - nfir);
+      scale = 1. / (double)(nf - nfir);
       avgmw *= scale;
       xsqmw = sqrt(xsqmw * scale);
     }
     if (nfir > 0) {
-      scale = 1. / (double) nfir;
+      scale = 1. / (double)nfir;
       avgir *= scale;
       xsqir = sqrt(xsqir * scale);
     }
-    printf(" MICROWAVE AVG = %15.6f MHz, IR AVG =%15.5f\n",
-                  avgmw, avgir);
-    fprintf(lufit," MICROWAVE AVG = %15.6f MHz, IR AVG =%15.5f\n",
-                  avgmw, avgir);
-    printf(       " MICROWAVE RMS = %15.6f MHz, IR RMS =%15.5f\n",
-                  xsqmw, xsqir);
-    fprintf(lufit," MICROWAVE RMS = %15.6f MHz, IR RMS =%15.5f\n",
-                  xsqmw, xsqir);
+    printf(" MICROWAVE AVG = %15.6f MHz, IR AVG =%15.5f\n", avgmw, avgir);
+    fprintf(lufit, " MICROWAVE AVG = %15.6f MHz, IR AVG =%15.5f\n", avgmw,
+            avgir);
+    printf(" MICROWAVE RMS = %15.6f MHz, IR RMS =%15.5f\n", xsqmw, xsqir);
+    fprintf(lufit, " MICROWAVE RMS = %15.6f MHz, IR RMS =%15.5f\n", xsqmw,
+            xsqir);
     ++itr;
-    printf(       " END OF ITERATION %2d OLD, NEW RMS ERROR=%15.5f %15.5f\n",
-                  itr, xsqt, xsqbest);
-    fprintf(lufit," END OF ITERATION %2d OLD, NEW RMS ERROR=%15.5f %15.5f\n",
-                  itr, xsqt, xsqbest);
+    printf(" END OF ITERATION %2d OLD, NEW RMS ERROR=%15.5f %15.5f\n", itr,
+           xsqt, xsqbest);
+    fprintf(lufit, " END OF ITERATION %2d OLD, NEW RMS ERROR=%15.5f %15.5f\n",
+            itr, xsqt, xsqbest);
     fflush(stdout);
   } while (itr < nitr && 0.999999 * xsqt > xsqbest);
 
@@ -659,8 +665,8 @@ int main(int argc, char *argv[])
 
   /************************************************************************/
 
-  linebuf = lbufof(-1, 0);      /* release storage */
-  setblk(lufit, 0, idpar, par, &nblkpf, &maxdm);        /* release storage */
+  linebuf = lbufof(-1, 0);                       /* release storage */
+  setblk(lufit, 0, idpar, par, &nblkpf, &maxdm); /* release storage */
   if (itr == 0) {
     puts(" output files not updated");
     exit(0);
@@ -683,13 +689,14 @@ int main(int argc, char *argv[])
   fputs(card, lupar);
   fputs(card, luvar);
   k = fgetstr(card, NDCARD, lubak); /* ignore second line and replace */
-  if (catqn > MAXCAT) limlin = -limlin;
+  if (catqn > MAXCAT)
+    limlin = -limlin;
   nxpar = npar - nxpar;
-  fprintf(lupar,"%4d %4d %4d %4d %14.4E %14.4E %14.4E %12.10f\n",
-           npar, limlin, nitr, nxpar, marqlast, xerrmx, parfac0, fqfacq);
-  fprintf(luvar,"%4d %4d %4d %4d %14.4E %14.4E %14.4E %12.10f\n",
-           npar, limlin, nitr, nxpar, marqlast, xerrmx, parfac0, fqfacq);
-  for (icnt = 0; icnt < noptn; ++icnt) {        /*  save option lines */
+  fprintf(lupar, "%4d %4d %4d %4d %14.4E %14.4E %14.4E %12.10f\n", npar, limlin,
+          nitr, nxpar, marqlast, xerrmx, parfac0, fqfacq);
+  fprintf(luvar, "%4d %4d %4d %4d %14.4E %14.4E %14.4E %12.10f\n", npar, limlin,
+          nitr, nxpar, marqlast, xerrmx, parfac0, fqfacq);
+  for (icnt = 0; icnt < noptn; ++icnt) { /*  save option lines */
     k = fgetstr(card, NDCARD, lubak);
     card[k] = '\n';
     card[k + 1] = '\0';
@@ -697,10 +704,11 @@ int main(int argc, char *argv[])
     fputs(card, luvar);
   }
   card[LBLEN + 1] = '\0';
-  tlbl = parlbl; ibase = 0;
+  tlbl = parlbl;
+  ibase = 0;
   for (i = 0, ibcd = 0; i < npar; ++i, ibcd += ndbcd) {
     if (k > 0)
-      k = fgetstr(card, NDCARD, lubak);     /*  skip parameter lines */
+      k = fgetstr(card, NDCARD, lubak); /*  skip parameter lines */
     if (tlbl[0] == '\0') {
       card[0] = '\0';
     } else {
@@ -712,7 +720,7 @@ int main(int argc, char *argv[])
       ibase = i;
     } else {
       scale = fabs(par[i]);
-      erpar [i] = scale * erpar[ibase];
+      erpar[i] = scale * erpar[ibase];
       par[i] *= par[ibase];
     }
     putbcd(pare, 64, &idpar[ibcd]);
@@ -720,7 +728,7 @@ int main(int argc, char *argv[])
     fprintf(luvar, "%s %23.15E %14.8E %s\n", pare, par[i], erpar[i], card);
     tlbl += LBLEN;
   }
-  while (k > 0) {               /* copy correlation lines or extra parameter lines */
+  while (k > 0) { /* copy correlation lines or extra parameter lines */
     k = fgetstr(card, NDCARD, lubak);
     if (k > 0) {
       card[k] = '\n';
@@ -749,10 +757,9 @@ int main(int argc, char *argv[])
   free(par);
   free(parlbl);
   return 0;
-}                               /* MAIN */
+} /* MAIN */
 
-int qnfmt2(int nqn, short *qnum, char *aqnum)
-{
+int qnfmt2(int nqn, short *qnum, char *aqnum) {
   /* Local variables */
   int i;
 
@@ -761,7 +768,7 @@ int qnfmt2(int nqn, short *qnum, char *aqnum)
   /*     QNUM  = vector of quanta */
   /*     AQNUM = string of quanta in character form */
   for (i = 0; i < nqn; ++i) {
-    sprintf(aqnum, "%3d", (int) qnum[i]);
+    sprintf(aqnum, "%3d", (int)qnum[i]);
     aqnum += 3;
   }
   for (i = nqn; i < 12; ++i) {
@@ -770,18 +777,14 @@ int qnfmt2(int nqn, short *qnum, char *aqnum)
   }
   aqnum[0] = '\0';
   return 0;
-}                               /* qnfmt2 */
+} /* qnfmt2 */
 
-int parer(par, errx, dif, ptmp)
-double par, errx, dif;
-char *ptmp;
-{
-  static int czero = (int) '0';
+int parer(double par, double errx, double dif, char *ptmp) {
+  static int czero = (int)'0';
   char *pfmt;
   double adif, apar, aten, aerr;
   char chexp[6], fmt[34];
   int msd, id, ie, efield, ip, lsd, k;
-
 
   /*      sets up special format for parameters and errors */
   /*     PAR  = parameter value */
@@ -795,9 +798,9 @@ char *ptmp;
   efield = 0;
   aten = 1.;
   /*     compute exponent fields */
-  ie = (int) (log10(fabs(aerr) + 1.e-37) - 102.5) + 100;
-  id = (int) (log10(fabs(adif) + 1.e-37) - 100.0) + 100;
-  ip = (int) (log10(fabs(apar) + 1.e-37) - 100.0) + 100;
+  ie = (int)(log10(fabs(aerr) + 1.e-37) - 102.5) + 100;
+  id = (int)(log10(fabs(adif) + 1.e-37) - 100.0) + 100;
+  ip = (int)(log10(fabs(apar) + 1.e-37) - 100.0) + 100;
   lsd = -ie;
   if (lsd < 0)
     lsd = 0;
@@ -809,19 +812,19 @@ char *ptmp;
   k = 10 - id;
   if (k < lsd)
     lsd = k;
-  if (msd <= -2) {              /* number too small without exponent */
+  if (msd <= -2) { /* number too small without exponent */
     k = (1 - msd) / 3;
     efield = -3 * k;
     while ((--k) >= 0)
       aten *= 1000;
-  } else if (lsd < 0) {         /* number too big without exponent */
+  } else if (lsd < 0) { /* number too big without exponent */
     k = (1 + msd) / 3;
     if (k > 0)
       efield = 3 * k;
     while ((--k) >= 0)
       aten *= 0.001;
   }
-  if (efield != 0) {            /* E format */
+  if (efield != 0) { /* E format */
     lsd += efield;
     memcpy(chexp, "0fE+00", 6);
     if (efield < 0) {
@@ -831,22 +834,22 @@ char *ptmp;
     msd = efield / 10;
     if (msd > 0) {
       efield -= msd * 10;
-      chexp[4] = (char) (msd + czero);
+      chexp[4] = (char)(msd + czero);
     }
-    chexp[5] = (char) (efield + czero);
+    chexp[5] = (char)(efield + czero);
     apar *= aten;
     aerr *= aten;
     adif *= aten;
-  } else {                      /* F format */
+  } else { /* F format */
     memcpy(chexp, "0f    ", 6);
   }
   if (lsd > 9)
     lsd = 9;
   if (lsd > 0)
-    chexp[0] = (char) (lsd + czero);
+    chexp[0] = (char)(lsd + czero);
   while ((lsd--) > 0)
     aerr *= 10.;
-  ie = (int) (aerr + 0.5);
+  ie = (int)(aerr + 0.5);
   pfmt = fmt;
   memcpy(pfmt, "%16.", 4);
   pfmt += 4;
@@ -863,14 +866,9 @@ char *ptmp;
   *pfmt = '\0';
   sprintf(ptmp, fmt, apar, ie, adif);
   return 0;
-}                               /* parer */
+} /* parer */
 
-
-int linein(luin, nline, iqnfmt)
-FILE *luin;
-int *nline;
-int iqnfmt;
-{
+int linein(FILE *luin, int *nline, int iqnfmt) {
   /* Local variables */
   SXLINE *xline;
   double xfrqn, xerrn, xwtn, xfrqx, xerrx;
@@ -898,11 +896,11 @@ int iqnfmt;
   ipace = 100;
   xfrqx = xerrx = 0.;
   icmp = 0;
-  for (i = 1; i <= mxline; ++i) {       /*  loop for reading lines */
+  for (i = 1; i <= mxline; ++i) { /*  loop for reading lines */
     xline = lbufof(1, i);
     iqnum = xline->qn;
-    if (getlin(luin, nqn, nqnt, iqnum, &xfrqn, &xerrn, &xwtn, 
-               card, NDCARD) < 0) {
+    if (getlin(luin, nqn, nqnt, iqnum, &xfrqn, &xerrn, &xwtn, card, NDCARD) <
+        0) {
       *nline = i - 1;
       return mxqn;
     }
@@ -913,7 +911,7 @@ int iqnfmt;
         if (iqf >= 0)
           iqf = -1;
       }
-      iqnum[nqnu] = (short) iqf;
+      iqnum[nqnu] = (short)iqf;
     }
     if (iqf < 0)
       iqf = -iqf;
@@ -926,24 +924,26 @@ int iqnfmt;
         if (iqf >= 0)
           iqf = -1;
       }
-      iqnum[nqnl] = (short) iqf;
+      iqnum[nqnl] = (short)iqf;
     }
     if (iqf < 0)
       iqf = -iqf;
     if (mxqn < iqf)
       mxqn = iqf;
     xline->xfrq = xfrqn;
-    xline->xerr = (float) xerrn;
-    xline->xwt = (float) fabs(xwtn);
+    xline->xerr = (float)xerrn;
+    xline->xwt = (float)fabs(xwtn);
     xline->linku = 0;
     xline->linkl = 0;
     isblnd = 0;
-    if (icmp != 0 && fabs(xfrqn - xfrqx) < fabs(xfrqn) * 1.e-14 + 1.e-8) { 
+    if (icmp != 0 && fabs(xfrqn - xfrqx) < fabs(xfrqn) * 1.e-14 + 1.e-8) {
       /* frq match */
       if (fabs(xerrn - xerrx) < 1e-7) {
         isblnd = 1;
       } else if ((xerrn / xerrx) > 2.0 && nbln > 2) {
-        isblnd = 1; ++nbln; icmp = 0;
+        isblnd = 1;
+        ++nbln;
+        icmp = 0;
         xline->xwt = (float)0.;
         iqnum[0] = (short)-1;
         iqnum[nqn] = iqnum[0];
@@ -956,7 +956,8 @@ int iqnfmt;
       nbln += 2;
     } else {
       xline->bln = 0;
-      nbln = 2; icmp = 1;
+      nbln = 2;
+      icmp = 1;
     }
     if (ipace <= i) {
       ipace += 100;
@@ -967,12 +968,10 @@ int iqnfmt;
     xfrqx = xfrqn;
   }
   return mxqn;
-}                               /* linein */
+} /* linein */
 
-int lineix(lu, flg, nline, nblkpf, iqnfmt)
-FILE *lu;
-int flg, nline, nblkpf, iqnfmt;
-{  /*   get lines from input and store them */
+int lineix(FILE *lu, int flg, int nline, int nblkpf,
+           int iqnfmt) { /*   get lines from input and store them */
   /*     LU = unit for printout of lines ( if > 0 ) */
   /*     NLINE = number of lines */
   /*     NBLKPF= number of blocks per F */
@@ -985,19 +984,22 @@ int flg, nline, nblkpf, iqnfmt;
   int linkx, indxl, linky, indxu, orgblk, nqn, nqn2, nbad;
   /*@owned@*/ int *prvblk;
   short *iqnum;
-  char aqnum[6*MAXQN+2];
+  char aqnum[6 * MAXQN + 2];
 
   nbad = 0;
   nblk = 0;
-  prvblk = (int *) mallocq((size_t) (nsort + 1) * sizeof(int));
+  prvblk = (int *)mallocq((size_t)(nsort + 1) * sizeof(int));
   prvblk[0] = 0;
   for (i = 1; i <= nsort; ++i) {
     prvblk[i] = 0;
   }
   nqn = iqnfmt % 10;
-  if (nqn == 0) nqn = 10;
-  nqn2 = nqn + nqn; ncat = nqn2;
-  if (ncat < 12) ncat = 12;
+  if (nqn == 0)
+    nqn = 10;
+  nqn2 = nqn + nqn;
+  ncat = nqn2;
+  if (ncat < 12)
+    ncat = 12;
   i = (iqnfmt / 100) % 5;
   if (i >= nqn) {
     ipos = 1;
@@ -1025,19 +1027,18 @@ int flg, nline, nblkpf, iqnfmt;
     if (iblkl == 0 && iqnum[nqn] >= 0)
       iblku = 0;
     xline->ibu = iblku;
-    xline->inu = (short) indxu;
+    xline->inu = (short)indxu;
     xline->ibl = iblkl;
-    xline->inl = (short) indxl;
+    xline->inl = (short)indxl;
     if (iblku == 0 && (xline->bln & 1) == 0) {
       /*  print out bad line and try for next */
       ++nbad;
       xline->xwt = 0.;
       xwtn = 0.;
       qnfmt2(nqn2, iqnum, aqnum);
-      printf(    "Bad Line(%3d): %s %14.5f %8.5f\n",
-                 nread, aqnum, xfrqn, xerrn);
-      fprintf(lu,"Bad Line(%3d): %s %14.5f %8.5f\n",
-                 nread, aqnum, xfrqn, xerrn);
+      printf("Bad Line(%3d): %s %14.5f %8.5f\n", nread, aqnum, xfrqn, xerrn);
+      fprintf(lu, "Bad Line(%3d): %s %14.5f %8.5f\n", nread, aqnum, xfrqn,
+              xerrn);
     } else {
       /*  set up links for calculating in order of block */
       if (iblku <= iblkl) {
@@ -1053,7 +1054,7 @@ int flg, nline, nblkpf, iqnfmt;
       }
       if (flg < 0) {
         iqnum = xline->qn;
-        fprintf(lu," %4d%4d%4d%4d%4d:", nread, iblku, indxu, iblkl, indxl);
+        fprintf(lu, " %4d%4d%4d%4d%4d:", nread, iblku, indxu, iblkl, indxl);
         for (i = 0; i < ncat; ++i) {
           j = iqnum[i];
           fprintf(lu, "%3d", j);
@@ -1075,21 +1076,21 @@ int flg, nline, nblkpf, iqnfmt;
     }
     j = xline->bln;
     if (j != 0) {
-      xnorm += xwtn;      
-      if (j > 0) {     /* normalize weights */
-        xnorm = 1. / xnorm; 
+      xnorm += xwtn;
+      if (j > 0) { /* normalize weights */
+        xnorm = 1. / xnorm;
         for (j = nread - (j >> 1); j <= nread; ++j) {
           xline = lbufof(1, j);
-          xline->xwt = (float) (xline->xwt * xnorm);
+          xline->xwt = (float)(xline->xwt * xnorm);
         }
         xnorm = 0.;
       }
     } else {
       xline->xwt = 1.;
     }
-  }                             /* end loop for converting lines */
+  } /* end loop for converting lines */
   orgblk = nsort;
-  while (nblk > orgblk) {       /* finish up links */
+  while (nblk > orgblk) { /* finish up links */
     --orgblk;
     linkx = 0;
     for (j = 0; j < nsort; ++j) {
@@ -1111,4 +1112,4 @@ int flg, nline, nblkpf, iqnfmt;
   }
   free(prvblk);
   return nbad;
-}                               /* lineix */
+} /* lineix */

@@ -2,10 +2,7 @@
 #include <stdlib.h>
 int sortn(char *impname, char *outname, int dokey);
 
-int main(argc, argv)
-int argc;
-char *argv[];
-{
+int main(int argc, char *argv[]) {
   FILE *finp;
   char *outnam;
   if (argc < 2) {

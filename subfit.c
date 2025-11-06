@@ -6,19 +6,16 @@
 
 /*   Herbert M. Pickett, 20 March 1989 */
 /*   Revised version in c, 22 March 1999 */
-/*   18 Aug.  2003: code cleanup, @comment@ is for splint */ 
+/*   18 Aug.  2003: code cleanup, @comment@ is for splint */
 
+#include "calpgm.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include "calpgm.h"
 
-int getlbl(npar, idpar, parlbl, fil, idiv, lblen)
-int npar, idiv, lblen;
-bcd_t *idpar;
-char *parlbl, *fil;
-{
+int getlbl(int npar, bcd_t *idpar, char *parlbl, char *fil, int idiv,
+           int lblen) {
 #define NDEC 10
 #define NCARD 130
   static int ipwr[] = {0, 100, 10000};
@@ -36,8 +33,12 @@ char *parlbl, *fil;
   /*     FIL = file name to use for userfile */
   /*     IDIV = divisor for vibrational field */
 
-  kbgn = -1; kend = 0; nlbl = (size_t) lblen;
-  jdiv = 0; jdec = 0; pstr = parlbl;
+  kbgn = -1;
+  kend = 0;
+  nlbl = (size_t)lblen;
+  jdiv = 0;
+  jdec = 0;
+  pstr = parlbl;
   for (i = 0; i < npar; ++i) {
     if (*pstr == '\0') {
       kend = i;
@@ -49,14 +50,19 @@ char *parlbl, *fil;
   if (kbgn < 0)
     return 0;
   lu = NULL;
-  pname = fil;  buf[0] = '\0';
+  pname = fil;
+  buf[0] = '\0';
   for (idec = 0; idec < 3; ++idec) {
-    if (idiv <= ipwr[idec]) break;
+    if (idiv <= ipwr[idec])
+      break;
   }
-  jdec = 0; ibgn = idec + 1; ndbcd = (int) idpar[0]; nflg = -ndbcd;
+  jdec = 0;
+  ibgn = idec + 1;
+  ndbcd = (int)idpar[0];
+  nflg = -ndbcd;
   idcmp = &idpar[ndbcd * npar];
   for (k = 0; k < 3; ++k)
-    idcmp[k + ndbcd] = (bcd_t) 0;
+    idcmp[k + ndbcd] = (bcd_t)0;
   /*      while there are unlabeled parameters */
   while (kbgn <= kend) {
     /*   open file of parameter names */
@@ -71,7 +77,8 @@ char *parlbl, *fil;
       if (jdiv <= 0)
         jdiv = 1;
       for (jdec = 0; jdec < 3; ++jdec) {
-        if (jdiv <= ipwr[jdec]) break;
+        if (jdiv <= ipwr[jdec])
+          break;
       }
       jdec -= idec;
     }
@@ -79,7 +86,7 @@ char *parlbl, *fil;
       break;
     /* parse into number + string */
     k = getbcd(buf, idcmp, nflg);
-    while (buf[k] == ' ')  /* ignore spaces */
+    while (buf[k] == ' ') /* ignore spaces */
       ++k;
     parx = &buf[k];
     if (NEGBCD(idcmp[0]) != 0) {
@@ -94,9 +101,11 @@ char *parlbl, *fil;
       ibcd = kbgn * ndbcd;
       for (k = kbgn; k <= kend; ++k, ibcd += ndbcd) {
         for (i = ibgn; i < ndbcd; ++i) {
-          if (idcmp[i + jdec] != idpar[i + ibcd]) break;
+          if (idcmp[i + jdec] != idpar[i + ibcd])
+            break;
         }
-        if (i != ndbcd) continue;
+        if (i != ndbcd)
+          continue;
         pstr = &parlbl[k * nlbl];
         if (pstr[0] == '\0') {
           memcpy(pstr, parx, nlbl);
@@ -112,18 +121,14 @@ char *parlbl, *fil;
   if (lu != NULL)
     fclose(lu);
   return 0;
-}                               /* getlbl */
+} /* getlbl */
 
-int getblk(iblk, indx, iqnum, nblkpf, ipos, nqn)
-int *iblk, *indx, nblkpf, ipos, nqn;
-short *iqnum;
-{
+int getblk(int *iblk, int *indx, short *iqnum, int nblkpf, int ipos, int nqn) {
   int ibgn, kbgn, nblk, iqnf, k, idblk, kdtau, kk, nn, icmp;
   int iblkx, indxx, idgn, nsize, ncod;
   short kqnum[MAXQN];
 
   /*  gets block (IBLK) and INDEX from quantum numbers (IQNUM) */
-
 
   /*     NBLKPF IS THE NUMBER OF BLOCKS PER "F" */
   /*     IPOS   IS THE POSITION IN IQNUM TO FIND "F" */
@@ -180,8 +185,8 @@ short *iqnum;
         kdtau = iqnum[1] - iqnum[2] - kqnum[1] + kqnum[2];
         if (ncod < 0)
           kdtau = -kdtau;
-        if (kdtau >= 0 && (kdtau & 3) == 0) {   /* symmetry is good */
-          kk = (int) ((unsigned) kdtau >> 2);
+        if (kdtau >= 0 && (kdtau & 3) == 0) { /* symmetry is good */
+          kk = (int)((unsigned)kdtau >> 2);
           if (kk < nn) {
             /* value is in range */
             indxx += kk;
@@ -196,7 +201,7 @@ short *iqnum;
     if (icmp == 0)
       break;
   }
-  if (icmp == 0) {              /*   standard return */
+  if (icmp == 0) { /*   standard return */
     if (nblk > nblkpf) {
       iqnf -= (iblkx - ibgn - 1) / nblkpf;
     }
@@ -205,15 +210,11 @@ short *iqnum;
     *iblk = iblkx;
     *indx = indxx;
   }
-  iqnum[ipos] = (short) iqnf;
+  iqnum[ipos] = (short)iqnf;
   return 0;
-}                               /* getblk */
+} /* getblk */
 
-
-int filbak(flu, fbak)
-char *flu;
-char *fbak;
-{
+int filbak(char *flu, char *fbak) {
   /*     FLU= input file name (.par) */
   /*     FBAK =backup file name (.bak) */
   FILE *lu, *lubak;
@@ -228,25 +229,22 @@ char *fbak;
   rewind(lubak);
   fclose(lubak);
   return 0;
-}                               /* filbak */
+} /* filbak */
 
-int prcorr(lufit, nfit, cor, ndcor, err)
-FILE *lufit;
-int nfit, ndcor;
-double *cor, *err;
-{                               /*  calculates and prints correlation coefficients */
+int prcorr(FILE *lufit, int nfit, double *cor, int ndcor,
+           double *err) { /*  calculates and prints correlation coefficients */
   int i, j, n, ndiag;
   double val, *dcor, *pcor;
   ndiag = ndcor + 1;
   dcor = cor;
-  for (j = 0; j < nfit; ++j) {  /* scale */
+  for (j = 0; j < nfit; ++j) { /* scale */
     if (j > 0)
       dcor += ndiag;
     n = nfit - j;
     val = 1. / err[j];
     dscal(n, val, dcor, 1);
   }
-  for (n = 1; n < nfit; ++n) {  /* matrix multiply */
+  for (n = 1; n < nfit; ++n) { /* matrix multiply */
     i = nfit - n;
     pcor = &cor[i];
     for (j = 0; j < i; ++j) {
@@ -279,11 +277,11 @@ double *cor, *err;
   if (n > 0)
     fputc('\n', lufit);
   return 0;
-}                               /* prcorr */
+} /* prcorr */
 
-SXLINE *lbufof(iflg, ipos)
-int iflg, ipos;
-{ /*  FUNCTION TO ACCESS LINE DATA, WITH POSSIBLE STORE */
+SXLINE *
+lbufof(int iflg,
+       int ipos) { /*  FUNCTION TO ACCESS LINE DATA, WITH POSSIBLE STORE */
   /*  iflg = 0, then read line at abs(ipos)             */
   /*  iflg = 1, then read/write line at abs(ipos)       */
   /*  iflg = 2, then write line at abs(ipos)            */
@@ -314,14 +312,14 @@ int iflg, ipos;
     if (ipos < 0)
       ipos = -ipos;
     --ipos;
-    state = 2;                  /* defaults for write/read new buffer */
+    state = 2; /* defaults for write/read new buffer */
     relpos = ipos - bpos;
     k = relpos - next;
     if (k >= 0) {
       if (k == 0) {
-        if (relpos < nbuf) {    /* record next in buffer */
-          state = 1;            /* read only */
-          if (tpos == ipos) {   /* copy from tail to body */
+        if (relpos < nbuf) {  /* record next in buffer */
+          state = 1;          /* read only */
+          if (tpos == ipos) { /* copy from tail to body */
             dcopy(ndbl, tail, 1, dheapv[relpos], 1);
             ++next;
             tpos = -1;
@@ -333,29 +331,29 @@ int iflg, ipos;
           state = 1;
         }
       }
-    } else if (relpos >= 0) {   /* record within active buffer */
+    } else if (relpos >= 0) { /* record within active buffer */
       state = 0;
     }
     if (ipos == tpos) {
       relpos = nbuf;
       state = 0;
     }
-    if (state == 2) {           /*  save old data */
+    if (state == 2) { /*  save old data */
       if (iflg == 2)
         relpos = nbuf;
       if (relpos == nbuf) {
-        lpos = (size_t) tpos;
+        lpos = (size_t)tpos;
         pheap = tail;
         n = 1;
         k = rewrit & 2;
         rewrit &= 1;
       } else {
-        if (next == nbuf && bpos == maxrec) {   /* first write */
+        if (next == nbuf && bpos == maxrec) { /* first write */
           ++next;
           rewrit = 1;
           tpos = -1;
         }
-        lpos = (size_t) bpos;
+        lpos = (size_t)bpos;
         pheap = dheapv[0];
         n = next;
         bpos = ipos;
@@ -364,15 +362,15 @@ int iflg, ipos;
         rewrit &= 2;
       }
       if (k != 0) {
-        if ((size_t) maxrec <= lpos) {
-          maxrec = (int) (lpos + n);
+        if ((size_t)maxrec <= lpos) {
+          maxrec = (int)(lpos + n);
           if (scratch == NULL)
             scratch = tmpfile();
         }
         if (lpos != 0)
           lpos *= nbyte;
-        if (scratch == NULL || fseek(scratch, (long) lpos, SEEK_SET) != 0
-            || (int) fwrite(pheap, nbyte, (size_t) n, scratch) != n) {
+        if (scratch == NULL || fseek(scratch, (long)lpos, SEEK_SET) != 0 ||
+            (int)fwrite(pheap, nbyte, (size_t)n, scratch) != n) {
           puts(" scratch file write error");
           exit(EXIT_FAILURE);
         }
@@ -393,18 +391,18 @@ int iflg, ipos;
         ++next;
       if (ipos < maxrec) {
         n = 1;
-        lpos = (size_t) ipos;
+        lpos = (size_t)ipos;
         if (lpos != 0)
           lpos *= nbyte;
-        if (scratch == NULL || fseek(scratch, (long) lpos, SEEK_SET) != 0
-            || (int) fread(pheap, nbyte, (size_t) n, scratch) != n) {
+        if (scratch == NULL || fseek(scratch, (long)lpos, SEEK_SET) != 0 ||
+            (int)fread(pheap, nbyte, (size_t)n, scratch) != n) {
           printf("scratch file read error at %d\n", ipos);
           exit(EXIT_FAILURE);
         }
       }
     }
     if (pheap != NULL)
-      sret = (SXLINE *) pheap;
+      sret = (SXLINE *)pheap;
     sret->dnudp = pheap + dnuoff;
     pheap = NULL;
   } else { /***** initialization *****/
@@ -421,30 +419,30 @@ int iflg, ipos;
       dheap = NULL;
     }
     if (ipos > 0) {
-      dnuoff = (int) ((sizeof(SXLINE) - 1) / sizeof(double) + 1);
+      dnuoff = (int)((sizeof(SXLINE) - 1) / sizeof(double) + 1);
       /* dnuoff is number of doubles in SXLINE */
       ndbl = dnuoff - iflg;
       if (ndbl < 1)
         ndbl = 1;
-      nbyte = (size_t) ndbl * sizeof(double);
+      nbyte = (size_t)ndbl * sizeof(double);
       maxmem(&lpos);
-      lpos = lpos / (size_t) ndbl;
-      nline = (size_t) ipos;
+      lpos = lpos / (size_t)ndbl;
+      nline = (size_t)ipos;
       if (lpos < nline)
         nline = lpos;
 #ifdef NDHEAPF
 #if NDHEAPF
-      lpos = (size_t) NDHEAPF;
+      lpos = (size_t)NDHEAPF;
       lpos = lpos / nbyte;
       if (lpos < nline)
         nline = lpos;
 #endif
 #endif
-      nbuf = (int) nline - 1;
+      nbuf = (int)nline - 1;
       lpos = nline * nbyte;
-      dheap = (double *) mallocq(lpos);
-      lpos = (size_t) nbuf *sizeof(double *);
-      dheapv = (double **) mallocq(lpos);
+      dheap = (double *)mallocq(lpos);
+      lpos = (size_t)nbuf * sizeof(double *);
+      dheapv = (double **)mallocq(lpos);
       k = 0;
       pheap = dheap;
       do {
@@ -461,13 +459,10 @@ int iflg, ipos;
   return sret;
 } /* lbufof */
 
-void dnuadd(npar, nparx, initl, indx, ifac, egy, egyder, nsize, line, par,
-            fac)
-int npar, nparx, initl, indx, ifac;
-double *egy, *egyder;
-int nsize, line;
-double *par, *fac;
-{                               /*     subroutine to add energies and derivatives to frequency lists */
+void dnuadd(int npar, int nparx, int initl, int indx, int ifac, double *egy,
+            double *egyder, int nsize, int line, double *par,
+            double *fac) { /*     subroutine to add energies and derivatives to
+                              frequency lists */
   /*  ON INPUT: */
   /*     NPAR   = number of parameters */
   /*     NPARX  = number of parameters if INDX < 0 */
@@ -493,7 +488,7 @@ double *par, *fac;
     xline->cfrq = 0.;
   f = fac[ifac];
   /* add derivatives */
-  if (indx < 0) {               /* set up to ignore last few derivatives */
+  if (indx < 0) { /* set up to ignore last few derivatives */
     indx = -1 - indx;
     nparn = nparx;
     noff = npar - nparn;
@@ -503,7 +498,7 @@ double *par, *fac;
     dtmp = egy[indx] - ddot(noff, &egyder[itmp], nsize, par, 1);
     if (initl < 0)
       dcopy(noff, &zero, 0, &deriv[nparn], 1);
-  } else {                      /* add energies */
+  } else { /* add energies */
     indx = indx - 1;
     dtmp = egy[indx];
     nparn = npar;
@@ -519,14 +514,9 @@ double *par, *fac;
   } else {
     daxpy(nparn, f, &egyder[indx], nsize, deriv, 1);
   }
-}                               /* dnuadd */
+} /* dnuadd */
 
-double dnuget(iflg, npar, f, line, dvec)
-int iflg, npar;
-double f;
-int line;
-double *dvec;
-{
+double dnuget(int iflg, int npar, double f, int line, double *dvec) {
   SXLINE *xline;
   double frq;
 
@@ -553,11 +543,9 @@ double *dvec;
     dvec[npar] += f * (xline->xfrq - frq);
   }
   return frq;
-}                               /* dnuget */
+} /* dnuget */
 
-int getdbk(link, iblk, indx, initl, ifac)
-int *link, *iblk, *indx, *initl, *ifac;
-{
+int getdbk(int *link, int *iblk, int *indx, int *initl, int *ifac) {
   SXLINE *xline;
   int iret, init, iup, ilow;
 
@@ -593,13 +581,11 @@ int *link, *iblk, *indx, *initl, *ifac;
   if (xline->xerr < 0.)
     *ifac += 2;
   return iret;
-}                               /* getdbk */
+} /* getdbk */
 
-int frqdat(line, ibln, txfrq, txwt, txerr, iqn)
-int line, *ibln;
-double *txfrq, *txwt, *txerr;
-short *iqn;
-{  /*  gets blend code, frequency, weight, error , and quantum numbers */
+int frqdat(int line, int *ibln, double *txfrq, double *txwt, double *txerr,
+           short *iqn) { /*  gets blend code, frequency, weight, error , and
+                            quantum numbers */
   static size_t ndqn = 2 * MAXQN * sizeof(short);
   SXLINE *xline;
   xline = lbufof(0, line);
@@ -609,11 +595,9 @@ short *iqn;
   *txwt = xline->xwt;
   memcpy(iqn, xline->qn, ndqn);
   return xline->ibu;
-}                               /* frqdat */
+} /* frqdat */
 
-int lnlink(prvblk, nblk, iblk, line)
-int *prvblk, nblk, iblk, line;
-{
+int lnlink(int *prvblk, int nblk, int iblk, int line) {
   int i, last;
   SXLINE *xline;
   /*   find place to insert link for line */
@@ -625,8 +609,8 @@ int *prvblk, nblk, iblk, line;
   if (iblk > nblk)
     iblk = nblk;
   last = 0;
-  for (i = iblk; i >= 0; --i) { 
-   /* search down for non zero element of PRVBLK */
+  for (i = iblk; i >= 0; --i) {
+    /* search down for non zero element of PRVBLK */
     last = prvblk[i];
     if (last != 0)
       break;
@@ -649,4 +633,4 @@ int *prvblk, nblk, iblk, line;
     }
   }
   return last;
-}                               /* lnlink */
+} /* lnlink */

@@ -1,7 +1,6 @@
-int jelim(t, vec, d, ndm, n)
-double *t, *vec, *d;
-int ndm, n;
-{				/*   do orthogonal transformations to rotate vector VEC into matrix T */
+int jelim(double *t, double *vec, double *d, int ndm,
+          int n) { /*   do orthogonal transformations to rotate vector VEC into
+                      matrix T */
   /*   NDM  = dimensioned column length of T */
   /*   IBGN = first element of VEC */
   /*   N    = length of VEC */
@@ -18,8 +17,8 @@ int ndm, n;
     ac = fabs(c);
     if (as > ac) {
       if (q < 1.) {
-	dscal(nn + 1, q, vec, 1);
-	q = 1.;
+        dscal(nn + 1, q, vec, 1);
+        q = 1.;
       }
       dswap(nn + 1, t, 1, vec, 1);
       as = ac;
@@ -46,4 +45,4 @@ int ndm, n;
   }
   *d = 1.;
   return 0;
-}				/* jelim */
+} /* jelim */

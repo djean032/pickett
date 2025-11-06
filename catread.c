@@ -1,8 +1,8 @@
+#include "catread.h"
+#include "catutil.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "catread.h"
-#include "catutil.h"
 
 #define NSPC 512
 static int cat_nmol = 0;
@@ -12,10 +12,7 @@ static struct {
   char cname[16];
 } catcom[NSPC + 1], *caterr, *catptr;
 
-int catfrq(molec, cfreq, buff)
-int molec;
-char *cfreq, *buff;
-{
+int catfrq(int molec, char *cfreq, char *buff) {
   /*****************************************************************
 
     CATFRQ CALLS
@@ -63,9 +60,7 @@ char *cfreq, *buff;
   return (line);
 }
 
-int catrd(molec, line, buff)
-int molec, line;
-char *buff;
+int catrd(int molec, int line, char *buff)
 /***********************************************************************
 
      CATRD CALLS
@@ -84,7 +79,7 @@ char *buff;
   static int omolec = -1;
   static FILE *handle;
   long offset;
-  if (molec != omolec) {        /* new molecule */
+  if (molec != omolec) { /* new molecule */
     if (omolec > 0)
       fclose(handle);
     omolec = molec;
@@ -97,7 +92,7 @@ char *buff;
   }
   if (line <= 0)
     return (-2);
-  offset = (line - 1) * (long) (buflen + 1);
+  offset = (line - 1) * (long)(buflen + 1);
   fseek(handle, offset, SEEK_SET);
   if (fread(buff, 1, buflen, handle) == buflen) {
     buff[buflen] = 0;
@@ -108,14 +103,13 @@ char *buff;
   }
 }
 
-char *catfil(num)
-int num;
+char *catfil(int num)
 /**********************************************************
      FUNCTION WHICH RETURNS FILE NAME CORRESPONDING TO NUM
 ***********************************************************/
 {
-  static char catdir[] = { "/catalog/catdir.cat" };
-  static char catent[] = { "/catalog/c000000.cat" };
+  static char catdir[] = {"/catalog/catdir.cat"};
+  static char catent[] = {"/catalog/c000000.cat"};
   char *cfield;
   int k, iq;
   if (num == 0)
@@ -125,13 +119,12 @@ int num;
     iq = num;
     num = num / 10;
     --cfield;
-    *cfield = (char) ('0' + (iq - num * 10));
+    *cfield = (char)('0' + (iq - num * 10));
   }
   return catent;
 }
 
-int catlen(molec)
-int molec;
+int catlen(int molec)
 /**************************************************
 C
 C   SUBROUTINE TO RETURN CATALOGUE ENTRY LENGTH
@@ -140,14 +133,14 @@ C   MOLEC IS SPECIES TAG
 C
 ****************************************************/
 {
-  static int fmt[9] = { 6, 7, 7, 7, 7, 7, 7, 7, 2 };
+  static int fmt[9] = {6, 7, 7, 7, 7, 7, 7, 7, 2};
   FILE *cdir;
   char *pbuf;
   double dval[9];
   char buf[82];
   float *qptr;
   int k;
-  if (cat_nmol == 0) {          /* initialize */
+  if (cat_nmol == 0) { /* initialize */
     cdir = fopen(catfil(0), "r");
     if (cdir == NULL)
       return (0);
@@ -156,18 +149,18 @@ C
       if (fgets(buf, 82, cdir) == NULL)
         break;
       pcard(buf, dval, 1, fmt);
-      catptr->moltag = (int) dval[0];
+      catptr->moltag = (int)dval[0];
       pbuf = catptr->cname;
       memcpy(pbuf, buf + 6, 14);
       pbuf[14] = 0;
       pcard(buf + 20, dval, 9, fmt);
-      catptr->nlen = (int) dval[0];
+      catptr->nlen = (int)dval[0];
       if (catptr->moltag == 0 || catptr->nlen == 0)
         continue;
       qptr = catptr->qln;
       for (k = 0; k < 7; k++)
-        qptr[k] = (float) dval[k + 1];
-      catptr->ver = (int) dval[8];
+        qptr[k] = (float)dval[k + 1];
+      catptr->ver = (int)dval[8];
       ++catptr;
       ++cat_nmol;
     }
@@ -194,9 +187,7 @@ C
   return 0;
 }
 
-char *catdir(molec, nline, qqln, iver)
-int molec, *nline, *iver;
-double *qqln;
+char *catdir(int molec, int *nline, double *qqln, int *iver)
 /*********************************************************
 C   SUBROUTINE TO RETURN CATALOGUE DIRECTORY INFORMATION
 C
@@ -218,8 +209,7 @@ C   IVER IS THE VERSION NUMBER
   return catptr->cname;
 }
 
-int nxtdir(molec)
-int *molec;
+int nxtdir(int *molec)
 /**********************************************************************
 C
 C     FUNCTION NXTDIR RETURNS THE NUMBER OF REMAINING DIRECTORY ENTRIES
@@ -240,21 +230,18 @@ C     IF INPUT SPECIES MOLEC = LAST ENTRY THEN MOLEC=0 ON RETURN
   return catptr->nlen;
 }
 
-int getcat(buf, pdata)
-char *buf;
-struct catdata *pdata;
-{
+int getcat(char *buf, struct catdata *pdata) {
   static double dval[8];
-  static int fmt[8] = { 13, 8, 8, 2, 10, 3, 7, 4 };
+  static int fmt[8] = {13, 8, 8, 2, 10, 3, 7, 4};
   if (pcard(buf, dval, 8, fmt) < 8)
     return -1;
   pdata->freq = dval[0];
   pdata->derr = dval[1];
   pdata->str = dval[2];
-  pdata->itd = (int) dval[3];
+  pdata->itd = (int)dval[3];
   pdata->elow = dval[4];
-  pdata->igup = (int) dval[5];
-  pdata->tag = (int) dval[6];
-  pdata->ifmt = (int) dval[7];
+  pdata->igup = (int)dval[5];
+  pdata->tag = (int)dval[6];
+  pdata->ifmt = (int)dval[7];
   return (readqn(buf + 55, pdata->iqn, 12));
 }

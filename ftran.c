@@ -12,18 +12,18 @@ int nxpec, flg;
   double *pfc, *pfs;
   double cval, sval, hval, tmpm, tmp;
   int j, k, jj, jk, nx;
-  if (nft != nftx) {            /* initialize cosines */
+  if (nft != nftx) { /* initialize cosines */
     if (nft)
       free(c);
     nft = nftx;
-    c = (double *) malloc(2 * nft * sizeof(double));
+    c = (double *)malloc(2 * nft * sizeof(double));
     s = c + nft;
     nhalf = (nft + 1) >> 1;
     nfc = nft >> 1;
     c[0] = 1.;
     c[nhalf] = -1.;
     s[nhalf] = s[0] = 0.;
-    cnorm = 1. / (double) nft;
+    cnorm = 1. / (double)nft;
     cnorm2 = 2 * cnorm;
     tmpm = cnorm2 * acos(-1.);
     for (k = 1; k < nhalf; ++k) {
@@ -36,7 +36,7 @@ int nxpec, flg;
   }
   pfc = fc;
   switch (flg) {
-  case 0:                       /* analyze */
+  case 0: /* analyze */
     nx = nxpec;
     cval = xpec[0];
     sval = 0;
@@ -77,7 +77,7 @@ int nxpec, flg;
       *pfc = sval * cnorm2;
     }
     return 0;
-  case -1:                      /* synthesize from fc */
+  case -1: /* synthesize from fc */
     cval = (*pfc);
     ++pfc;
     for (k = 1; k <= nfc; ++k) {
@@ -85,7 +85,7 @@ int nxpec, flg;
       pfc += 2;
     }
     break;
-  case 1:                       /* find derivitive from fc */
+  case 1: /* find derivitive from fc */
     *pfc = cval = 0.;
     for (k = 1; k <= nfc; ++k) {
       ++pfc;
@@ -97,7 +97,7 @@ int nxpec, flg;
       cval += tmp;
     }
     break;
-  case 2:                       /* find integral from fc */
+  case 2: /* find integral from fc */
     *pfc = cval = 0.;
     for (k = 1; k <= nfc; ++k) {
       ++pfc;
@@ -134,4 +134,4 @@ int nxpec, flg;
     xpec[nx - jj] = cval - sval;
   }
   return 0;
-}                               /* ftran */
+} /* ftran */

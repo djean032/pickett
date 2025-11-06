@@ -1,9 +1,9 @@
 /* slibg77.f -- translated by f2c (version 19970219).*/
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <signal.h>
 #include "calpgm.h"
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /*   Copyright (C) 1989, California Institute of Technology */
 /*   All rights reserved.  U. S. Government Sponsorship under */
@@ -13,10 +13,7 @@
 
 static integer brkflg;
 
-int chtime(str, n)
-char *str;
-int n;
-{
+int chtime(char *str, int n) {
 /*     subroutine to return 24 characters with the time and date */
 #include <time.h>
   char *buffer;
@@ -36,24 +33,21 @@ int n;
   strncpy(str, buffer, 24);
   str[24] = 0;
   return 0;
-}                               /* chtime */
+} /* chtime */
 
-int filget(argc, argv, nfile, cfil, cext)
-int argc, nfile;
-char *argv[], *cfil[], *cext[];
-{
+int filget(int argc, char *argv[], int nfile, char *cfil[], char *cext[]) {
   /* Local variables */
   char str[82], master[82], *pstr, *ext, *pext;
   int k, iext, len, iarg, query;
   int fgetstr();
-/*     Get NFILE names with extent given in CEXT */
-/*     Put names in CFIL */
+  /*     Get NFILE names with extent given in CEXT */
+  /*     Put names in CFIL */
 
-/*     gets file names from command line or interactively */
-/*     ARGC+1 is the number of command line arguments */
-/*     ARGV(I) is the I-th command line argument */
+  /*     gets file names from command line or interactively */
+  /*     ARGC+1 is the number of command line arguments */
+  /*     ARGV(I) is the I-th command line argument */
 
-/*     define character which delimits EXT field */
+  /*     define character which delimits EXT field */
 
   for (iext = 0; iext < nfile; iext++)
     cfil[iext] = NULL;
@@ -71,7 +65,7 @@ char *argv[], *cfil[], *cext[];
       pstr = argv[iarg];
     }
     ext = strrchr(pstr, '.');
-    if (ext) {                  /* dot found */
+    if (ext) { /* dot found */
       len = ext - pstr;
       strlwr(++ext);
       for (iext = 0; iext < nfile; iext++) {
@@ -91,7 +85,7 @@ char *argv[], *cfil[], *cext[];
         }
       }
     }
-    if (iarg == 1) {            /* set up default file name */
+    if (iarg == 1) { /* set up default file name */
       if (len == 0)
         len = strlen(pstr);
       if (len > 80)
@@ -100,7 +94,7 @@ char *argv[], *cfil[], *cext[];
       master[len++] = '.';
     }
   }
-/* find default values */
+  /* find default values */
   for (iext = 0; iext < nfile; iext++) {
     if (cfil[iext] == NULL) {
       if (len == 1)
@@ -116,11 +110,9 @@ char *argv[], *cfil[], *cext[];
     puts(cfil[iext]);
   }
   return nfile;
-}                               /* filget */
+} /* filget */
 
-FILE *fopenq(fname, opt)
-char *fname, *opt;
-{
+FILE *fopenq(char *fname, char *opt) {
   FILE *hret;
   char *fnew, *path, *getenv();
   if (opt[0] = 'l') {
@@ -143,19 +135,14 @@ char *fname, *opt;
     }
   }
   return hret;
-}                               /* fopenq */
+} /* fopenq */
 
-int rqexit(ival)
-int ival;
-{
+int rqexit(int ival) {
   if (ival) {
     signal(SIGINT, brkqr);
     brkflg = 0;
   }
   return brkflg;
-}                               /* rqexit_ */
+} /* rqexit_ */
 
-/* Subroutine */ void brkqr(int i)
-{
-  brkflg = -1;
-}                               /* brkqr */
+/* Subroutine */ void brkqr(int i) { brkflg = -1; } /* brkqr */

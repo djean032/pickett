@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-main()
-{
+main() {
 #define NLIM 1000
-#define BIG  99999999.9999
+#define BIG 99999999.9999
 #define CLIGHT 29979.2458
   int cl, i, moltag, nline, iver, cnvt, ll, nmol, first, all;
   char *molname, *entval, *entnam, *catdir(), *fmakeword(), *makeword();
@@ -91,8 +90,8 @@ main()
                 puts(line);
                 if (nline >= NLIM) {
                   printf("%s %d lines.%s\n",
-                         "THIS form is currently limited to",
-                         nline, " Please limit your search.");
+                         "THIS form is currently limited to", nline,
+                         " Please limit your search.");
                   exit(1);
                 }
               }
@@ -114,14 +113,11 @@ main()
   }
 }
 
-double stof(str, len)
-char *str;
-int len;
-{
+double stof(char *str, int len) {
   int neg, dp, last, i;
   char c;
   double f;
-  static double dpwr[6] = { 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001 };
+  static double dpwr[6] = {0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001};
   neg = 0;
   dp = len;
   last = -1;

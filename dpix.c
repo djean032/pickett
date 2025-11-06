@@ -4,25 +4,21 @@
 
 /*   Herbert M. Pickett, 20 March 1989 */
 /*   Revised version in c, 22 March 1999 */
-/*   18 Aug.  2003: code cleanup, @comment@ is for splint */ 
+/*   18 Aug.  2003: code cleanup, @comment@ is for splint */
 
 /*   PACKAGE FOR DOUBLET PI  */
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
 #include "calpgm.h"
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
 /* Common Declarations */
 
 static double zero = 0.;
 static int nvib, iwhole, isdgn, nqn;
 
-int hamx(iblk, nsize, npar, idpar, par, egy, t, dedp, pmix, ifdump)
-const int iblk, nsize, npar;
-const BOOL ifdump;
-const bcd_t *idpar;
-const double *par;
-double *egy, *t, *dedp, *pmix;
-{
+int hamx(const int iblk, const int nsize, const int npar, const bcd_t *idpar,
+         const double *par, double *egy, double *t, double *dedp, double *pmix,
+         const BOOL ifdump) {
 #define NDPAR 27
 #define NZPAR 11
   /*@owned@*/ static double *wp[NDPAR + 1];
@@ -31,11 +27,9 @@ double *egy, *t, *dedp, *pmix;
   /*@owned@*/ static short *isblk;
   static double wz[NZPAR];
   static int ioff, nfit, init;
-  static int rqpair[] =
-  { 15, 11, 16, 12, 17, 13, 18, 14, 19, 14, 23, 20, 23, 21, 23, 22,
-    24, 20, 24, 21, 24, 22, 25, 20, 25, 21, 25, 22, 26, 20, 26, 21, 26, 22,
-    0, 0
-  };
+  static int rqpair[] = {15, 11, 16, 12, 17, 13, 18, 14, 19, 14, 23, 20,
+                         23, 21, 23, 22, 24, 20, 24, 21, 24, 22, 25, 20,
+                         25, 21, 25, 22, 26, 20, 26, 21, 26, 22, 0,  0};
   double *w, *ww, *pt, *pd;
   double g, gg, q, qq, x, z, xjq, rx, ry, sqj, egy0;
   double aa, ab, bb, ai, rt, rt2, fg, dj1, dj2;
@@ -44,8 +38,8 @@ double *egy, *t, *dedp, *pmix;
   int ii, jj, kk, kq, aji, ajf, aii, iv, ibcd, ndbcd;
   bcd_t ibtmp;
   BOOL ofdiag;
-  
-  ndbcd = (int) idpar[0];
+
+  ndbcd = (int)idpar[0];
   if (iblk == 0) {
     wz[0] = 1.;
     for (i = 0; i <= NDPAR; ++i) {
@@ -68,16 +62,16 @@ double *egy, *t, *dedp, *pmix;
     init = 1;
     if (npar <= 0)
       return 0;
-    nl = (size_t) npar *sizeof(int);
-    ixpar = (int *) mallocq(nl);
-    nl = (size_t) nsize *sizeof(short);
-    jq = (short *) mallocq(nl);
+    nl = (size_t)npar * sizeof(int);
+    ixpar = (int *)mallocq(nl);
+    nl = (size_t)nsize * sizeof(short);
+    jq = (short *)mallocq(nl);
     nl += sizeof(short);
-    isblk = (short *) mallocq(nl);
-    nl = (size_t) nsize;
+    isblk = (short *)mallocq(nl);
+    nl = (size_t)nsize;
     nl *= nl * sizeof(double);
     ioff = 0;
-    nfit = npar; 
+    nfit = npar;
     for (j = 0, ibcd = 0; j < npar; ++j, ibcd += ndbcd) {
       if (NEGBCD(idpar[ibcd]) != 0) {
         --nfit;
@@ -95,18 +89,18 @@ double *egy, *t, *dedp, *pmix;
         continue;
       }
       ixpar[j] = (kpar << 7) + iv;
-      if (kpar != 0 && wp[kpar] == NULL) 
-        wp[kpar] = (double *) mallocq(nl);
+      if (kpar != 0 && wp[kpar] == NULL)
+        wp[kpar] = (double *)mallocq(nl);
       if (iv == 99)
         iv = 0;
       if (kpar == 1 && iv == 0 && par[j] < 0.)
         ioff = -1;
     }
-    for (i = 0; rqpair[i] != 0; ++i) {  /* add other required w values */
+    for (i = 0; rqpair[i] != 0; ++i) { /* add other required w values */
       ii = rqpair[i];
       jj = rqpair[++i];
-      if (wp[ii] != NULL && wp[jj] == NULL) 
-        wp[jj] = (double *) mallocq(nl);
+      if (wp[ii] != NULL && wp[jj] == NULL)
+        wp[jj] = (double *)mallocq(nl);
     }
     return nsize;
   }
@@ -121,85 +115,86 @@ double *egy, *t, *dedp, *pmix;
   jj = js;
   if (pty < 0)
     ++jj;
-  for (i = 0; i < nsize; i += 2) {      /*  SET UP J QUANTUM NUMBER */
-    jq[i] = (short) js;
+  for (i = 0; i < nsize; i += 2) { /*  SET UP J QUANTUM NUMBER */
+    jq[i] = (short)js;
     jq[i + 1] = jq[i];
     if ((jj & 1) != 0)
-      jq[i] = (short) (-js);
+      jq[i] = (short)(-js);
     ++js;
     ++jj;
   }
   nsq = nsize * nsize;
-  for (i = 0; i <= NDPAR; ++i) {        /* ZERO DERIVATIVE W */
+  for (i = 0; i <= NDPAR; ++i) { /* ZERO DERIVATIVE W */
     if ((w = wp[i]) != NULL)
       dcopy(nsq, &zero, 0, w, 1);
   }
-  for (i = 0; i < nsize; i += 2) {      /* SET UP FINE STRUCTURE TERMS */
+  for (i = 0; i < nsize; i += 2) { /* SET UP FINE STRUCTURE TERMS */
     ii = i + 1;
-    xjq = (double) (jq[i] + 1);
-    rx = (double) (jq[i] * jq[i]);
+    xjq = (double)(jq[i] + 1);
+    rx = (double)(jq[i] * jq[i]);
     ry = rx - 2.;
     sqj = rx - 0.25;
     x = rx - 1.;
     z = sqrt(x);
     for (kk = 0; kk <= 11; ++kk) {
-      if (kk == 11) kk = 27;
+      if (kk == 11)
+        kk = 27;
       w = wp[kk];
       if (w == NULL)
         continue;
       ofdiag = FALSE;
       aa = bb = ab = 0.;
       switch (kk) {
-      case 0:                   /* Energy */
+      case 0: /* Energy */
         break;
-      case 1:                   /* A */
-        aa = (double) ioff;
+      case 1: /* A */
+        aa = (double)ioff;
         bb = aa + 1;
         break;
-      case 2:                   /* AJ */
+      case 2: /* AJ */
         aa = -rx;
         bb = ry;
         break;
-      case 3:                   /* AH */
+      case 3: /* AH */
         aa = rx * rx + x;
         bb = -ry * ry - x;
         break;
-      case 4:                   /* B+0.5*Q */
+      case 4: /* B+0.5*Q */
         aa = rx;
         bb = ry;
       case 27:
         ab = z;
         ofdiag = TRUE;
         break;
-      case 5:                   /* D */
+      case 5: /* D */
         aa = -rx * rx - x;
         bb = -ry * ry - x;
         ab = -2 * z * x;
         ofdiag = TRUE;
         break;
-      case 6:                   /* H */
+      case 6: /* H */
         aa = (rx * rx + x) * rx + 2. * x * x;
         bb = (ry * ry + x) * ry + 2. * x * x;
         ab = ((3. * x + 1.) * x - 1.) * z;
         ofdiag = TRUE;
         break;
-      case 7:                   /* P */
+      case 7: /* P */
         aa = 0.5 * xjq;
         ab = 0.25 * z;
         ofdiag = TRUE;
         break;
-      case 8:                   /* Q */
+      case 8: /* Q */
         aa = jq[i] + 0.5;
         bb = 0.5;
         ab = 0.5 * z * jq[i];
         ofdiag = TRUE;
         break;
-      case 9:                   /* PD */
+      case 9: /* PD */
         aa = 0.5 * xjq * sqj;
         ab = 0.5 * z * sqj;
         ofdiag = TRUE;
         break;
-      case 10:                  /* QD */
+      case 10: /* QD */
         aa = 0.5 * xjq * xjq * sqj;
         bb = 0.5 * x * sqj;
         ab = 0.5 * z * xjq * sqj;
@@ -208,8 +203,10 @@ double *egy, *t, *dedp, *pmix;
       if (ofdiag)
         w[ii + i * nsize] = ab;
       if (kk < NZPAR) {
-        if (i == 0) wz[kk] = 0.5 * (aa + bb);
-        aa -= wz[kk]; bb -= wz[kk];
+        if (i == 0)
+          wz[kk] = 0.5 * (aa + bb);
+        aa -= wz[kk];
+        bb -= wz[kk];
       }
       w[i + i * nsize] = aa;
       w[ii + ii * nsize] = bb;
@@ -222,11 +219,11 @@ double *egy, *t, *dedp, *pmix;
   for (i = 0; i < nsize; i += 2) {
     ii = i + 1;
     aji = (jq[ii] << 1) - 1;
-    dj1 = (double) (aji + 1);
+    dj1 = (double)(aji + 1);
     for (j = i; j < nsize; j += 2) {
       jj = j + 1;
       ajf = (jq[jj] << 1) - 1;
-      dj2 = (double) (ajf + 1);
+      dj2 = (double)(ajf + 1);
       if ((ajf - aji) > 2)
         break;
       g = sqrt(dj1 * dj2 * fg) * c6jj(aji, 2, ajf, aii, f, aii);
@@ -263,7 +260,7 @@ double *egy, *t, *dedp, *pmix;
   }
   for (i = 0; i < nsize; i += 2) {
     ii = i + 1;
-    z = (double) (jq[i] * jq[i] - 1);
+    z = (double)(jq[i] * jq[i] - 1);
     for (kq = 15; kq <= 19; ++kq) {
       w = wp[kq];
       if (w == NULL)
@@ -272,7 +269,7 @@ double *egy, *t, *dedp, *pmix;
         aa = z;
         kk = kq - 4;
       } else {
-        aa = (double) (-jq[i]);
+        aa = (double)(-jq[i]);
         kk = 14;
       }
       ww = wp[kk];
@@ -300,11 +297,11 @@ double *egy, *t, *dedp, *pmix;
     for (i = 0; i < nsize; i += 2) {
       ii = i + 1;
       aji = (jq[ii] << 1) - 1;
-      dj1 = (double) (aji + 1);
+      dj1 = (double)(aji + 1);
       for (j = i; j < nsize; j += 2) {
         jj = j + 1;
         ajf = (jq[jj] << 1) - 1;
-        dj2 = (double) (ajf + 1);
+        dj2 = (double)(ajf + 1);
         if ((ajf - aji) > 4)
           break;
         q = sqrt(dj1 * dj2 * fg) * c6jj(aji, 4, ajf, aii, f, aii);
@@ -338,7 +335,7 @@ double *egy, *t, *dedp, *pmix;
     }
     for (i = 0; i < nsize; i += 2) {
       ii = i + 1;
-      z = (double) (jq[i] * jq[i] - 1);
+      z = (double)(jq[i] * jq[i] - 1);
       sqj = z + 0.75;
       for (kq = 23; kq <= 26; ++kq) {
         w = wp[kq];
@@ -354,11 +351,11 @@ double *egy, *t, *dedp, *pmix;
           ofdiag = TRUE;
           break;
         case 24:
-          aa = (double) jq[i];
+          aa = (double)jq[i];
           bb = aa * z / (z - 6.);
           break;
         case 25:
-          ab = -1 / (double) jq[i];
+          ab = -1 / (double)jq[i];
           ofdiag = TRUE;
           break;
         case 26:
@@ -394,7 +391,7 @@ double *egy, *t, *dedp, *pmix;
       daxpy(nsq, aa, w, 1, t, 1);
     }
   }
-  if (ifdump) {                 /* special to dump Hamiltonian */
+  if (ifdump) { /* special to dump Hamiltonian */
     for (i = 0; i < nsize; ++i) {
       t[i + i * nsize] += egy0;
       egy[i] = t[i + i * nsize];
@@ -407,9 +404,9 @@ double *egy, *t, *dedp, *pmix;
   /* DIAGONALIZE AND ORDER EIGENVECTORS */
 
   for (i = 0; i < nsize; ++i) {
-    isblk[i] = (short) i;
+    isblk[i] = (short)i;
   }
-  isblk[nsize] = (short) nsize;
+  isblk[nsize] = (short)nsize;
   ierr = hdiag(nsize, nsize, t, egy, pmix);
   if (ierr != 0) {
     printf("diagonalization failure %d\n", ierr);
@@ -436,7 +433,7 @@ double *egy, *t, *dedp, *pmix;
     ii = kpar & 127;
     kpar = kpar >> 7;
     if (ii == iv || ii == 99) {
-      if (kpar < NZPAR) {          /* corrrect for constant part */
+      if (kpar < NZPAR) { /* corrrect for constant part */
         bb = wz[kpar];
         if (ipar != kk)
           bb *= ab;
@@ -451,7 +448,7 @@ double *egy, *t, *dedp, *pmix;
         bb = pt[0] * ddot(nsize, w, 1, pt, 1);
         for (j = 1; j < nsize; ++j) {
           aa = ddot(j, &w[j], nsize, pt, 1) +
-            ddot(nsize - j, &w[j + j * nsize], 1, &pt[j], 1);
+               ddot(nsize - j, &w[j + j * nsize], 1, &pt[j], 1);
           bb += aa * pt[j];
         }
         if (ipar != kk)
@@ -462,15 +459,10 @@ double *egy, *t, *dedp, *pmix;
     }
   }
   return 0;
-}                               /* hamx */
+} /* hamx */
 
-
-int intens(iblk, isiz, jblk, jsiz, ndip, idip, dip, s)
-const int iblk, isiz, jblk, jsiz, ndip;
-const bcd_t *idip;
-const double *dip;
-double *s;
-{
+int intens(const int iblk, const int isiz, const int jblk, const int jsiz,
+           const int ndip, const bcd_t *idip, const double *dip, double *s) {
   double fac, aji, ajj, omeg;
   int idgn, jdgn, i, j, k, fi, fj, ix, jx, idif, jji, jjj, ii;
   int iv, jv, kdip, ibcd;
@@ -489,11 +481,15 @@ double *s;
   if (idif > 1 || idif < -1)
     return 0;
   if (iv < jv) {
-    i = iv; iv = jv; jv = i;
+    i = iv;
+    iv = jv;
+    jv = i;
   }
-  ivb = i2bcd(iv); jvb = i2bcd(jv);
+  ivb = i2bcd(iv);
+  jvb = i2bcd(jv);
   for (kdip = 0, ibcd = 1; kdip < ndip; ++kdip, ibcd += NDECDIP) {
-    if (idip[ibcd] == ivb && idip[ibcd + 1] == jvb) break;
+    if (idip[ibcd] == ivb && idip[ibcd + 1] == jvb)
+      break;
   }
   if (kdip >= ndip)
     return 0;
@@ -501,7 +497,7 @@ double *s;
   fi = idgn - 1;
   jdgn = fj + fj + iwhole;
   fj = jdgn - 1;
-  fac = dip[kdip] * sqrt((double) (idgn * jdgn));
+  fac = dip[kdip] * sqrt((double)(idgn * jdgn));
   ix = idgn - isdgn;
   if (ix < 0)
     ix = -ix;
@@ -523,16 +519,16 @@ double *s;
       continue;
     if (j >= 0) {
       jjj = jji - 2;
-      s[i + j * isiz] = fac * sqrt((aji - omeg) * (aji + omeg) / aji)
-        * c6jj(jji, 2, jjj, fj, ii, fi);
+      s[i + j * isiz] = fac * sqrt((aji - omeg) * (aji + omeg) / aji) *
+                        c6jj(jji, 2, jjj, fj, ii, fi);
     }
     j += 2;
     if (j >= jsiz)
       continue;
     if (j >= 0 && jji > k) {
       s[i + j * isiz] = fac * omeg *
-        sqrt((aji + aji + 1.) / (aji * aji + aji)) *
-        c6jj(jji, 2, jji, fj, ii, fi);
+                        sqrt((aji + aji + 1.) / (aji * aji + aji)) *
+                        c6jj(jji, 2, jji, fj, ii, fi);
     }
     j += 2;
     if (j >= jsiz)
@@ -540,42 +536,35 @@ double *s;
     if (j >= 0) {
       jjj = jji + 2;
       ajj = aji + 1.;
-      s[i + j * isiz] = -fac * sqrt((ajj - omeg) * (ajj + omeg) / ajj)
-        * c6jj(jji, 2, jjj, fj, ii, fi);
+      s[i + j * isiz] = -fac * sqrt((ajj - omeg) * (ajj + omeg) / ajj) *
+                        c6jj(jji, 2, jjj, fj, ii, fi);
     }
   }
   return idgn;
-}                               /* intens */
+} /* intens */
 
-
-int setint(lu, ifdiag, nsav, ndip, idip)
-FILE *lu;
-BOOL *ifdiag;
-int *nsav;
-const int ndip;
-bcd_t *idip;
-{
-  bcd_t iv,jv;
+int setint(FILE *lu, BOOL *ifdiag, int *nsav, const int ndip, bcd_t *idip) {
+  bcd_t iv, jv;
   int kdip, ibcd;
   *ifdiag = TRUE;
   *nsav = 1;
   if (nvib == 1 && ndip > 0) {
-    idip[1] = (bcd_t) 0; idip[2] = (bcd_t) 0;
+    idip[1] = (bcd_t)0;
+    idip[2] = (bcd_t)0;
   }
   for (kdip = 0, ibcd = 1; kdip < ndip; ++kdip, ibcd += NDECDIP) {
-    iv = idip[ibcd]; jv = idip[ibcd + 1];
+    iv = idip[ibcd];
+    jv = idip[ibcd + 1];
     if (iv < jv) {
-      idip[ibcd] = jv; idip[ibcd + 1] = iv;
+      idip[ibcd] = jv;
+      idip[ibcd + 1] = iv;
     }
   }
   return 0;
-}                               /* setint */
+} /* setint */
 
-int getqn(iblk, indx, maxqn, iqn, idgn)
-const int iblk, indx, maxqn;
-short *iqn;
-int *idgn;
-{
+int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
+          int *idgn) {
   int kf, idif, tdgn, iv, ix;
 
   /* ..PACKAGE FOR DOUBLET PI */
@@ -593,26 +582,22 @@ int *idgn;
   idif = tdgn - isdgn;
   if (idif < 0)
     idif = -idif;
-  iqn[0] = (short) ((idif >> 1) + (ix >> 1));
-  iqn[1] = (short) ((ix & 1) + 1);
-  iqn[2] = (short) (((iblk & 1) != 0) ? -1 : 1);
-  iqn[3] = (short) kf;
+  iqn[0] = (short)((idif >> 1) + (ix >> 1));
+  iqn[1] = (short)((ix & 1) + 1);
+  iqn[2] = (short)(((iblk & 1) != 0) ? -1 : 1);
+  iqn[3] = (short)kf;
   if (nvib > 1) {
     iqn[4] = iqn[3];
-    iqn[3] = (short) iv;
+    iqn[3] = (short)iv;
   }
   if (iqn[0] < iqn[1])
     tdgn = 0;
   *idgn = tdgn;
   return 1;
-}                               /* getqn */
+} /* getqn */
 
-
-int setopt(luin, iqnfmt, itd, ndbcd, namfil)
-FILE *luin;
-int *iqnfmt, *itd, *ndbcd;
-char *namfil;
-{                               /* SET OPTIONS */
+int setopt(FILE *luin, int *iqnfmt, int *itd, int *ndbcd,
+           char *namfil) { /* SET OPTIONS */
   char card[82];
   double val[2];
 
@@ -621,10 +606,10 @@ char *namfil;
     return -1;
   val[1] = val[0] = 1.;
   pcard(card, val, 2, NULL);
-  isdgn = (int) val[0];
+  isdgn = (int)val[0];
   if (isdgn < 1)
     isdgn = 1;
-  nvib = (int) val[1];
+  nvib = (int)val[1];
   if (nvib < 1 || nvib > 99)
     nvib = 1;
   nqn = 4;
@@ -642,15 +627,10 @@ char *namfil;
     *iqnfmt += 1101;
   *ndbcd = 3;
   return 1;
-}                               /* setopt */
+} /* setopt */
 
-int setblk(lu, npar, idpar, par, nblkpf, negy)
-FILE *lu;
-const int npar;
-int *nblkpf, *negy;
-bcd_t *idpar;
-const double *par;
-{
+int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
+           int *nblkpf, int *negy) {
   int nsiz;
   double ai;
   if (npar > 0) {
@@ -670,4 +650,4 @@ const double *par;
   if (nvib > 1)
     nsiz = 100;
   return nsiz;
-}                               /* setblk */
+} /* setblk */

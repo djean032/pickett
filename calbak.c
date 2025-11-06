@@ -1,14 +1,13 @@
 /* calbak.f -- translated by f2c */
+#include "calpgm.h"
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include "calpgm.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 #define NDLINE 130
   static double dval[8];
-  static int fmt[8] = { 13, 8, 8, 2, 10, 3, 7, 4 };
+  static int fmt[8] = {13, 8, 8, 2, 10, 3, 7, 4};
   static char line[NDLINE];
   FILE *finp, *fout;
   double errx, fq, str;
@@ -17,7 +16,7 @@ int main(int argc, char *argv[])
 
   /* PROGRAM TO TAKE CATALOG FORMAT AND CREATE FILE OF EXP. LINES FOR CALFIT */
   if (argc > 1) {
-    finp = fopen(argv[1],"r");
+    finp = fopen(argv[1], "r");
   } else {
     puts("ENTER MERGED CATALOG NAME");
     fgetstr(line, NDLINE, stdin);
@@ -26,7 +25,7 @@ int main(int argc, char *argv[])
   if (finp == NULL)
     exit(1);
   if (argc > 2) {
-    fout = fopen(argv[2],"w");
+    fout = fopen(argv[2], "w");
   } else {
     puts("ENTER OUTPUT LIN FILE NAME");
     fgetstr(line, NDLINE, stdin);
@@ -35,26 +34,30 @@ int main(int argc, char *argv[])
   if (fout == NULL)
     exit(1);
   puts("reading catalog file");
-  nqn = nqnx = 0; pqnhi = 55; pqnlo = pqnhi + 12;
+  nqn = nqnx = 0;
+  pqnhi = 55;
+  pqnlo = pqnhi + 12;
   while (fgetstr(line, NDLINE, finp) > 55) {
     pcard(line, dval, 8, fmt);
     fq = dval[0];
     errx = dval[1];
     str = dval[2];
-    id = (int) dval[6];
-    iqfmt = (int) dval[7];
+    id = (int)dval[6];
+    iqfmt = (int)dval[7];
     if (id >= 0)
       continue;
     if (nqn == 0) {
       nqn = iqfmt % 10;
-      if (nqn == 0) nqn = 10;
+      if (nqn == 0)
+        nqn = 10;
       nqnx = nqn << 1;
-      if (nqnx > 12) pqnlo = pqnhi + nqnx;
+      if (nqnx > 12)
+        pqnlo = pqnhi + nqnx;
     }
     readqn(line + pqnhi, iqn, nqn);
     readqn(line + pqnlo, &iqn[nqn], nqn);
     for (i = 0; i < nqnx; ++i)
-      fprintf(fout, "%3d", (int) iqn[i]);
+      fprintf(fout, "%3d", (int)iqn[i]);
     for (i = nqnx; i < 12; ++i)
       fputs("   ", fout);
     str = pow(10., str);
@@ -65,4 +68,4 @@ int main(int argc, char *argv[])
     }
   }
   return 0;
-}                               /* main */
+} /* main */

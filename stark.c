@@ -24,13 +24,13 @@
 /*   STATE =  1 (EOF detected, process last line)                      */
 /*   STATE =  2 (compete printout and exit)                            */
 /***********************************************************************/
+#include "calpgm.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include "calpgm.h"
 #define NINDX 16
-#define NDSQ  ((NINDX * NINDX + NINDX) >> 1)
+#define NDSQ ((NINDX * NINDX + NINDX) >> 1)
 typedef struct ab_str {
   double a[NDSQ], b[NDSQ], c[NDSQ];
   /*@owned@ */ /*@null@*/ struct ab_str *next;
@@ -42,21 +42,18 @@ static PAB_STR head[3];
 static double zero = 0;
 
 static /*@dependent@*/ AB_STR *lposn(char *iqnu, int idx, int nn);
-static int starks(double *a, /*@out@*/ double *b,/*@out@*/ double *c,
-                  int iqfx, int iqdel, int ifhalf);
+static int starks(double *a, /*@out@*/ double *b, /*@out@*/ double *c, int iqfx,
+                  int iqdel, int ifhalf);
 static int ival(char *str);
 
-int main(argc, argv)
-int argc;
-char *argv[];
-{
+int main(int argc, char *argv[]) {
 #define NFILE 2
-  static const char *ext[NFILE] = { "str", "stk" };
-  enum efile {estr, estk};
+  static const char *ext[NFILE] = {"str", "stk"};
+  enum efile { estr, estk };
   FILE *lustk, *lustr;
   AB_STR *now;
   double *paupp, *pbupp, *pcupp, *palow, *pblow, *pclow;
-  char *fname[NFILE+1];
+  char *fname[NFILE + 1];
   double strv[NINDX], str, frqc, strtot, big, cnv, eps, ta, tb, tc, frqx, strx;
   size_t nl;
   int iflg, iqfl, indx, iqfu, iqfx, i, j, k, n, iqfmx, kk;
@@ -106,14 +103,14 @@ char *argv[];
   nqn = nqn + nqn - 2;
   ifhalf &= 1;
   iqfmx = 1;
-  do {                          /*  begin master loop */
+  do { /*  begin master loop */
     memcpy(iqnu, iqnux, 12);
     memcpy(iqnl, iqnlx, 12);
     frqc = frqx;
     str = strx;
     if (istate == 0) {
       if (fgetstr(card, 82, lustr) <= 60) {
-        istate = 1;             /* end file */
+        istate = 1; /* end file */
       } else {
         /* parse "(2E15.5,6X,A,A,I5)" */
         memcpy(iqnux, card + 36, 12);
@@ -139,7 +136,7 @@ char *argv[];
           k = nnindx;
           nnindx = koff[indx];
           n = nnindx - k;
-          for (j = 0; j <= 1; ++j) {    /*  zero out extra A and B values */
+          for (j = 0; j <= 1; ++j) { /*  zero out extra A and B values */
             now = head[j];
             while (now != NULL) {
               dcopy(n, &zero, 0, now->a + k, 1);
@@ -168,7 +165,7 @@ char *argv[];
         iqfx = iqfmx + 1;
       }
     }
-    while (iqfx > iqfmx) {      /*   purge data for old F */
+    while (iqfx > iqfmx) {              /*   purge data for old F */
       while ((now = head[0]) != NULL) { /*  more data for F */
         k = 0;
         palow = now->a;
@@ -181,8 +178,8 @@ char *argv[];
             tc = pclow[k];
             ++k;
             if (fabs(ta) + fabs(tb) > eps) {
-              fprintf(lustk, "%15.6E %15.6E %15.6E %s %5d %5d\n",
-                      ta, tb, tc, now->iqn, j, i);
+              fprintf(lustk, "%15.6E %15.6E %15.6E %s %5d %5d\n", ta, tb, tc,
+                      now->iqn, j, i);
             }
           }
         }
@@ -204,15 +201,15 @@ char *argv[];
       exit(0);
     /* do contributions for last transition */
     strtot = fabs(strtot) * cnv;
-    if (frqc < big * strtot) {  /* degenerate */
+    if (frqc < big * strtot) { /* degenerate */
       for (i = 0; i < nt; ++i) {
         ta = strv[i] * cnv;
         ta *= ta;
         if (ta > eps) {
           starks(&ta, &tb, &tc, iqfx, iqfu - iqfl, ifhalf);
           str = sqrt((ta > tb) ? ta : tb);
-          fprintf(lustk, "%15.4f %15.6E %s %s %5d\n", frqc, str, iqnu,
-                  iqnl, i + 1);
+          fprintf(lustk, "%15.4f %15.6E %s %s %5d\n", frqc, str, iqnu, iqnl,
+                  i + 1);
         }
       }
     } else { /* sum contributions to a and b and c*/
@@ -263,12 +260,9 @@ char *argv[];
   head[1] = NULL;
   head[2] = NULL;
   return 0;
-}                               /* main */
+} /* main */
 
-AB_STR *lposn(iqnu, idx, nn)
-char *iqnu;
-int idx, nn;
-{
+static AB_STR *lposn(char *iqnu, int idx, int nn) {
   AB_STR *now, *last;
   int i;
 
@@ -285,7 +279,7 @@ int idx, nn;
   }
   /*  take from top of free and put at top of new */
   if (head[2] == NULL) {
-    now = (AB_STR *) mallocq(sizeof(AB_STR));
+    now = (AB_STR *)mallocq(sizeof(AB_STR));
   } else {
     now = head[2];
     head[2] = now->next;
@@ -301,18 +295,16 @@ int idx, nn;
   dcopy(nn, &zero, 0, now->c, 1);
   memcpy(now->iqn, iqnu, 13);
   return now;
-}                               /* lposn */
+} /* lposn */
 
-int starks(a, b, c, iqfx, iqdel, ifhalf)
-double *a, *b, *c;
-int iqfx, iqdel, ifhalf;
-{
+static int starks(double *a, double *b, double *c, int iqfx, int iqdel,
+                  int ifhalf) {
   int idgn;
   double f, fsq, aa, den;
 
   idgn = iqfx + iqfx - ifhalf; // idgn = 2F
-  f = 0.5 * idgn; // f = F
-  fsq = f * f;    // fsq = (F * F)
+  f = 0.5 * idgn;              // f = F
+  fsq = f * f;                 // fsq = (F * F)
   aa = (*a);
   if (iqdel == 0) {
     den = (f + fsq) * (idgn + 1);
@@ -328,21 +320,19 @@ int iqfx, iqdel, ifhalf;
     *a = fsq * aa;
   }
   return 0;
-}                               /* starks */
+} /* starks */
 
-int ival(str)
-char *str;
-{
+static int ival(char *str) {
   int iret, i;
 
-  i = (int) str[0] & 0xff;
-  iret = i - (int) '0';
+  i = (int)str[0] & 0xff;
+  iret = i - (int)'0';
   if (iret > 9)
-    iret = i - ((int) 'A' - 10);
+    iret = i - ((int)'A' - 10);
   if (iret < 0)
     iret = 0;
-  i = ((int) str[1] & 0xff) - (int) '0';
+  i = ((int)str[1] & 0xff) - (int)'0';
   if (i >= 0)
     iret = 10 * iret + i;
   return iret;
-}                               /* ival */
+} /* ival */

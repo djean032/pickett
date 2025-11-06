@@ -1,6 +1,5 @@
 #include <time.h>
-int strdate_(char *pbuffer, int plen)
-{
+int strdate_(char *pbuffer, int plen) {
   char *buffer;
   time_t curtime;
   struct tm *loctime;

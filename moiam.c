@@ -1,10 +1,10 @@
 /*  moiam .. program to compute internal rotation structural parameters */
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
 #include "calpgm.h"
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define NFT  21
+#define NFT 21
 #define CINC 12
 #define C0 '\0'
 static double zero = 0.;
@@ -12,24 +12,23 @@ static double rad, pi2;
 static char card[82];
 
 int ftran(int nft, double *xpec, int pec, double *fc, int flg);
-static int rdinp(FILE * luin, int ndatm, int *nnatm, int *nx, double *wtx,
-                 double *dist, double *theta, double *phi, char *istau, 
+static int rdinp(FILE *luin, int ndatm, int *nnatm, int *nx, double *wtx,
+                 double *dist, double *theta, double *phi, char *istau,
                  char **xyztag);
-static int coords( /*@null@*/ FILE * lu, int noatm, double *coord, double *wt,
+static int coords(/*@null@*/ FILE *lu, int noatm, double *coord, double *wt,
                   int *nx, double *dist, double *theta, double *phi);
 static int gcalc(int natm, double *wt, double *coord, double *dcoord,
                  /*@null@*/ double *gval, double *cval);
 static double determ(double *a, int ndd, int nr, int nc);
 static int iamsolv(double *cval, double *fc);
 static int pamsolv(int natm, double *x, double *gval, double *cval);
-static int micvt(double *tval, double *gval, double vmuz, double vmuy,
-                 int flg);
+static int micvt(double *tval, double *gval, double vmuz, double vmuy, int flg);
 static double xinterp(int n, double *tauval, double *xtrans);
 /*----------------------------------------------------------------------------
   input file: name.inp
     first line => nstruct, angram, mu_top, mu_z, mu_y
                nstruct= number of structures vs tau
-               nstruct= -2 means two structures, non-cyclic vibration 
+               nstruct= -2 means two structures, non-cyclic vibration
                angram = angle to rotate from IAS to RIAS (degrees)
                mu_top = dipole moment of top perpendicular to z
                mu_z   = dipole moment parallel to z
@@ -91,10 +90,7 @@ static double xinterp(int n, double *tauval, double *xtrans);
    NOTE: frame z is the axis of the first two atoms, and the yz plane
            is the plane of the first three atoms
 ----------------------------------------------------------------------------*/
-int main(argc, argv)
-int argc;
-char *argv[];
-{
+int main(int argc, char *argv[]) {
 #define NFILE 4
 #define NDATM 50
 #define ND3ATM (3 * NDATM)
@@ -102,34 +98,18 @@ char *argv[];
   static struct spar {
     int idv;
     char *labl;
-  } sparv[] = {
-    {
-    99, "Vp"}, {
-    99, "F"}, {
-    1099, "A-(B+C)/2"}, {
-    199, "(B+C)/2"}, {
-    40099, "(B-C)/4"}, {
-    210099, "D_bc"}, {
-    410099, "D_ac"}, {
-    610099, "D_ab"}, {
-    1, "mu_a(top)"}, {
-    2, "mu_b(top)"}, {
-    3, "mu_c(top)"}, {
-    1, "mu_a(z)"}, {
-    2, "mu_b(z)"}, {
-    3, "mu_c(z)"}, {
-    1, "mu_a(y)"}, {
-    2, "mu_b(y)"}, {
-    3, "mu_c(y)"}, {
-    200099, "P_a"}, {
-    400099, "P_b"}, {
-    600099, "P_c"}};
-  static const char *cext[NFILE] = { "inp", "iam", "moi", "xyz" };
-  enum efile {einp, eiam, emoi, exyz};
-  static char *cfil[NFILE+1];
+  } sparv[] = {{99, "Vp"},       {99, "F"},          {1099, "A-(B+C)/2"},
+               {199, "(B+C)/2"}, {40099, "(B-C)/4"}, {210099, "D_bc"},
+               {410099, "D_ac"}, {610099, "D_ab"},   {1, "mu_a(top)"},
+               {2, "mu_b(top)"}, {3, "mu_c(top)"},   {1, "mu_a(z)"},
+               {2, "mu_b(z)"},   {3, "mu_c(z)"},     {1, "mu_a(y)"},
+               {2, "mu_b(y)"},   {3, "mu_c(y)"},     {200099, "P_a"},
+               {400099, "P_b"},  {600099, "P_c"}};
+  static const char *cext[NFILE] = {"inp", "iam", "moi", "xyz"};
+  enum efile { einp, eiam, emoi, exyz };
+  static char *cfil[NFILE + 1];
   static char fmtv[3] = "V0";
-  static double gder[2 * NFT], cval[CINC * NFT], gval[NDCON * NFT],
-      tauval[NFT];
+  static double gder[2 * NFT], cval[CINC * NFT], gval[NDCON * NFT], tauval[NFT];
   static double xcoord[ND3ATM * NFT], dcoord[ND3ATM * NFT], fc[2 * NFT],
       dval[5];
   static double coord[ND3ATM], gtmp[NDCON], vpot[10];
@@ -152,7 +132,7 @@ char *argv[];
   luin = fopenq(cfil[einp], "r");
   luout = fopenq(cfil[eiam], "w");
   lulist = fopenq(cfil[emoi], "w");
-  luxyz  = fopenq(cfil[exyz], "w");
+  luxyz = fopenq(cfil[exyz], "w");
   //  for (i = 0; i < NDATM; ++i) xyztag[i] = xyztag0;
   /* read: nstruct, angram, mutop, muz, muy */
   dval[0] = 3;
@@ -161,10 +141,13 @@ char *argv[];
   if (fgetstr(card, 82, luin) <= 0)
     exit(EXIT_FAILURE);
   pcard(card, dval, 5, NULL);
-  nstruct = (int) dval[0];
-  cyclic = TRUE; nftc = NFT;
+  nstruct = (int)dval[0];
+  cyclic = TRUE;
+  nftc = NFT;
   if (nstruct == -2) {
-    cyclic = FALSE; nftc = 2; nstruct = 2;
+    cyclic = FALSE;
+    nftc = 2;
+    nstruct = 2;
     fputs("non-cyclic vibration\n", lulist);
   }
   angram = dval[1];
@@ -191,13 +174,14 @@ char *argv[];
   if (cyclic) {
     xlintau = xinterp(nstruct, tauval, dcoord);
   } else {
-    tauval[0] = 0.; tauval[1] = 180.; xlintau = 0.;
+    tauval[0] = 0.;
+    tauval[1] = 180.;
+    xlintau = 0.;
   }
   pdbl = dcoord;
   for (i = 0; i < nstruct; ++i) { /* read in parameters */
-    fprintf(lulist,"coordinates for tau = %8.1f\n", tauval[i]);
-    iatm = rdinp(luin, NDATM, &noatm, nx, wt, dist, theta, phi,
-                 istau, xyztag);
+    fprintf(lulist, "coordinates for tau = %8.1f\n", tauval[i]);
+    iatm = rdinp(luin, NDATM, &noatm, nx, wt, dist, theta, phi, istau, xyztag);
     if (iatm == 0) {
       printf("coordinate problem for tau = %8.1f\n", tauval[i]);
       exit(EXIT_FAILURE);
@@ -209,8 +193,10 @@ char *argv[];
     n3atm = 3 * nnatm;
     if (cyclic) {
       for (iatm = 3; iatm < n3atm; ++iatm) {
-        ii = iatm / 3; k = iatm % 3;
-        if (ii <= k) continue;
+        ii = iatm / 3;
+        k = iatm % 3;
+        if (ii <= k)
+          continue;
         if (k == 0) {
           tmp = dist[ii];
         } else if (k == 1) {
@@ -218,7 +204,8 @@ char *argv[];
         } else {
           tmp = phi[ii];
           if (istau[ii] != C0) {
-            if (i == 0) xcoord[iatm] = tmp;
+            if (i == 0)
+              xcoord[iatm] = tmp;
             tmp -= xcoord[iatm];
             tmp -= 360. * floor(tmp / 360. + 0.5);
             xcoord[iatm + ND3ATM] += xlintau * tmp * (tauval[i] - tauval[0]);
@@ -227,35 +214,36 @@ char *argv[];
         }
         daxpy(nstruct, tmp, pdbl, nstruct, &xcoord[iatm], ND3ATM);
       }
-     ++pdbl;
+      ++pdbl;
     } else if (i == 0) {
       dcopy(n3atm, coord, 1, xcoord, 1);
     } else {
-      for (iatm = 0; iatm < n3atm; ++iatm) 
+      for (iatm = 0; iatm < n3atm; ++iatm)
         dcoord[iatm] = xcoord[iatm] - coord[iatm];
-      dcopy(n3atm,  coord, 1, &xcoord[ND3ATM], 1);
+      dcopy(n3atm, coord, 1, &xcoord[ND3ATM], 1);
       dcopy(n3atm, dcoord, 1, &dcoord[ND3ATM], 1);
     }
   }
   nxyz = 0;
-  for (i = 0; i < nnatm; ++i) 
-    if (wt[i] >= 0.5) ++nxyz; 
+  for (i = 0; i < nnatm; ++i)
+    if (wt[i] >= 0.5)
+      ++nxyz;
   /* read: nsym, maxm, maxv, nft */
   nsym = 1;
   maxm = 30;
   maxv = 3;
   nft = NFT;
-  dval[0] = (double) nsym;
-  dval[1] = (double) maxm;
-  dval[2] = (double) maxv;
-  dval[3] = (double) nft;
+  dval[0] = (double)nsym;
+  dval[1] = (double)maxm;
+  dval[2] = (double)maxv;
+  dval[3] = (double)nft;
   do {
     more = (fgetstr(card, 82, luin) >= 0);
     if (more && pcard(card, dval, 4, NULL) > 0) {
-      nsym = (int) dval[0];
-      maxm = (int) dval[1];
-      maxv = (int) dval[2];
-      nft = (int) dval[3];
+      nsym = (int)dval[0];
+      maxm = (int)dval[1];
+      maxv = (int)dval[2];
+      nft = (int)dval[3];
       break;
     }
   } while (more);
@@ -265,12 +253,12 @@ char *argv[];
       break;
     if (pcard(card, dval, 2, NULL) < 2)
       break;
-    i = (int) dval[0];
+    i = (int)dval[0];
     if (i > 0 && i <= 9)
       vpot[i] += dval[1];
   }
   fclose(luin);
-  dtaud = 360. / (double) nftc;
+  dtaud = 360. / (double)nftc;
   dtau = dtaud * rad;
   if (cyclic) {
     dcopy(NFT, &zero, 0, fc, 1);
@@ -278,12 +266,15 @@ char *argv[];
     for (iatm = 0; iatm < n3atm; ++iatm) {
       ii = iatm / 3;
       if ((iatm % 3) == 2 && istau[ii] != C0) {
-        cmp = pdbl[ND3ATM]; tmp = pdbl[0] - cmp * tauval[0];
+        cmp = pdbl[ND3ATM];
+        tmp = pdbl[0] - cmp * tauval[0];
         cmp *= dtaud;
-        pdbl[0] = tmp; k = NFT >> 1;
+        pdbl[0] = tmp;
+        k = NFT >> 1;
         for (itau = 1; itau < NFT; ++itau) {
           ii = itau;
-          if (itau > k) ii -= NFT;
+          if (itau > k)
+            ii -= NFT;
           /* setup linear phi */
           pdbl[itau * ND3ATM] = tmp + cmp * ii;
         }
@@ -306,11 +297,11 @@ char *argv[];
     }
     pdbl = xcoord;
     for (iatm = 0; iatm < n3atm; ++iatm) {
-      ftran(NFT, pdbl, ND3ATM, fc, 0);            /* analyze xcoord */
-      ftran(NFT, &dcoord[iatm], ND3ATM, fc, 1);   /* synthesize derivative */
+      ftran(NFT, pdbl, ND3ATM, fc, 0);          /* analyze xcoord */
+      ftran(NFT, &dcoord[iatm], ND3ATM, fc, 1); /* synthesize derivative */
       ++pdbl;
     }
-  } 
+  }
   /*   get primitive constants vs tau */
   ia = ii = iatm = 0;
   for (itau = 0; itau < nftc; ++itau) {
@@ -327,7 +318,7 @@ char *argv[];
     ii += NDCON;
     iatm += ND3ATM;
   }
-  if (nsym == 0) {              /*   solve for PAS */
+  if (nsym == 0) { /*   solve for PAS */
     ia = ii = 0;
     for (itau = 0; itau < nftc; ++itau) {
       /* diagonalize inertial matrix */
@@ -337,18 +328,19 @@ char *argv[];
       ii += NDCON;
     }
     if (cyclic) {
-      for (iatm = 0; iatm < n3atm; ++iatm) {      /* get new derivatives */
+      for (iatm = 0; iatm < n3atm; ++iatm) { /* get new derivatives */
         ftran(NFT, &xcoord[iatm], ND3ATM, fc, 0);
         ftran(NFT, &dcoord[iatm], ND3ATM, fc, 1);
       }
     } else {
-      for (iatm = 0; iatm < n3atm; ++iatm) {      /* get new derivatives */
+      for (iatm = 0; iatm < n3atm; ++iatm) { /* get new derivatives */
         tmp = xcoord[iatm + ND3ATM] - xcoord[iatm];
-        dcoord[iatm] = tmp; dcoord[iatm + ND3ATM] = tmp;
+        dcoord[iatm] = tmp;
+        dcoord[iatm + ND3ATM] = tmp;
       }
     }
     ia = iatm = 0;
-    for (itau = 0; itau < nftc; ++itau) {        /* get new values of C */
+    for (itau = 0; itau < nftc; ++itau) { /* get new values of C */
       gcalc(nnatm, wt, &xcoord[iatm], &dcoord[iatm], NULL, &cval[ia]);
       ia += CINC;
       iatm += ND3ATM;
@@ -364,10 +356,13 @@ char *argv[];
     ftran(NFT, &gder[NFT], 1, fc, 1);
   } else {
     tmp = gval[NDCON] - gval[0];
-    gval[0] = tmp; gval[NDCON] = tmp;
-    gder[0] = tmp; gder[1] = tmp;
+    gval[0] = tmp;
+    gval[NDCON] = tmp;
+    gder[0] = tmp;
+    gder[1] = tmp;
     tmp = gval[NDCON + 1] - gval[1];
-    gder[NFT] = tmp; gder[NFT + 1] = tmp;
+    gder[NFT] = tmp;
+    gder[NFT + 1] = tmp;
   }
   fputs("    tau, pseudo potential,        G,", lulist);
   fputs("        Cz,       Cy,       Cx\n", lulist);
@@ -380,14 +375,14 @@ char *argv[];
     tmp = itau * dtaud;
     if (tmp > 180.)
       tmp -= 360.;
-    fprintf(lulist, "%7.1f %14.6E %13.2f %9.6f %9.6f %9.6f\n", tmp,
-            gval[ii], gval[ii + 1], cval[ia], cval[ia + 1], cval[ia + 2]);
+    fprintf(lulist, "%7.1f %14.6E %13.2f %9.6f %9.6f %9.6f\n", tmp, gval[ii],
+            gval[ii + 1], cval[ia], cval[ia + 1], cval[ia + 2]);
     gval[ii] *= -2.;
     ii += NDCON;
     ia += CINC;
   }
   angorg = 0.;
-  if (nsym != 0 && cyclic) {              /*   solve for IAS */
+  if (nsym != 0 && cyclic) { /*   solve for IAS */
     if (iamsolv(cval, fc) != 0) {
       strcpy(card, "iteration failed");
       fputs(card, lulist);
@@ -421,27 +416,30 @@ char *argv[];
   fprintf(lulist, "rho = %12.9f\n", rho);
   fputs("    tau,  coordinates of Z,", lulist);
   fputs("                   coordinates of Y\n", lulist);
-  ia = 3; iatm = 0;
+  ia = 3;
+  iatm = 0;
   for (itau = 0; itau < nftc; ++itau) {
     tmp = itau * dtaud;
     if (tmp > 180.)
       tmp -= 360.;
-    fprintf(luxyz,"%d\n tau = %7.1f\n", nxyz, tmp);
+    fprintf(luxyz, "%d\n tau = %7.1f\n", nxyz, tmp);
     for (i = 0; i < nnatm; ++i) {
-      if (wt[i] < 0.5) continue;
+      if (wt[i] < 0.5)
+        continue;
       pdbl = &xcoord[iatm + 3 * i];
       for (ii = 0; ii < 3; ++ii) {
         dval[ii] = ddot(3, pdbl, 1, &cval[ia + ii], 3);
       }
-      fprintf(luxyz,"%s %11.7f %11.7f %11.7f\n", xyztag[i],
-               dval[2], dval[1], dval[0]);
+      fprintf(luxyz, "%s %11.7f %11.7f %11.7f\n", xyztag[i], dval[2], dval[1],
+              dval[0]);
     }
     fprintf(lulist, "%7.1f ", tmp);
     for (i = 0; i < 6; ++i) {
       fprintf(lulist, "%11.7f ", cval[ia + i]);
     }
     fputc('\n', lulist);
-    ia += CINC; iatm += ND3ATM;
+    ia += CINC;
+    iatm += ND3ATM;
   }
   fclose(luxyz);
   fputs("    tau,  A-(B+C)/2,    (B+C)/2,    (B-C)/4,", lulist);
@@ -462,16 +460,14 @@ char *argv[];
     ia += CINC;
   }
   fclose(lulist);
-  fprintf(luout, "%15.10f %4d %4d %4d %4d\n", cval[0], nsym, maxm, maxv,
-          nft);
+  fprintf(luout, "%15.10f %4d %4d %4d %4d\n", cval[0], nsym, maxm, maxv, nft);
   /*  output results */
   tmp = ddot(10, vpot, 1, vpot, 1) + 1.e-6;
   cmp = (1.0e-7) * sqrt(tmp);
   for (ia = 0; ia < 10; ++ia) {
     if (fabs(vpot[ia]) > cmp) {
-      fmtv[1] = '0' + (char) ia;
-      fprintf(luout, "%8d %2d %2d %20.12E/ %s\n", 99, ia, 0, vpot[ia],
-              fmtv);
+      fmtv[1] = '0' + (char)ia;
+      fprintf(luout, "%8d %2d %2d %20.12E/ %s\n", 99, ia, 0, vpot[ia], fmtv);
     }
   }
   ia = NDCON;
@@ -502,52 +498,37 @@ char *argv[];
         mval = 0;
         if (i == 1)
           mval = 2;
-        if (i >= 17) 
+        if (i >= 17)
           mval = 1;
-        fprintf(luout, "%8d %2d %2d %20.12E/ %s\n", idpar, nval,
-                mval, fc[ii], sparv[i].labl);
+        fprintf(luout, "%8d %2d %2d %20.12E/ %s\n", idpar, nval, mval, fc[ii],
+                sparv[i].labl);
       }
     }
     tmp = 1.e-6;
   }
   return 0;
-}                               /* MAIN */
+} /* MAIN */
 
-int rdinp(luin, ndatm, natm, nx, wtx, dist, theta, phi, istau, xyztag)
-FILE *luin;
-int ndatm, *natm, *nx;
-double *wtx, *dist, *theta, *phi;
-char *istau;
-char **xyztag;
-{
+static int rdinp(FILE *luin, int ndatm, int *natm, int *nx, double *wtx,
+                 double *dist, double *theta, double *phi, char *istau,
+                 char **xyztag) {
 #define BLNK (' ')
 #define NCARD 9
   static struct swt {
     /*@null@*/ char *symb;
     double wt;
     char *xyztag;
-  } swtv[] = { 
-    {"C", 12.,"C "}, 
-    {"H", 1.00782,"H "}, 
-    {"O", 15.99491,"O "}, 
-    {"N", 14.00307,"N "},
-    {"F", 18.9984,"F "},
-    {"H2", 2.01409,"H "},
-    {"O18", 17.99915,"O "},
-    {"C13", 13.00335,"C "},
-    {"N15", 15.00011,"N "},
-    {"Cl", 34.96885,"Cl"},
-    {"Cl37", 36.96582,"Cl"},
-    {"Br79", 78.9183,"Br"},
-    {"Br81", 80.9163,"Br"},
-    {"S", 31.9722,"S "},
-    {"S34", 33.9688,"S "},
-    {"P", 30.9744,"P "},
-    {"I", 126.9004,"I "},
-    {"D", 2.0140,"H "},
-    {"X", -1.,"H "},
-    {" ", 0.,"H "},
-    {NULL, 0.," "}};
+  } swtv[] = {{"C", 12., "C "},         {"H", 1.00782, "H "},
+              {"O", 15.99491, "O "},    {"N", 14.00307, "N "},
+              {"F", 18.9984, "F "},     {"H2", 2.01409, "H "},
+              {"O18", 17.99915, "O "},  {"C13", 13.00335, "C "},
+              {"N15", 15.00011, "N "},  {"Cl", 34.96885, "Cl"},
+              {"Cl37", 36.96582, "Cl"}, {"Br79", 78.9183, "Br"},
+              {"Br81", 80.9163, "Br"},  {"S", 31.9722, "S "},
+              {"S34", 33.9688, "S "},   {"P", 30.9744, "P "},
+              {"I", 126.9004, "I "},    {"D", 2.0140, "H "},
+              {"X", -1., "H "},         {" ", 0., "H "},
+              {NULL, 0., " "}};
   struct swt *pswt;
   int *nxx;
   char *pstr;
@@ -563,9 +544,10 @@ char **xyztag;
       continue;
     }
     for (pswt = swtv; (pstr = pswt->symb) != NULL; ++pswt) {
-      for (k = 0; (ich = (int) pstr[k]) != 0 && ich == (int) card[k]; ++k);
+      for (k = 0; (ich = (int)pstr[k]) != 0 && ich == (int)card[k]; ++k)
+        ;
       if (ich == 0 && card[k] == BLNK)
-        break;                  /* match found */
+        break; /* match found */
     }
     if (pstr == NULL) {
       puts(card);
@@ -582,10 +564,11 @@ char **xyztag;
     if (pswt->wt < -0.5) {
       wtx[noatm] = dvec[ioff++];
     } else {
-      wtx[noatm] = pswt->wt; xyztag[noatm] = pswt->xyztag;
+      wtx[noatm] = pswt->wt;
+      xyztag[noatm] = pswt->xyztag;
     }
     for (k = 0; k < 4; ++k) {
-      nxx[k] = (int) dvec[ioff++];
+      nxx[k] = (int)dvec[ioff++];
       if (k > noatm)
         nxx[k] = 0;
       if (k != 0 && nxx[k] > noatm) {
@@ -597,7 +580,7 @@ char **xyztag;
     dist[noatm] = dvec[ioff++];
     theta[noatm] = dvec[ioff++];
     phi[noatm] = dvec[ioff++];
-    istau[noatm] = (char) dvec[ioff];
+    istau[noatm] = (char)dvec[ioff];
     ++noatm;
     if (nxx[0] == noatm)
       nnatm = noatm;
@@ -607,15 +590,10 @@ char **xyztag;
   }
   *natm = noatm;
   return nnatm;
-}                               /* rdinp */
+} /* rdinp */
 
-int coords(lu, noatm, coord, wt, nx, dist, theta, phi)
-FILE *lu;
-int noatm;
-double *coord, *wt;
-int *nx;
-double *dist, *theta, *phi;
-{
+static int coords(FILE *lu, int noatm, double *coord, double *wt, int *nx,
+                  double *dist, double *theta, double *phi) {
   double xcm[3], prcor[3], trans[9], xvectr[3], yvectr[3], cb, sb;
   double wtot, cth, rij, rik, ril, sth, tmp, sum, scale;
   int *nxx, i, j, iloop, ia, ib, ic, ii, iap, ibp, icp, ia3, ib3, ic3, ii3;
@@ -678,7 +656,7 @@ double *dist, *theta, *phi;
       }
       /*  THE COMPONENTS OF THE Y PRIME DIRECTION ARE OBTAINED */
       rik = ril - scale * scale;
-      if (rik < 1e-8) {         /* Y PRIME PARALLEL TO X PRIME */
+      if (rik < 1e-8) { /* Y PRIME PARALLEL TO X PRIME */
         for (i = 0; i < 3; ++i)
           yvectr[i] = 0.;
         i = 1;
@@ -733,7 +711,7 @@ double *dist, *theta, *phi;
         xcm[i] += wt[iloop] * coord[ii3];
         ++ii3;
       }
-    } else {                    /*  SPECIAL REVERSE CALCULATION OF DIST THETA AND PHI */
+    } else { /*  SPECIAL REVERSE CALCULATION OF DIST THETA AND PHI */
       rij = 0.;
       ic3 = 3 * (nxx[0] - 1);
       ii = 0;
@@ -784,7 +762,8 @@ double *dist, *theta, *phi;
       ++ii3;
     }
   }
-  if (lu == NULL) return 0;
+  if (lu == NULL)
+    return 0;
   fprintf(lu, "WT,N,NA,NB,NC,DIST,THETA,PHI,X,  MASS= %10.6f\n", wtot);
   ii3 = 0;
   nxx = nx;
@@ -794,8 +773,7 @@ double *dist, *theta, *phi;
       fprintf(lu, " %2d", *nxx);
       ++nxx;
     }
-    fprintf(lu, " %8.4f %8.3f %8.3f", dist[iloop], theta[iloop],
-            phi[iloop]);
+    fprintf(lu, " %8.4f %8.3f %8.3f", dist[iloop], theta[iloop], phi[iloop]);
     for (i = 0; i < 3; ++i) {
       fprintf(lu, " %9.5f", coord[ii3]);
       ++ii3;
@@ -803,12 +781,10 @@ double *dist, *theta, *phi;
     fputc('\n', lu);
   }
   return 0;
-}                               /* coords */
+} /* coords */
 
-int gcalc(natm, wt, coord, dcoord, gval, cval)
-int natm;
-double *wt, *coord, *dcoord, *gval, *cval;
-{
+static int gcalc(int natm, double *wt, double *coord, double *dcoord,
+                 double *gval, double *cval) {
   static double tiny = 1.0e-30;
   static double conv = 505379.07;
   double mi[12], x[3], y, tmp;
@@ -860,12 +836,10 @@ double *wt, *coord, *dcoord, *gval, *cval;
     gval[7] = conv * mi[1];
   }
   return 0;
-}                               /* gcalc */
+} /* gcalc */
 
-double determ(a, ndd, nr, nc)
-double *a;
-int ndd, nr, nc;
-{ /* calculate inverse & determinant */
+static double determ(double *a, int ndd, int nr,
+                     int nc) { /* calculate inverse & determinant */
   /* use dumb Gauss-Jordon method with pivot */
   static double eps = 1.e-30;
   //   static double aa[36];
@@ -881,7 +855,7 @@ int ndd, nr, nc;
       free(iperm);
       iperm = NULL;
     }
-    iperm = (int *) mallocq(n * sizeof(int));
+    iperm = (int *)mallocq(n * sizeof(int));
     nsav = n;
     iperm[0] = 0;
   }
@@ -889,7 +863,7 @@ int ndd, nr, nc;
   iic = 0;
   for (ic = 0; ic < n; ++ic) {
     i = ic + iic;
-    iswap = ic + (int) idamax(n - ic, &a[i], 1);
+    iswap = ic + (int)idamax(n - ic, &a[i], 1);
     iperm[ic] = iswap;
     if (iswap != ic) {
       dswap(nr, &a[iic], 1, &a[iswap * ndd], 1);
@@ -932,9 +906,7 @@ int ndd, nr, nc;
   return det;
 } /* determ */
 
-int iamsolv(cval, fc)
-double *cval, *fc;
-{
+static int iamsolv(double *cval, double *fc) {
   static double a[2 * NFT], ader[2 * NFT];
   static double eps = 1e-20;
   double rho, rhosq, ang, rho0, z, r, s, c;
@@ -997,16 +969,16 @@ double *cval, *fc;
     if (done)
       r -= rho0;
     r = floor(r + 0.5);
-    pivot = (int) r;
+    pivot = (int)r;
     if (pivot == 0) {
       fc[0] = 0;
       if (ddot(NFT, fc, 1, fc, 1) > eps)
         pivot = 1;
     }
-    if (pivot != 0) {           /* rotate about z to make Cz constant */
+    if (pivot != 0) { /* rotate about z to make Cz constant */
       rho -= r;
       r *= pi2 / NFT;
-      ftran(NFT, a, 1, fc, 2);  /* integrate Cz */
+      ftran(NFT, a, 1, fc, 2); /* integrate Cz */
       kz = 0;
       for (k = 0; k < NFT; ++k) {
         ang = a[k] + k * r;
@@ -1043,9 +1015,9 @@ double *cval, *fc;
     ftran(NFT, ader, 1, fc, 1);
     ftran(NFT, b, 1, fcx, -1);
     ftran(NFT, bder, 1, fcx, 1);
-    k = (int) idamax(nab, a, 1);
+    k = (int)idamax(nab, a, 1);
     r = 8. * fabs(a[k]);
-    if (r > 1.) {               /* scale angles for linearity */
+    if (r > 1.) { /* scale angles for linearity */
       r = 1. / r;
       dscal(nab, r, a, 1);
       dscal(nab, r, ader, 1);
@@ -1067,18 +1039,15 @@ double *cval, *fc;
     }
   }
   return -1;
-}                               /* iamsolv */
+} /* iamsolv */
 
-int pamsolv(natm, x, gval, tval)
-int natm;
-double *x, *gval, *tval;
-{
+static int pamsolv(int natm, double *x, double *gval, double *tval) {
   double mi[9], te[3], wk[3];
   int j, k, m, itmp;
   short isblk[4], ipasgn[3], iqnsep[3];
 
   for (j = 0; j < 4; ++j) {
-    isblk[j] = (short) j;
+    isblk[j] = (short)j;
   }
   for (k = 0; k < 3; ++k) {
     ipasgn[k] = 0;
@@ -1095,7 +1064,7 @@ double *x, *gval, *tval;
   /*  diagonalize and find max overlap */
   hdiag(3, 3, mi, te, wk, iqnsep);
   if ((ordblk(3, 3, iqnsep, mi, te, isblk, wk, ipasgn) & 1) != 0) {
-    for (j = 6; j < 9; ++j) {   /* make determinant positive */
+    for (j = 6; j < 9; ++j) { /* make determinant positive */
       mi[j] = -mi[j];
     }
   }
@@ -1114,12 +1083,10 @@ double *x, *gval, *tval;
     itmp += 3;
   }
   return 0;
-}                               /* pamsolv */
+} /* pamsolv */
 
-int micvt(cval, gval, vmuz, vmuy, flg)
-double *cval, *gval, vmuz, vmuy;
-int flg;
-{
+static int micvt(double *cval, double *gval, double vmuz, double vmuy,
+                 int flg) {
   double mi[9], tt[9], tv[3], tmp, ctmp, *mt;
   int j, k, m, itmp;
 
@@ -1175,12 +1142,9 @@ int flg;
   gval[4] = 0.5 * (tmp - gval[4]);
   cval[0] = ctmp;
   return 0;
-}                               /* micvt */
+} /* micvt */
 
-double xinterp(n, tauval, xtrans)
-int n;
-double *tauval, *xtrans;
-{
+static double xinterp(int n, double *tauval, double *xtrans) {
   double ang, ang1, tt;
   int i, k, ii;
   tt = 0.;
@@ -1192,7 +1156,8 @@ double *tauval, *xtrans;
     ang = tauval[i];
     tt += ang1 * ang1;
     xtrans[ii] = 1.;
-    ang *= rad; ang1 = ang;
+    ang *= rad;
+    ang1 = ang;
     for (k = 1; k < n; ++k) {
       ++ii;
       if ((k & 1) != 0) {
@@ -1205,7 +1170,8 @@ double *tauval, *xtrans;
     ++ii;
   }
   ang1 = determ(xtrans, n, n, n);
-  if (n < 2) tt = 1.;
+  if (n < 2)
+    tt = 1.;
   tt = 1. / tt;
   return tt;
-}                               /* xinterp */
+} /* xinterp */

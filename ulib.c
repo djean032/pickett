@@ -1,5 +1,5 @@
 /*   Copyright (C) 1989, California Institute of Technology */
-/*   All rights reserved.  U. S. Government Sponsorship under */ 
+/*   All rights reserved.  U. S. Government Sponsorship under */
 /*   NASA Contract NAS7-918 is acknowledged. */
 
 /*   Herbert M. Pickett, 20 March 1989 */
@@ -7,22 +7,19 @@
 /*   25 March 1999: fixed potential underflow condition in ordblk */
 /*   22 August 2000: removed use of binary file in getvar, putvar */
 /*   22 August 2000: improved code in p to recognize + - as delimiters */
+#include "calpgm.h"
+#include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
-#include <math.h>
-#include "calpgm.h"
 
 static double zero = 0.;
 static double tiny = 1.e-36;
 static double machep = 1e-15;
 
-int ordblk(ndm, n, iqnsep, t, e, isblk, p, ipasgn)
-const int ndm, n;
-double *t, *e, *p;
-short *iqnsep, *isblk, *ipasgn;
-{
+int ordblk(const int ndm, const int n, short *iqnsep, double *t, double *e,
+           short *isblk, double *p, short *ipasgn) {
   static double one = 1.;
   double pbgn, pcmp, etmp, pmax, ptmp, *tbase, *tp;
   long ndml;
@@ -55,76 +52,96 @@ short *iqnsep, *isblk, *ipasgn;
   iperm = 0;
   ndml = ndm;
   nm = n - 1;
-  isep = iqnsep[0]; nsep = 1; iqnsep[0] = nsep; 
+  isep = iqnsep[0];
+  nsep = 1;
+  iqnsep[0] = nsep;
   for (eig = 1; eig < n; ++eig) {
     ksep = iqnsep[eig];
     if (ksep != isep) {
-      isep = ksep;  
+      isep = ksep;
       ++nsep;
     }
     iqnsep[eig] = nsep;
   }
-  if ((int) isblk[1] >= n && nsep == 1) { 
+  if ((int)isblk[1] >= n && nsep == 1) {
     /* skip projection finding for only 1 block */
     dcopy(n, &one, 0, p, 1);
-  } else {  /* find largest projection for each eigenvector */
+  } else {          /* find largest projection for each eigenvector */
     if (nsep > 1) { /* isolate subsets defined by hdiag */
-      for (eig = 0; eig < n; ++eig){
-        ipasgn[eig] = 0; p[eig] = -1.; 
+      for (eig = 0; eig < n; ++eig) {
+        ipasgn[eig] = 0;
+        p[eig] = -1.;
       }
-      iend = 0; eiglast = 0;
+      iend = 0;
+      eiglast = 0;
       for (isep = 1; isep <= nsep; ++isep) {
         iend0 = iend;
         for (iend = iend0; iend < n; ++iend) { /* find number in subset */
-          if (iqnsep[iend] != isep) break;
+          if (iqnsep[iend] != isep)
+            break;
         }
         /* calculate projections */
         for (eig = eiglast; eig < n; ++eig) {
-          if (ipasgn[eig] != 0) continue;
-          iq = -1; pcmp = -1.;
-          k = iend0; tp = &t[eig * ndml]; 
+          if (ipasgn[eig] != 0)
+            continue;
+          iq = -1;
+          pcmp = -1.;
+          k = iend0;
+          tp = &t[eig * ndml];
           for (ksep = isep; ksep <= nsep; ++ksep) {
             ptmp = 0.;
             while (k < n && iqnsep[k] == ksep) {
-              ptmp += tp[k] * tp[k]; 
+              ptmp += tp[k] * tp[k];
               ++k;
             }
             if (ptmp > pcmp) {
-              pcmp = ptmp; iq = (int)ksep;
-              if (pcmp > 0.5) break;
+              pcmp = ptmp;
+              iq = (int)ksep;
+              if (pcmp > 0.5)
+                break;
             }
           }
-          ipasgn[eig] = (short)iq; p[eig] = pcmp;
+          ipasgn[eig] = (short)iq;
+          p[eig] = pcmp;
         }
         /* look for largest projection */
-        k = iend0; knt = 0;
+        k = iend0;
+        knt = 0;
         for (ksep = isep; ksep <= nsep; ++ksep) {
           iq = 0;
-          for( ; k < n && iqnsep[k] == ksep; ++k) {
-            if (ipasgn[k] < 0 || iq < 0) continue;
-            iq = -1; pcmp = -1.; 
+          for (; k < n && iqnsep[k] == ksep; ++k) {
+            if (ipasgn[k] < 0 || iq < 0)
+              continue;
+            iq = -1;
+            pcmp = -1.;
             for (eig = eiglast; eig < n; ++eig) {
               if (ipasgn[eig] == ksep && p[eig] > pcmp) {
-                pcmp = p[eig]; iq = eig; 
+                pcmp = p[eig];
+                iq = eig;
               }
             }
-            if (iq < 0) continue; /* subset not filled when iq < 0 */
-            if (iq != k) {  /* swap columns */
+            if (iq < 0)
+              continue;    /* subset not filled when iq < 0 */
+            if (iq != k) { /* swap columns */
               etswap(ndm, n, k, iq, t, e, p);
-              ipasgn[iq] = ipasgn[k];   
+              ipasgn[iq] = ipasgn[k];
             }
-            ipasgn[k] = -ksep; 
-            while (eiglast < n && ipasgn[eiglast] < 0) ++eiglast;
+            ipasgn[k] = -ksep;
+            while (eiglast < n && ipasgn[eiglast] < 0)
+              ++eiglast;
           }
-          if (iq < 0) continue;
+          if (iq < 0)
+            continue;
           /* remove excess members of subset */
-          for (eig = eiglast; eig < n; ++eig) { 
+          for (eig = eiglast; eig < n; ++eig) {
             if (ipasgn[eig] == ksep) {
-              ipasgn[eig] = 0; ++knt;
+              ipasgn[eig] = 0;
+              ++knt;
             }
           }
         } /* ksep loop */
-        if (knt == 0) break;
+        if (knt == 0)
+          break;
       } /* isep loop */
     } /* end of sep sorting */
     pmax = 0.;
@@ -144,7 +161,8 @@ short *iqnsep, *isblk, *ipasgn;
           pcmp = ptmp + tiny;
           iq = ibk;
           /* check for automatic largest projection */
-          if (pcmp >= 0.5) break;
+          if (pcmp >= 0.5)
+            break;
         }
       }
       if (pbgn > pcmp) {
@@ -152,29 +170,37 @@ short *iqnsep, *isblk, *ipasgn;
         iq = 0;
       }
       p[eig] = pcmp;
-      ipasgn[eig] = (short) iq;
+      ipasgn[eig] = (short)iq;
       if (pcmp >= pmax) {
         pmax = pcmp;
         eigmax = eig;
       }
       tbase += ndm;
     }
-    knt = nm; iend = nm;
-    while (knt > 0) {  /* search for unassigned states */
+    knt = nm;
+    iend = nm;
+    while (knt > 0) { /* search for unassigned states */
       ibk = ipasgn[eigmax];
-      if (ibk < 0) break;
+      if (ibk < 0)
+        break;
       is = isblk[ibk];
       iz = isblk[ibk + 1] - 1;
       if (is <= eigmax && eigmax <= iz) {
         /* current position is within block */
-        ipasgn[eigmax] = -1; --knt; eiglast = -1;
+        ipasgn[eigmax] = -1;
+        --knt;
+        eiglast = -1;
       } else {
         /* find next available position in block */
-        isep = iqnsep[eigmax]; eiglast = eigmax;
+        isep = iqnsep[eigmax];
+        eiglast = eigmax;
         for (iswap = iz; iswap >= is; --iswap) {
           if (ipasgn[iswap] >= 0 && iqnsep[iswap] == isep) {
-            ++iperm; --knt; eiglast = -1;
-            ipasgn[eigmax] = ipasgn[iswap]; ipasgn[iswap] = -1;
+            ++iperm;
+            --knt;
+            eiglast = -1;
+            ipasgn[eigmax] = ipasgn[iswap];
+            ipasgn[iswap] = -1;
             etswap(ndm, n, eigmax, iswap, t, e, p);
             break;
           }
@@ -185,29 +211,31 @@ short *iqnsep, *isblk, *ipasgn;
       tbase = t;
       iend0 = -1;
       for (eig = 0; eig <= iend; ++eig, tbase += ndm) {
-        if (ipasgn[eig] < 0) continue;
+        if (ipasgn[eig] < 0)
+          continue;
         iend0 = eig;
-        if (eig == eiglast) {       /* recalculate projections */
+        if (eig == eiglast) { /* recalculate projections */
           isep = iqnsep[eig];
-          pcmp = -1; iq = -1;
+          pcmp = -1;
+          iq = -1;
           for (ibk = 0; (is = isblk[ibk]) < n; ++ibk) {
             iz = isblk[ibk + 1];
-            while (iqnsep[is] != isep && is < iz) 
+            while (iqnsep[is] != isep && is < iz)
               ++is;
             ns = iz - is;
             if (ns > 0 && ipasgn[is] >= 0) {
-              tp = tbase + is; 
+              tp = tbase + is;
               ptmp = ddot(ns, tp, 1, tp, 1);
               if (ptmp > pcmp) {
                 pcmp = ptmp + tiny;
                 iq = ibk;
-              }                
+              }
             }
           }
           p[eig] = pcmp;
-          ipasgn[eig] = (short) iq;
+          ipasgn[eig] = (short)iq;
         }
-        if (p[eig] >= pmax ) {
+        if (p[eig] >= pmax) {
           pmax = p[eig];
           eigmax = eig;
         }
@@ -225,19 +253,20 @@ short *iqnsep, *isblk, *ipasgn;
   for (is = 1; is < n; ++is, tbase += ndm) {
     if (is == iz) {
       iz = isblk[++ibk];
-    } else {                    /*  find min e */
+    } else { /*  find min e */
       etmp = e[eig];
       iswap = eig;
       isep = iqnsep[eig];
       for (k = is; k < iz; ++k) {
-        if (iqnsep[k] != isep) continue;
+        if (iqnsep[k] != isep)
+          continue;
         ++iq;
         if (e[k] < etmp) {
           etmp = e[k];
           iswap = k;
         }
       }
-      if (iswap > eig) {        /* perform swap with min */
+      if (iswap > eig) { /* perform swap with min */
         ++iperm;
         etswap(ndm, n, eig, iswap, t, e, p);
       }
@@ -254,30 +283,31 @@ short *iqnsep, *isblk, *ipasgn;
     }
   }
   iperm &= 1;
-  if (iq != 0) iperm += 2;
+  if (iq != 0)
+    iperm += 2;
   return iperm;
-}                               /* ordblk */
-void etswap(ndm, nsize, ix1,ix2,t,e,q)
-const int ndm, nsize, ix1, ix2;
-double *t, *e, *q;
-{
-   double tmp;
-   long ndml;
-   if (ix1 == ix2) return;
-   if (q != NULL) {
-     tmp = q[ix1]; q[ix1] = q[ix2]; q[ix2] = tmp;
-   }
-   if (e != NULL) {
-     tmp = e[ix1]; e[ix1] = e[ix2]; e[ix2] = tmp;
-   }
-   ndml = ndm;
-   dswap(nsize, &t[ix1 * ndml], 1, &t[ix2 * ndml], 1);
+} /* ordblk */
+void etswap(const int ndm, const int nsize, const int ix1, const int ix2,
+            double *t, double *e, double *q) {
+  double tmp;
+  long ndml;
+  if (ix1 == ix2)
+    return;
+  if (q != NULL) {
+    tmp = q[ix1];
+    q[ix1] = q[ix2];
+    q[ix2] = tmp;
+  }
+  if (e != NULL) {
+    tmp = e[ix1];
+    e[ix1] = e[ix2];
+    e[ix2] = tmp;
+  }
+  ndml = ndm;
+  dswap(nsize, &t[ix1 * ndml], 1, &t[ix2 * ndml], 1);
 }
-int hdiag(ndm, n, z, d, e, iqsep)
-const int ndm, n;
-double *z, *d, *e;
-short *iqsep;
-{
+int hdiag(const int ndm, const int n, double *z, double *d, double *e,
+          short *iqsep) {
   double f, g, t, bb, *zim, *zk, *zkk, *ebgn, *dbgn;
   int isgn, k, im, nk, nv, nm, ndiag, nz, nvz, nret;
 
@@ -314,25 +344,28 @@ short *iqsep;
   ndiag = ndm + 1;
   isgn = 1;
   nm = n - 1;
-  zim = &z[nm * (long) ndm];
-  iqsep[nm] = (short) nm;
-  e[nm] = (double) nm;
-  for (im = nm; im >= 2; --im) {/*** FOR I=N STEP -1 UNTIL 3 DO -- ****/
+  zim = &z[nm * (long)ndm];
+  iqsep[nm] = (short)nm;
+  e[nm] = (double)nm;
+  for (im = nm; im >= 2; --im) { /*** FOR I=N STEP -1 UNTIL 3 DO -- ****/
     zim -= ndm;
     nv = im - 1;
     dcopy(im, &z[im], ndm, e, 1);
-    k = (int) idamax(im, e, 1);
-    iqsep[nv] = (short) k;
+    k = (int)idamax(im, e, 1);
+    iqsep[nv] = (short)k;
     f = e[k];
     if (k < nv) {
       if (k > 0)
         dswap(k, &z[k], ndm, &z[nv], ndm);
-      zk = &z[k * (long) ndm];
-      nz = nv  - k - 1;
+      zk = &z[k * (long)ndm];
+      nz = nv - k - 1;
       if (nz > 0)
         dswap(nz, &zk[k + 1], 1, &zk[nv + ndm], ndm);
-      t = zk[k]; zk[k] = zim[nv]; zim[nv] = t;
-      e[k] = zk[im] = zim[im]; e[nv] = zim[im] = f;
+      t = zk[k];
+      zk[k] = zim[nv];
+      zim[nv] = t;
+      e[k] = zk[im] = zim[im];
+      e[nv] = zim[im] = f;
       isgn = -isgn;
     }
     g = dnrm2(im, e, 1);
@@ -344,12 +377,13 @@ short *iqsep;
       t = 1. / t;
       dscal(nv, t, e, 1);
       for (nz = 0; nz < nv; ++nz)
-        if (e[nz] != zero)  break;
+        if (e[nz] != zero)
+          break;
     } else {
       nz = nv;
       bb = 0.;
     }
-    e[nv] = (double) nz;
+    e[nv] = (double)nz;
     if (nz < nv) {
       dcopy(nv, e, 1, zim, 1);
       zim[im] = g;
@@ -411,16 +445,18 @@ short *iqsep;
     z[1] = -z[1];
   }
   /*********** ACCUMULATION OF TRANSFORMATION MATRICES ***********/
-  nret = 0; iqsep[0] = 0;
+  nret = 0;
+  iqsep[0] = 0;
   zim = z;
   for (nv = 1; nv < n; ++nv) {
-    nz = (int) e[nv];
+    nz = (int)e[nv];
     f = zim[nv];
     zim += ndm;
     bb = d[nv];
     d[nv] = zim[nv];
-    if (f == zero || fabs(f) < machep * (fabs(d[nv-1]) + fabs(d[nv])) ) {
-      ++nret; f = zero;
+    if (f == zero || fabs(f) < machep * (fabs(d[nv - 1]) + fabs(d[nv]))) {
+      ++nret;
+      f = zero;
     }
     e[nv] = f;
     if (nz < nv) {
@@ -443,18 +479,17 @@ short *iqsep;
     nz = iqsep[nv];
     if (nz < nv)
       dswap(nv + 1, &z[nz], ndm, &z[nv], ndm);
-    iqsep[nv] = (short) nret;
+    iqsep[nv] = (short)nret;
   }
   ++nret;
   nv = triag(ndm, n, n, z, d, e);
-  if (nv != 0) nret = -nv;
+  if (nv != 0)
+    nret = -nv;
   return nret;
-}                               /* hdiag */
+} /* hdiag */
 
-int triag(ndm, n, nz, z, d, e)
-const int ndm, n, nz;
-double *z, *d, *e;
-{
+int triag(const int ndm, const int n, const int nz, double *z, double *d,
+          double *e) {
   /* Local variables */
   int i, k, m, nm, m0, itr;
   double b, c, f, g, p, r, s, *zindx1, *zindx2, *zindx0;
@@ -517,7 +552,7 @@ double *z, *d, *e;
         m0 = m;
         zindx0 = z;
         if (m != 0)
-          zindx0 += m * (long) ndm;
+          zindx0 += m * (long)ndm;
       }
       zindx2 = zindx0;
       /*********** FORM SHIFT ***********/
@@ -555,18 +590,14 @@ double *z, *d, *e;
       e[m] = zero;
     }
     if (itr == 0)
-      break;                    /*  NO CONVERGENCE TO AN EIGENVALUE */
+      break; /*  NO CONVERGENCE TO AN EIGENVALUE */
   }
   return k;
-}                               /* triag */
+} /* triag */
 
-int getpar(lu, luout, nfit, npar, idpar, par, erpar, plbl, plblen)
-FILE *lu, *luout;
-int *nfit, *npar, plblen;
-bcd_t *idpar;
-double *erpar, *par;
-char *plbl;
-{ /*  SUBROUTINE TO READ PARAMETERS */
+int getpar(FILE *lu, FILE *luout, int *nfit, int *npar, bcd_t *idpar,
+           double *par, double *erpar, char *plbl,
+           int plblen) { /*  SUBROUTINE TO READ PARAMETERS */
 #define NCARD 130
   char *ic, *tlbl, *sbcd;
   char card[NCARD];
@@ -576,8 +607,8 @@ char *plbl;
 
   ermin = 1.0e-37;
   erdef = 1.0e+37;
-  lblen = (size_t) plblen;
-  if (plblen == 0) {            /*  plblen=0 for CALCAT */
+  lblen = (size_t)plblen;
+  if (plblen == 0) { /*  plblen=0 for CALCAT */
     erdef = ermin;
     lblen = strlen(plbl);
   }
@@ -587,23 +618,26 @@ char *plbl;
     fputc(' ', luout);
   fputs("PARAMETERS - A.PRIORI ERROR \n", luout);
   tlbl = plbl;
-  parbase = 1.; ibcd = 0; ndbcd = (int) idpar[0]; nd = ndbcd + ndbcd;
-  sbcd = (char *) mallocq ((size_t) nd);
-  for (i = 0; i < n; ++i) {         /* loop over input lines */
+  parbase = 1.;
+  ibcd = 0;
+  ndbcd = (int)idpar[0];
+  nd = ndbcd + ndbcd;
+  sbcd = (char *)mallocq((size_t)nd);
+  for (i = 0; i < n; ++i) { /* loop over input lines */
     if (fgetstr(card, NCARD, lu) <= 0)
-      break;                    /* end file */
+      break; /* end file */
     kk = getbcd(card, &idpar[ibcd], ndbcd);
-    if (kk <= 0) 
+    if (kk <= 0)
       break;
-    if (i == 0) 
-      idpar[0] = (bcd_t) ndbcd;
+    if (i == 0)
+      idpar[0] = (bcd_t)ndbcd;
     vec[0] = 0.;
     vec[1] = erdef;
     vec[2] = 2.;
     if (pcard(&card[kk], vec, 3, NULL) == 0)
-      break;                    /* nothing in line */
+      break; /* nothing in line */
     if (vec[2] < 1.01)
-      break;                    /* reading into covariances */
+      break; /* reading into covariances */
     ic = strchr(card, '/');
     if (ic == NULL) {
       *tlbl = '\0';
@@ -613,20 +647,21 @@ char *plbl;
     }
     par[i] = vec[0];
     putbcd(sbcd, nd, &idpar[ibcd]);
-    if (NEGBCD(idpar[ibcd]) == 0) 
+    if (NEGBCD(idpar[ibcd]) == 0)
       ++kfit;
-    fprintf(luout,"%6d %6d %s %21.13E ", i+1, kfit, sbcd, vec[0]);
+    fprintf(luout, "%6d %6d %s %21.13E ", i + 1, kfit, sbcd, vec[0]);
     if (NEGBCD(idpar[ibcd]) == 0) {
       if (vec[1] < ermin)
         vec[1] = ermin;
-      fprintf(luout,"%15.6E %s\n", vec[1], tlbl);
+      fprintf(luout, "%15.6E %s\n", vec[1], tlbl);
       parbase = vec[0];
-      if (fabs(parbase) < ermin) 
+      if (fabs(parbase) < ermin)
         parbase = ermin;
     } else {
       vec[0] = vec[0] / parbase;
-      fprintf(luout,"%15.6f %s\n", vec[0], tlbl);
-      vec[1] = ermin; par[i] = vec[0];
+      fprintf(luout, "%15.6f %s\n", vec[0], tlbl);
+      vec[1] = ermin;
+      par[i] = vec[0];
     }
     erpar[i] = vec[1];
     if (plblen != 0)
@@ -636,19 +671,15 @@ char *plbl;
   free(sbcd);
   *npar = i;
   *nfit = kfit;
-  fprintf(luout, "%d parameters read, %d independent parameters\n", i,
-          kfit);
+  fprintf(luout, "%d parameters read, %d independent parameters\n", i, kfit);
   return (i - n);
-}                               /* getpar */
+} /* getpar */
 
-int getvar(lu, nfit, var, idpar, erpar, iflg)
-FILE *lu;
-bcd_t *idpar;
-double *var, *erpar;
-const int nfit, iflg;
-{                               /*  SUBROUTINE TO READ VARIANCE INTO PACKED UPPER TRIANGULAR */
+int getvar(FILE *lu, const int nfit, double *var, bcd_t *idpar, double *erpar,
+           const int iflg) { /*  SUBROUTINE TO READ VARIANCE INTO PACKED UPPER
+                                TRIANGULAR */
 #define NCARD 130
-  static double dval[8] = { 2., 2., 2., 2., 2., 2., 2., 2. };
+  static double dval[8] = {2., 2., 2., 2., 2., 2., 2., 2.};
   double *pvar, *pcol, val;
   int i, j, k, n, nv, ibcd, ndbcd;
   char card[NCARD];
@@ -656,7 +687,7 @@ const int nfit, iflg;
   if (var == NULL)
     return -1;
   n = 0;
-  if (iflg == 0) {              /* number of requested parameters == actual */
+  if (iflg == 0) { /* number of requested parameters == actual */
     n = nfit;
     k = nv = 0;
     pvar = var;
@@ -664,9 +695,9 @@ const int nfit, iflg;
       for (i = 0; i <= j; ++i) {
         if (k >= nv) {
           if (fgetstr(card, NCARD, lu) <= 0) {
-            nv = 0;             /* end file */
+            nv = 0; /* end file */
           } else {
-            nv = pcard(card, dval, 8, NULL);    /* get covariances */
+            nv = pcard(card, dval, 8, NULL); /* get covariances */
           }
           k = 0;
         }
@@ -674,38 +705,43 @@ const int nfit, iflg;
           ++k;
           ++pvar;
         } else {
-          j = n = 0;            /* break out of both loops */
+          j = n = 0; /* break out of both loops */
         }
       }
     }
   }
-  ibcd = 0; ndbcd = (int) idpar[0];
-  if (n == 0) {                 /* MAKE DEFAULT VAR */
+  ibcd = 0;
+  ndbcd = (int)idpar[0];
+  if (n == 0) { /* MAKE DEFAULT VAR */
     pvar = var;
     k = 0;
     val = 0.;
-    *pvar = erpar[0]; 
+    *pvar = erpar[0];
     for (j = 1; j < nfit; ++j) {
-      ++k; ibcd += ndbcd;
+      ++k;
+      ibcd += ndbcd;
       ++pvar;
       dcopy(j, &zero, 0, pvar, 1);
       pvar += j;
       while (NEGBCD(idpar[ibcd]) != 0) {
-        ++k; ibcd += ndbcd;
+        ++k;
+        ibcd += ndbcd;
       }
       *pvar = erpar[k];
     }
-  } else {                      /* scale by erpar */
+  } else { /* scale by erpar */
     pcol = var;
     k = 0;
     for (i = 0; i < nfit; ++i) {
       pcol += i;
       pvar = pcol;
       while (NEGBCD(idpar[ibcd]) != 0) {
-        ++k; ibcd += ndbcd;
+        ++k;
+        ibcd += ndbcd;
       }
       val = erpar[k];
-      ++k; ibcd += ndbcd;
+      ++k;
+      ibcd += ndbcd;
       for (j = i; j < nfit; ++j) {
         pvar += j;
         *pvar *= val;
@@ -713,13 +749,11 @@ const int nfit, iflg;
     }
   }
   return n;
-}                               /* getvar */
+} /* getvar */
 
-int putvar(lu, nfit, var, erpar)
-FILE *lu;
-const int nfit;
-double *var, *erpar;
-{                               /*  SUBROUTINE TO WRITE VARIANCE FROM PACKED UPPER TRIANGULAR */
+int putvar(FILE *lu, const int nfit, double *var,
+           double *erpar) { /*  SUBROUTINE TO WRITE VARIANCE FROM PACKED UPPER
+                               TRIANGULAR */
   double val, *pvar, *pcol;
   int i, j, ndiag, knt;
   ndiag = nfit + 1;
@@ -748,12 +782,9 @@ double *var, *erpar;
   if (knt != 0)
     fputc('\n', lu);
   return 0;
-}                               /* putvar */
+} /* putvar */
 
-double calerr(nfit, var, derv)
-const int nfit;
-const double *var, *derv;
-{
+double calerr(const int nfit, const double *var, const double *derv) {
   double err, sum;
   int n;
 
@@ -767,67 +798,64 @@ const double *var, *derv;
     err = sqrt(err);
   }
   return err;
-}                               /* calerr */
+} /* calerr */
 
-int deflin(iqnfmt, idqn)
-int iqnfmt;
-short *idqn;
-{
+int deflin(int iqnfmt, short *idqn) {
   short km, i, k, nqn;
 
-  nqn = (short) (iqnfmt % 10);
-  if (nqn == 0) nqn = 10;
+  nqn = (short)(iqnfmt % 10);
+  if (nqn == 0)
+    nqn = 10;
   for (k = 0; k < 20; ++k) {
     idqn[k] = -1;
   }
-  i = (short) ((iqnfmt / 100) % 5);
+  i = (short)((iqnfmt / 100) % 5);
   km = 0;
   for (k = i; k < nqn; ++k) {
     idqn[k] = km;
-    idqn[k + nqn] = (short) (km + nqn);
+    idqn[k + nqn] = (short)(km + nqn);
     km = k;
   }
   return nqn;
-}                               /* deflin */
+} /* deflin */
 
-int getlin(lu, nqn, idqn, iqn, xfreq, xerr, xwt, card, ncard)
-FILE *lu;
-const int nqn, ncard;
-short *idqn, *iqn;
-double *xfreq, *xerr, *xwt;
-char *card;
-{                               /*  read in .LIN card from LU */
+int getlin(FILE *lu, const int nqn, short *idqn, short *iqn, double *xfreq,
+           double *xerr, double *xwt, char *card,
+           const int ncard) { /*  read in .LIN card from LU */
   static double terr = 1.e-07;
   static double txwt = 1.e-30;
   static double big = 1000.;
-  static int fmt[20] = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-                         3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+  static int fmt[20] = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+                        3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
   double val[20];
   int j, jd, k, nn, nc;
   char ctmp;
 
   if (nqn <= 6) {
-    nn = 12; nc = 36;
+    nn = 12;
+    nc = 36;
   } else {
-    nn = nqn + nqn; nc = nn * 3;
+    nn = nqn + nqn;
+    nc = nn * 3;
   }
-  if (ncard <= nc) 
+  if (ncard <= nc)
     return -2;
   if (fgetstr(card, ncard, lu) < nc)
     return -1;
   dcopy(nn, &big, 0, val, 1);
-  ctmp = card[nc]; card[nc] = '\0';
+  ctmp = card[nc];
+  card[nc] = '\0';
   pcard(card, val, nn, fmt);
   card[nc] = ctmp;
-  for (k = 0; k < nn; ++k) {    /* FIXUP QUANTA */
-    j = (int) val[k];
+  for (k = 0; k < nn; ++k) { /* FIXUP QUANTA */
+    j = (int)val[k];
     if (j > 999) {
       j = 0;
       jd = idqn[k];
       if (jd >= 0)
         j = iqn[jd];
     }
-    iqn[k] = (short) j;
+    iqn[k] = (short)j;
   }
   val[0] = 0.;
   val[1] = 0.01;
@@ -842,24 +870,24 @@ char *card;
   if (*xwt < txwt)
     *xwt = txwt;
   return nc;
-}                               /* getlin */
+} /* getlin */
 
-int getbcd(const char *line, bcd_t *ivbcd, int nbcd)
-{
+int getbcd(const char *line, bcd_t *ivbcd, int nbcd) {
   int k, kk, kbgn, kend, na;
   char c;
   na = nbcd;
   if (na < 0)
     na = -na;
-  if (na > 127) 
-    na = 0; 
-  ivbcd[0] = (bcd_t) na;
+  if (na > 127)
+    na = 0;
+  ivbcd[0] = (bcd_t)na;
   kbgn = -1;
-  do { 
+  do {
     /* ignore leading whitespace */
     c = line[++kbgn];
-    if (c >= '0' && c <= '9') break;
-    if (c ==',') 
+    if (c >= '0' && c <= '9')
+      break;
+    if (c == ',')
       c = '\0';
   } while (c != '\0' && kbgn < 1024);
   kend = kbgn;
@@ -869,47 +897,52 @@ int getbcd(const char *line, bcd_t *ivbcd, int nbcd)
     do {
       /* find first trailing whitespace */
       c = line[++kend];
-      if (c < '0' || c > '9') break;
+      if (c < '0' || c > '9')
+        break;
     } while (kend < 1024);
   }
   /* fill bcd vector */
   kk = kend;
   for (k = 1; k < na; ++k) {
-    if (--kk < kbgn) break; 
+    if (--kk < kbgn)
+      break;
     ivbcd[k] = (bcd_t)(line[kk] - '0');
-    if (--kk >= kbgn)  
-      ivbcd [k] |= (bcd_t) (line[kk] - '0') << 4;
+    if (--kk >= kbgn)
+      ivbcd[k] |= (bcd_t)(line[kk] - '0') << 4;
   }
   for (; k < na; ++k) {
     /* fill with 0 */
-    ivbcd[k] = (bcd_t) 0;
+    ivbcd[k] = (bcd_t)0;
   }
   if (line[kend] == '.') {
-    do { 
+    do {
       /* ignore trailing decimal point and fraction */
       c = line[++kend];
-      if (c < '0' || c > '9') break;
+      if (c < '0' || c > '9')
+        break;
     } while (kend < 1024);
   }
   if (nbcd > 0) {
     kk = 0;
-    do { 
+    do {
       /* ignore trailing whitespace */
       c = line[kend];
-      if (c == '\0' || c == '-'|| c == '.' || c == '/') break;
-      if (c >= '0' && c <= '9') break;
+      if (c == '\0' || c == '-' || c == '.' || c == '/')
+        break;
+      if (c >= '0' && c <= '9')
+        break;
       if (c == ',') { /* ignore first comma */
-        if (kk != 0) break;
+        if (kk != 0)
+          break;
         ++kk;
       }
     } while (++kend <= 1024);
   }
   return kend;
 } /* getbcd */
-int putbcd(char *line, int nlen, const bcd_t *ivbcd)
-{
+int putbcd(char *line, int nlen, const bcd_t *ivbcd) {
   int k, first, i, kk, n;
-  k = (int)(ivbcd[0] & 0x7f); 
+  k = (int)(ivbcd[0] & 0x7f);
   n = k + k;
   if (nlen < n)
     n = nlen;
@@ -921,39 +954,37 @@ int putbcd(char *line, int nlen, const bcd_t *ivbcd)
       --k;
       i = (int)(ivbcd[k] >> 4) & 0x0f;
     } else {
-      i = (int) ivbcd[k] & 0x0f;
+      i = (int)ivbcd[k] & 0x0f;
     }
     if (i == 0) {
-      if (first == 0) 
+      if (first == 0)
         line[kk] = ' ';
       else
         line[kk] = '0';
     } else {
-      if (first == 0) 
+      if (first == 0)
         first = kk;
-      line[kk] = (char) i + '0';
-    }     
+      line[kk] = (char)i + '0';
+    }
   }
   if (first == 0) {
     if (n < 2)
       n = 2;
     first = n - 1;
     line[first] = '0';
-  } 
+  }
   if (NEGBCD(ivbcd[0]) != 0)
     line[first - 1] = '-';
   line[n] = '\0';
   return n;
 } /* putbcd */
 
-int bcd2i(bcd_t btmp)
-{
-  if (btmp > (bcd_t) 9)
-    btmp -= (bcd_t) 6 * (btmp >> 4);
-  return (int) btmp;
+int bcd2i(bcd_t btmp) {
+  if (btmp > (bcd_t)9)
+    btmp -= (bcd_t)6 * (btmp >> 4);
+  return (int)btmp;
 } /* bcd2i */
-bcd_t i2bcd(int ival)
-{
+bcd_t i2bcd(int ival) {
   if (ival > 9) {
     if (ival >= 99)
       ival = 0x99;

@@ -5,7 +5,7 @@ CATDATA {
   short iqn[12];
 };
 
-int catfrq(int molec,char *cfreq, char *buff);
+int catfrq(int molec, char *cfreq, char *buff);
 /*****************************************************************
 C   FUNCTION TO FIND AND RETURN FIRST LINE FOR SPECIES "MOLEC"
 C       THAT IS BEYOND FREQ
@@ -20,7 +20,7 @@ C   FREQ IS CHARACTER STRING IN FORMAT (F13.4) OR EQUIVALENT
 C
 ******************************************************************/
 
-int catrd(int molec,int line,char *buff);
+int catrd(int molec, int line, char *buff);
 /************************************************************************
 C     SUBROUTINE TO READ CATALOG FILE FOR MOLECULE "MOLEC",LINE# "LINE"
 C
@@ -44,7 +44,7 @@ C   MOLEC IS SPECIES TAG
 C
 ****************************************************/
 
-char *catdir(int molec,int *nline,double *qqln,int *iver);
+char *catdir(int molec, int *nline, double *qqln, int *iver);
 /*********************************************************
 C   SUBROUTINE TO RETURN CATALOGUE DIRECTORY INFORMATION
 C

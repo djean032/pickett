@@ -1,25 +1,23 @@
-#include <math.h>
 #include "lsqfit.h"
 #include "cblas.h"
+#include <math.h>
 #define idamax cblas_idamax
-#define dasum  cblas_dasum
-#define daxpy  cblas_daxpy
-#define dcopy  cblas_dcopy
-#define ddot   cblas_ddot
-#define dnrm2  cblas_dnrm2
-#define drot   cblas_drot
-#define drotg  cblas_drotg
-#define dscal  cblas_dscal
-#define dswap  cblas_dswap
+#define dasum cblas_dasum
+#define daxpy cblas_daxpy
+#define dcopy cblas_dcopy
+#define ddot cblas_ddot
+#define dnrm2 cblas_dnrm2
+#define drot cblas_drot
+#define drotg cblas_drotg
+#define dscal cblas_dscal
+#define dswap cblas_dswap
 
 static double zero = 0.;
 static double tiny = 1.e-34;
 static double tmach = 1.e-10;
-int lsqfit(dk, ndm, nr, nvec, marqp, varv, 
-           dkold, ediag, enorm, iperm)
-int ndm, nvec, nr, *iperm;
-double *dk, *dkold, *marqp, *varv, *ediag, *enorm;
-{ /* function to do a least squares fit */
+int lsqfit(double *dk, int ndm, int nr, int nvec, double *marqp, double *varv,
+           double *dkold, double *ediag, double *enorm,
+           int *iperm) { /* function to do a least squares fit */
   /* nr is the number of rows (number of fitted parameters) */
   /* nvec is the number of solution vectors */
   /* dk contains the lower triangular matrix */
@@ -69,52 +67,63 @@ double *dk, *dkold, *marqp, *varv, *ediag, *enorm;
       } else if (scale > 0.5) {
         scale = 0.5;
       }
-      varv[2] *= scale; varv[4] = dif; 
+      varv[2] *= scale;
+      varv[4] = dif;
       marqp[1] *= scale;
       marqp[2] = scale;
-      pdkold = dkold; pdk = dk;
+      pdkold = dkold;
+      pdk = dk;
       pdkold[nr] *= scale;
       dcopy(nt, pdkold, 1, pdk, 1);
       kk = ndm + 1;
       for (k = 1; k < nr; ++k) {
-        pdk += kk; pdkold += nt; --nt;
+        pdk += kk;
+        pdkold += nt;
+        --nt;
         pdkold[nr - k] *= scale;
         dcopy(nt, pdkold, 1, pdk, 1);
-      } 
+      }
       dscal(nr, scale, &dk[nr], ndm);
       ++nrest;
       return -1;
     }
-    if (scale > 1. && marqp[0] > 0.){
+    if (scale > 1. && marqp[0] > 0.) {
       scale = 4.47; /* sqrt(20) */
-      marqp[1] *= scale; marqp[2] = scale;
-    } 
+      marqp[1] *= scale;
+      marqp[2] = scale;
+    }
   }
-  varv[1] = varv[0]; nrest = 0;
+  varv[1] = varv[0];
+  nrest = 0;
   /*  normalize parameters */
   for (k = 0; k < nr; ++k) {
-    pdk = &dk[k]; kk = k + 1;
+    pdk = &dk[k];
+    kk = k + 1;
     val = dnrm2(kk, pdk, ndm);
     if (val < tiny) {
-      ediag[k] = 0.; enorm[k] = 1.;
+      ediag[k] = 0.;
+      enorm[k] = 1.;
     } else {
-      ediag[k] = 1.; enorm[k] = scale = 1. / val;
+      ediag[k] = 1.;
+      enorm[k] = scale = 1. / val;
       dscal(kk, scale, pdk, ndm);
     }
   }
   /*  convert to lower triangle */
   nrank = dqrfac(dk, ndm, nr, nr, nvec, ediag, iperm);
   /* nrank is the rank of the derivative matrix */
-  pdk = &dk[nr]; 
+  pdk = &dk[nr];
   varv[3] = ddot(nrank, pdk, ndm, pdk, ndm);
   /* solve for marquardt parameter */
-  val = marqp[1]; marqp[2] = 1.;
+  val = marqp[1];
+  marqp[2] = 1.;
   nt = lmpar(nr, nrank, nvec, dk, ndm, ediag, marqp, dkold);
   if (nt == 0) {
-    marqp[1] = -1.; val = -1.;
+    marqp[1] = -1.;
+    val = -1.;
     nrank = lmpar(nr, nrank, nvec, dk, ndm, ediag, marqp, dkold);
   }
-  if (val > tiny) 
+  if (val > tiny)
     marqp[2] = marqp[1] / val;
   varv[2] = 2. * ddot(nrank, pdk, ndm, pdk, ndm) + tiny;
   if (nr > nrank) { /* clear rank-deficient part */
@@ -125,41 +134,49 @@ double *dk, *dkold, *marqp, *varv, *ediag, *enorm;
       pdk += ndm;
     }
   }
-  dqrsolv(dk, ndm, nrank, nr, nvec, iperm);  /*  invert lower triangle */
+  dqrsolv(dk, ndm, nrank, nr, nvec, iperm); /*  invert lower triangle */
   /* save fit matrix */
-  pdkold = dkold; pdk = dk;
-  scale = enorm[0]; ediag[0] = fabs(*pdkold);
-  kk = ndm + 1; nt = nr + nvec;
+  pdkold = dkold;
+  pdk = dk;
+  scale = enorm[0];
+  ediag[0] = fabs(*pdkold);
+  kk = ndm + 1;
+  nt = nr + nvec;
   dscal(nt, scale, pdk, 1);
   dcopy(nt, pdk, 1, pdkold, 1);
   for (k = 1; k < nr; ++k) {
-    pdk += kk; pdkold += nt; --nt;
-    scale = enorm[k]; ediag[k] = fabs(*pdkold);
+    pdk += kk;
+    pdkold += nt;
+    --nt;
+    scale = enorm[k];
+    ediag[k] = fabs(*pdkold);
     dscal(nt, scale, pdk, 1);
     dcopy(nt, pdk, 1, pdkold, 1);
   }
   for (k = nr - 1; k >= 0; --k) {
     kk = iperm[k];
     if (kk != k) {
-      scale = ediag[k]; ediag[k] = ediag[kk]; ediag[kk] = scale;
+      scale = ediag[k];
+      ediag[k] = ediag[kk];
+      ediag[kk] = scale;
     }
   }
   return 0;
 } /* lsqfit */
 
-int jelim(t, vec, ndm, n, ns)
-double *t, *vec;
-int ndm, n, ns;
-{ /*   do orthogonal transformations to rotate vector VEC into matrix T */
+int jelim(double *t, double *vec, int ndm, int n,
+          int ns) { /*   do orthogonal transformations to rotate vector VEC into
+                       matrix T */
   /*   NDM  = dimensioned column length of T, (NDM >= N + NS) */
   /*   N    = number of columns of T */
   /*   NS   = number of solution vectors, (NS > 0) */
   double c, s, r, rr, as, ac, q, tv, *td;
   int nn, k;
 
-  q = 1.; nn = n + ns;
+  q = 1.;
+  nn = n + ns;
   for (k = 0; k < n; ++k) {
-    if (k != 0) 
+    if (k != 0)
       t += ndm;
     s = (*vec);
     as = fabs(s);
@@ -171,9 +188,14 @@ int ndm, n, ns;
         q = 1.;
       }
       dswap(nn, t, 1, vec, 1);
-      as = ac; s = (*vec); c = (*t);
+      as = ac;
+      s = (*vec);
+      c = (*t);
     }
-    td = t; ++t; ++vec; --nn;
+    td = t;
+    ++t;
+    ++vec;
+    --nn;
     if (as < tiny)
       continue;
     tv = s / c;
@@ -185,9 +207,9 @@ int ndm, n, ns;
     daxpy(nn, tv, vec, 1, t, 1);
     if (rr > 1.) {
       r = sqrt(rr);
-      q /= r;                   /* rr <= 2 */
+      q /= r; /* rr <= 2 */
       dscal(nn + 1, r, td, 1);
-      if (q < tiny) {           /* requires n > 240 */
+      if (q < tiny) { /* requires n > 240 */
         dscal(nn, q, vec, 1);
         q = 1.;
       }
@@ -196,10 +218,7 @@ int ndm, n, ns;
   return 0;
 } /* jelim */
 
-int dqrfac(t, ndm, m, n, ns, wk, iperm)
-double *t, *wk;
-int ndm, m, n, ns, *iperm;
-{
+int dqrfac(double *t, int ndm, int m, int n, int ns, double *wk, int *iperm) {
   double diag, temp, tcmp, hcmp, sqdiag;
   double *pcol, *pt, *ptt, *pdiag, *pbgn;
   int j, k, nt, nwk, nwkm, swap, nrank;
@@ -218,7 +237,7 @@ int ndm, m, n, ns, *iperm;
      NS      INTEGER
      NS IS THE NUMBER OF SOLUTION VECTORS
 
-     WK IS A REAL WORKING VECTOR OF LENGTH N 
+     WK IS A REAL WORKING VECTOR OF LENGTH N
         ON ENTRY WK IS SET TO SUM OF SQUARES OF ROWS OF T
 
      IPERM IS A WORKING VECTOR OF LENGTH N
@@ -233,7 +252,8 @@ int ndm, m, n, ns, *iperm;
   if (m < n)
     nrank = m;
   nt = n + ns;
-  hcmp = tmach; tcmp = 1.;
+  hcmp = tmach;
+  tcmp = 1.;
   pcol = pbgn = t;
   for (k = 0; k < nrank; ++k) {
     nwk = m - k;
@@ -243,37 +263,43 @@ int ndm, m, n, ns, *iperm;
         wk[j] -= (*pt) * (*pt);
         ++pt;
       }
-    }   
-    tcmp = wk[k]; swap = k;
+    }
+    tcmp = wk[k];
+    swap = k;
     for (j = k + 1; j < n; ++j) { /* get largest square */
       temp = wk[j];
       if (temp > tcmp) {
-        tcmp = temp; swap = j;
+        tcmp = temp;
+        swap = j;
       }
     }
-    if (tcmp <= hcmp) {         /* recompute squares */
-      tcmp = 0.; swap = k; 
+    if (tcmp <= hcmp) { /* recompute squares */
+      tcmp = 0.;
+      swap = k;
       pt = pcol + k;
       for (j = k; j < n; ++j) {
         wk[j] = temp = ddot(nwk, pt, ndm, pt, ndm);
         if (temp > tcmp) {
-          tcmp = temp; swap = j;
+          tcmp = temp;
+          swap = j;
         }
         ++pt;
       }
       hcmp = tcmp * tmach;
     }
     iperm[k] = swap;
-    if (swap > k) {             /* swap rows */
-      wk[swap] = wk[k]; wk[k] = tcmp;
+    if (swap > k) { /* swap rows */
+      wk[swap] = wk[k];
+      wk[k] = tcmp;
       dswap(m, &t[k], ndm, &t[swap], ndm);
     }
     pdiag = pcol + k;
     diag = (*pdiag);
     sqdiag = diag * diag;
-    nwkm = nwk - 1; pt = pdiag + ndm; 
+    nwkm = nwk - 1;
+    pt = pdiag + ndm;
     tcmp = ddot(nwkm, pt, ndm, pt, ndm);
-    if (tcmp > tiny) {        /* need to make lower triangular */
+    if (tcmp > tiny) { /* need to make lower triangular */
       sqdiag += tcmp;
       tcmp = sqrt(sqdiag);
       if (diag < 0.)
@@ -309,10 +335,7 @@ int ndm, m, n, ns, *iperm;
   return nrank;
 } /* dqrfac */
 
-int dqrsolv(t, ndm, nrank, n, ns, iperm)
-double *t;
-int ndm, nrank, n, ns, *iperm;
-{
+int dqrsolv(double *t, int ndm, int nrank, int n, int ns, int *iperm) {
   double diag, temp, tcmp, *pcol, *pt, *pdiag, *pbgn;
   long ndml;
   int j, k, nwk, nt, swap;
@@ -344,7 +367,7 @@ int ndm, nrank, n, ns, *iperm;
   nt = n + ns;
   pcol = &t[(nrank - 1) * ndml];
   nwk = nt - nrank;
-  for (k = nrank - 1; k >= 0; --k) {    /* solve lower triangular */
+  for (k = nrank - 1; k >= 0; --k) { /* solve lower triangular */
     pdiag = pcol + k;
     diag = 1 / (*pdiag);
     *pdiag = diag;
@@ -359,17 +382,18 @@ int ndm, nrank, n, ns, *iperm;
     }
     ++nwk;
     swap = iperm[k];
-    if (swap > k) {             /* swap old columns */
+    if (swap > k) { /* swap old columns */
       dswap(nt, pcol, 1, &t[swap * ndml], 1);
     }
-    if (k == 0) break;
+    if (k == 0)
+      break;
     pcol -= ndm;
   }
   nt = n - 1;
   pcol = &t[nt * ndml];
   for (k = nt; k > 0; --k) {
     tcmp = ddot(k, pcol, 1, pcol, 1);
-    if (tcmp > tiny) {   /* make lower triangular */
+    if (tcmp > tiny) { /* make lower triangular */
       pdiag = pcol + k;
       temp = *pdiag;
       tcmp = sqrt(tcmp + temp * temp);
@@ -391,11 +415,10 @@ int ndm, nrank, n, ns, *iperm;
     pcol -= ndm;
   }
   return nrank;
-}     /* dqrsolv */
+} /* dqrsolv */
 
-int lmpar(nr, nc, ns, r, ldr, x, par, wk)
-int nr, nc, ns, ldr;
-double *r, *x, *par, *wk;
+int lmpar(int nr, int nc, int ns, double *r, int ldr, double *x, double *par,
+          double *wk)
 /* this subroutine is a paraphrase of netlib MINPACK routine lmpar.f */
 /* diag is assumed to be unity and no further swapping attempted     */
 /* it returns an optimum Marquardt Levenberg parameter in par[0]     */
@@ -409,7 +432,8 @@ double *r, *x, *par, *wk;
   double dxnorm, gnorm, delta, val, sum, fp, fpx, parlo, parhi, parmin;
   int ndiag, nm, k, itr, initl, nt;
 
-  if (ns < 0) return 0;
+  if (ns < 0)
+    return 0;
   ndiag = ldr + 1;
   pdel = &r[nr];
   initl = 1;
@@ -417,43 +441,53 @@ double *r, *x, *par, *wk;
   if (delta <= tmin || ns == 0) {
     initl = -1;
     if (par[0] <= 0.) {
-      initl = 2; par[0] = 0.;
+      initl = 2;
+      par[0] = 0.;
     }
   }
   prow = r;
-  for (k = 0; k < nc; ++k) {     /* calculate gradient */
+  for (k = 0; k < nc; ++k) { /* calculate gradient */
     wk[k] = ddot(k + 1, prow, ldr, pdel, ldr);
     ++prow;
   }
   gnorm = dnrm2(nc, wk, 1);
   /* save matrix */
-  pdiag = r; pcol = wk; nt = nr + ns;
+  pdiag = r;
+  pcol = wk;
+  nt = nr + ns;
   dcopy(nt, pdiag, 1, pcol, 1);
-  for (k = 1; k < nc; ++k) { 
-    pdiag += ndiag; pcol += nt; --nt;
+  for (k = 1; k < nc; ++k) {
+    pdiag += ndiag;
+    pcol += nt;
+    --nt;
     dcopy(nt, pdiag, 1, pcol, 1);
   }
   parmin = tmin * fabs(*pdiag);
-  if (parmin < tiny) parmin = tiny;
+  if (parmin < tiny)
+    parmin = tiny;
   parhi = parlo = fp = 1.;
   for (itr = 10; itr > 0; --itr) {
     if (initl <= 0 && par[0] < parmin) {
-      initl = 2; par[0] = 0.;
+      initl = 2;
+      par[0] = 0.;
     }
-    if (initl > 0) {            /* Marquardt-Levenberg par = 0 */
+    if (initl > 0) { /* Marquardt-Levenberg par = 0 */
       fpx = 0.;
     } else {
       if (par[0] > tmax) {
-        par[0] = tmax; initl = -1;
+        par[0] = tmax;
+        initl = -1;
       }
       pdiag = r;
-      fpx = sqrt(par[0]); nt = nr + ns;
+      fpx = sqrt(par[0]);
+      nt = nr + ns;
       for (k = 0; k < nc; ++k) {
         /* include Marquardt-Levenberg par */
         val = (*pdiag);
         *pdiag = sum = sqrt(par[0] + val * val);
         --nt;
-        if (nt == 0) break;
+        if (nt == 0)
+          break;
         prow = pdiag + 1;
         dcopy(nt, prow, 1, x, 1);
         val /= sum;
@@ -469,7 +503,7 @@ double *r, *x, *par, *wk;
     /* calculate solution */
     pdiag = &r[nm * ndiag];
     x[nm] /= (*pdiag);
-    for (k = nm - 1; k >= 0; --k) { 
+    for (k = nm - 1; k >= 0; --k) {
       pdiag -= ndiag;
       x[k] = (x[k] - ddot(nm - k, pdiag + 1, 1, &x[k + 1], 1)) / (*pdiag);
     }
@@ -520,10 +554,14 @@ double *r, *x, *par, *wk;
         par[0] = parhi;
     } else {
       /* restore matrix */
-      pdiag = r; pcol = wk; nt = nr + ns;
+      pdiag = r;
+      pcol = wk;
+      nt = nr + ns;
       dcopy(nt, pcol, 1, pdiag, 1);
-      for (k = 1; k < nc; ++k) { 
-        pdiag += ndiag; pcol += nt; --nt;
+      for (k = 1; k < nc; ++k) {
+        pdiag += ndiag;
+        pcol += nt;
+        --nt;
         dcopy(nt, pcol, 1, pdiag, 1);
       }
       if (fp > 0.) {
@@ -538,7 +576,8 @@ double *r, *x, *par, *wk;
     if (par[0] < parlo)
       par[0] = parlo;
   }
-  if (itr == 0) return 0;
+  if (itr == 0)
+    return 0;
   if (nr > nc)
     dcopy(nr - nc, &zero, 0, &x[nc], 1);
   return nc;

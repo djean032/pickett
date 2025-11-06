@@ -13,7 +13,7 @@
 /*   HMP, str output now will put out component dipoles                */
 /*   HMP, large uncertainties do not inhibit output to .CAT file       */
 /*   HMP, sort cat file at end                                         */
-/*   18 Aug.  2003: code cleanup, @comment@ is for splint              */ 
+/*   18 Aug.  2003: code cleanup, @comment@ is for splint              */
 /*   19 July  2004: bug fix for multiple dipoles                       */
 
 /* THIS IS A GENERALIZED INTENSITY AND FREQUENCY CALCULATOR            */
@@ -22,12 +22,12 @@
 /*     SUCH THAT ADJACENT SETS OF BLOCKS ARE CONNECTED BY TRANSITIONS  */
 /***********************************************************************/
 
+#include "calpgm.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include "calpgm.h"
-#define MAXQNX  13
+#define MAXQNX 13
 typedef struct {
   /*@owned@*/ /*@null@*/ double *eigblk;
   /*@owned@*/ /*@null@*/ double *egyblk;
@@ -36,31 +36,26 @@ typedef struct {
 } SBLK;
 
 /************** CALCAT interfaces ***********************************/
-int qnfmt(short *iqu, int nqn, /*@out@*/char *sqn);
-int simt(int isiz, int jsiz, double *s, double *t, double *u,
-                double *wk);
-/*@dependent@*/ SBLK *ibufof(const int iblk,
-                                    const unsigned int ndel, 
-                                    /*@out@*/ SBLK *blk);
+int qnfmt(short *iqu, int nqn, /*@out@*/ char *sqn);
+int simt(int isiz, int jsiz, double *s, double *t, double *u, double *wk);
+/*@dependent@*/ SBLK *ibufof(const int iblk, const unsigned int ndel,
+                             /*@out@*/ SBLK *blk);
 SBLK *sblk_alloc(const int nstruct, const unsigned mxdm);
 
 /********************************************************************/
-#define PR_DELAY 6   /* seconds delay between informational messages */
+#define PR_DELAY 6 /* seconds delay between informational messages */
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char *argv[]) {
 #define NFILE 6
 #define NTEMP 8
 #define NCARD 130
 #define NDVEC 10
- /* Initialized data */
-  static double temp[8] =
-    { 300., 225., 150., 75., 37.5, 18.75, 9.375, 300. };
-  static double qsum[8] = { 0., 0., 0., 0., 0., 0., 0., 0. };
-  static const char *ext[NFILE] =
-    { "int", "var", "out", "cat", "str", "egy" };
-  enum efile {eint, evar, eout, ecat, estr, eegy};
-  static char sqn[4*MAXQN + 2];
+  /* Initialized data */
+  static double temp[8] = {300., 225., 150., 75., 37.5, 18.75, 9.375, 300.};
+  static double qsum[8] = {0., 0., 0., 0., 0., 0., 0., 0.};
+  static const char *ext[NFILE] = {"int", "var", "out", "cat", "str", "egy"};
+  enum efile { eint, evar, eout, ecat, estr, eegy };
+  static char sqn[4 * MAXQN + 2];
   static char warn[] = " WARNING: THERE WAS NO DIAGONALIZATION\n";
   static char headq[] = "TEMPERATURE - Q(SPIN-ROT.) - log Q(SPIN-ROT.)\n";
   /* Local variables */
@@ -70,10 +65,8 @@ int main(int argc, char* argv[])
   double **s;
   double *par, *derv, *dip, *egy, *sij, *var, *dedp, *teig;
   double *teigp, *egyp, *pmix, *dvec;
-  double dgnf, qlog, elow, tmql, zero, qrot, strq, strr, diff,
-    fqmax;
-  double fqmin, starg, scomp, thrsh, strlg, strmn, thrshf, thrsh1, te,
-    bigerr;
+  double dgnf, qlog, elow, tmql, zero, qrot, strq, strr, diff, fqmax;
+  double fqmin, starg, scomp, thrsh, strlg, strmn, thrshf, thrsh1, te, bigerr;
   double egymin, stcomp, cmc, dgn, fac, tmc, egx, err, frq, tmq, str, tmp;
   double telim;
   size_t nl, nlsq;
@@ -84,12 +77,13 @@ int main(int argc, char* argv[])
   /*@only@*/ int *iqnfmtv;
   int iflg, iblk, jblk, lblk, idgn, kbgn, jdgn, ndip, nbsav, nfit, igup, ixdp;
   int nsav, jxdp, itmp, jnxt, i, j, k, inblk, nbkpj, npdip, ntemp, ij, jj, jx;
-  int iqnfmt, idf, itd, nqn, npar, isiz, jsiz, nsize_p, maxqn, ktsp, ibcd, ndbcd;
+  int iqnfmt, idf, itd, nqn, npar, isiz, jsiz, nsize_p, maxqn, ktsp, ibcd,
+      ndbcd;
   int jmax, nfmt, iposv, iv, newfmt, globfmt, isneg, catqn, maxv;
   BOOL prir, prder, prfrq, preig, pregy, prstr, diag, first, ifdump;
   unsigned int ndel, maxdm;
   short iqni[MAXQN + MAXQNX];
-  char *fname[NFILE+1], titl[NCARD], sgup[4];
+  char *fname[NFILE + 1], titl[NCARD], sgup[4];
 
   zero = 1.5e-38;
   bigerr = 999.9999;
@@ -114,12 +108,12 @@ int main(int argc, char* argv[])
   /* read first two lines of .int file */
   first = (fgetstr(titl, NCARD, luint) <= 0);
   if (!first) {
-    chtime(titl, 82); 
+    chtime(titl, 82);
     fputs(titl, stdout);
     fputs(titl, luout);
     first = (fgetstr(titl, NCARD, luint) <= 0);
   }
-  dvec = (double *) mallocq((size_t)NDVEC * sizeof(double));
+  dvec = (double *)mallocq((size_t)NDVEC * sizeof(double));
   dvec[0] = 0;
   dvec[1] = 999;
   dvec[2] = 1000;
@@ -132,16 +126,16 @@ int main(int argc, char* argv[])
   dvec[9] = -1;
   if (!first && pcard(titl, dvec, NDVEC, NULL) == 0)
     first = TRUE;
-  iflg = (int) dvec[0];
-  itag = (int) dvec[1];
+  iflg = (int)dvec[0];
+  itag = (int)dvec[1];
   qrot = dvec[2];
-  inblk = (int) dvec[3];
-  lblk = (int) dvec[4];
+  inblk = (int)dvec[3];
+  lblk = (int)dvec[4];
   thrsh = dvec[5];
   thrsh1 = dvec[6];
   fqmax = dvec[7];
   tmq = dvec[8];
-  maxv = (int) dvec[9];
+  maxv = (int)dvec[9];
   ntemp = NTEMP;
   for (k = NTEMP - 2; k >= 0; --k) {
     if (fabs(tmq - temp[k]) < 0.01) {
@@ -167,10 +161,10 @@ int main(int argc, char* argv[])
   }
   if (qrot < 1)
     qrot = 1;
-  fprintf(luout, "ID=%6ld QSPINROT= %14.4f MIN, MAX QN= %3d %3d\n", itag,
-          qrot, inblk, lblk);
-  fprintf(luout, "MIN.LOG.STR= %9.3f MIN.LOG.STR(FRQ/300GHZ)**2= %9.3f",
-          thrsh, thrsh1);
+  fprintf(luout, "ID=%6ld QSPINROT= %14.4f MIN, MAX QN= %3d %3d\n", itag, qrot,
+          inblk, lblk);
+  fprintf(luout, "MIN.LOG.STR= %9.3f MIN.LOG.STR(FRQ/300GHZ)**2= %9.3f", thrsh,
+          thrsh1);
   fprintf(luout, " MAX FREQ %10.1f GHZ, TEMP= %8.2f\n", fqmax, tmq);
   fac = (4.16231e-5) / qrot;
   prir = (iflg >= 1000);
@@ -209,25 +203,27 @@ int main(int argc, char* argv[])
     luegy = fopenq(fname[eegy], "w");
     pregy = TRUE;
   }
-  nl = (size_t) ndip * sizeof(double);
-  dip = (double *) mallocq(nl);
+  nl = (size_t)ndip * sizeof(double);
+  dip = (double *)mallocq(nl);
   dip[0] = 0.;
-  nl = (size_t) ndip * sizeof(int);
-  nvdip = (int *) mallocq(nl);
+  nl = (size_t)ndip * sizeof(int);
+  nvdip = (int *)mallocq(nl);
   nvdip[0] = 0;
-  isimag = (int *) mallocq(nl);
+  isimag = (int *)mallocq(nl);
   isimag[0] = -1;
-  nl = (size_t) (ndip * NDECDIP);
-  idip = (bcd_t *) mallocq(nl);
-  idip[0] = (bcd_t) NDECDIP;
-  k = -1; ibcd = 0;
+  nl = (size_t)(ndip * NDECDIP);
+  idip = (bcd_t *)mallocq(nl);
+  idip[0] = (bcd_t)NDECDIP;
+  k = -1;
+  ibcd = 0;
   /*  read dipole moments */
   for (j = 0; j < ndip; ++j) {
-    nvdip[j] = 0; isimag[j] = -1;
+    nvdip[j] = 0;
+    isimag[j] = -1;
     if (fgetstr(titl, NCARD, luint) <= 0)
       break;
     jj = getbcd(titl, &idip[ibcd], NDECDIP);
-    if (jj <= 0) 
+    if (jj <= 0)
       break;
     dvec[0] = 0.;
     if (pcard(&titl[jj], dvec, 1, NULL) <= 0)
@@ -248,23 +244,26 @@ int main(int argc, char* argv[])
     npdip = k + 1;
     if (npdip > NDVEC) {
       free(dvec);
-      dvec = (double *) mallocq((size_t)npdip * sizeof(double));
+      dvec = (double *)mallocq((size_t)npdip * sizeof(double));
       dvec[0] = 0.;
     }
   }
-  fclose(luint);                /* close .INT file */
+  fclose(luint); /* close .INT file */
   luvar = fopenq(fname[evar], "r");
   /* read var file */
-  npar = 0; catqn = MAXCAT;
-  if (fgetstr(titl, NCARD , luvar) > 0) {
+  npar = 0;
+  catqn = MAXCAT;
+  if (fgetstr(titl, NCARD, luvar) > 0) {
     fputs(".VAR FILE TITLE :", luout);
     fputs(titl, luout);
     fputc('\n', luout);
     if (fgetstr(titl, NCARD, luvar) > 0) {
-      dvec[0] = 0; dvec[1] = 1;
+      dvec[0] = 0;
+      dvec[1] = 1;
       pcard(titl, dvec, 2, NULL);
-      npar = (int) dvec[0];
-      if (dvec[1] < 0.) catqn = MAXQN;
+      npar = (int)dvec[0];
+      if (dvec[1] < 0.)
+        catqn = MAXQN;
     }
   }
   /* read option line(s) */
@@ -276,7 +275,7 @@ int main(int argc, char* argv[])
     exit(EXIT_FAILURE);
   }
   itmp = 10;
-  iqnfmtv = (int *)mallocq((size_t) (nfmt << 1) * sizeof(int));
+  iqnfmtv = (int *)mallocq((size_t)(nfmt << 1) * sizeof(int));
   iqnfmtv[0] = 0;
   nqn = setfmt(iqnfmtv, nfmt);
   if (nqn > MAXCAT) {
@@ -288,62 +287,65 @@ int main(int argc, char* argv[])
   memset(sqn, (int)' ', (size_t)(catqn << 1));
   iqnfmt = iqnfmtv[0];
   iposv = 0;
-  if (nfmt > 1 || ((iqnfmt / 1000) & 1) != 0) 
+  if (nfmt > 1 || ((iqnfmt / 1000) & 1) != 0)
     iposv = ((iqnfmt / 100) % 5) - 1;
-  if (iposv == 0 || maxv < 0) 
+  if (iposv == 0 || maxv < 0)
     maxv = 1000;
   globfmt = 0;
   for (i = 0; i < nfmt; ++i) {
     j = iqnfmtv[i] / 1000;
-    if (j != 4 && j != 5)  j = 0;
-    iqnfmtv[i + nfmt] =  j;
+    if (j != 4 && j != 5)
+      j = 0;
+    iqnfmtv[i + nfmt] = j;
     globfmt += j;
   }
   newfmt = iqnfmtv[nfmt];
   /* read parameters and variance */
-  nl = (size_t) npar * sizeof(double);
-  par = (double *) mallocq(nl);
-  derv = (double *) mallocq(nl);
-  nl = (size_t) (npar * ndbcd);
-  idpar = (bcd_t *) mallocq(nl);
-  idpar[0] = (bcd_t) ndbcd;
+  nl = (size_t)npar * sizeof(double);
+  par = (double *)mallocq(nl);
+  derv = (double *)mallocq(nl);
+  nl = (size_t)(npar * ndbcd);
+  idpar = (bcd_t *)mallocq(nl);
+  idpar[0] = (bcd_t)ndbcd;
   strcpy(titl, "0123456789");
   itmp = getpar(luvar, luout, &nfit, &npar, idpar, par, derv, titl, 0);
-  ndel = (unsigned) (nfit + 1);
+  ndel = (unsigned)(nfit + 1);
   if (nfit > nsize_p || nfit <= 0) {
     puts(" memory allocation error for var matrix");
     exit(EXIT_FAILURE);
   }
   if ((nfit & 1) == 0) {
-    nlsq = (size_t) ((unsigned) nfit >> 1) * sizeof(double);
-    nlsq *= (size_t) ndel;
+    nlsq = (size_t)((unsigned)nfit >> 1) * sizeof(double);
+    nlsq *= (size_t)ndel;
   } else {
-    nlsq = (size_t) ((unsigned) ndel >> 1) * sizeof(double);
-    nlsq *= (size_t) nfit;
+    nlsq = (size_t)((unsigned)ndel >> 1) * sizeof(double);
+    nlsq *= (size_t)nfit;
   }
-  var = (double *) mallocq(nlsq);
+  var = (double *)mallocq(nlsq);
   getvar(luvar, nfit, var, idpar, derv, itmp);
-  fclose(luvar);                /* close .VAR file */
+  fclose(luvar); /* close .VAR file */
   nbkpj = lblk;
   i = nsize_p;
   fprintf(luout, "IQNFMT = %d\n", iqnfmt);
   setblk(luout, npar, idpar, par, &nbkpj, &i);
-  maxdm = (unsigned) i;
+  maxdm = (unsigned)i;
   inblk = nbkpj * inblk + 1;
   lblk = nbkpj * (lblk + 1);
-  nl = (size_t) maxdm * sizeof(double);
-  pmix = (double *) mallocq(nl);
+  nl = (size_t)maxdm * sizeof(double);
+  pmix = (double *)mallocq(nl);
   pmix[0] = 1.;
-  nl *= (size_t) maxdm;
-  s = (double **) mallocq((size_t) npdip * sizeof(double *));
-  s[0] = (double *) mallocq(nl);
+  nl *= (size_t)maxdm;
+  s = (double **)mallocq((size_t)npdip * sizeof(double *));
+  s[0] = (double *)mallocq(nl);
   for (k = 1; k < npdip; ++k) {
-    s[k] = (double *) mallocq(nl);
+    s[k] = (double *)mallocq(nl);
   }
   /* set up DIAG,NSAV */
   setint(luout, &diag, &nsav, ndip, idip, isimag);
   if (prstr) {
-    k = 0; i = nvdip[0]; ij = 0;
+    k = 0;
+    i = nvdip[0];
+    ij = 0;
     /* check dipole moments */
     for (j = 1; j < ndip; ++j) {
       if (j == i) { /* new set */
@@ -352,14 +354,14 @@ int main(int argc, char* argv[])
       } else if (isimag[j] != isimag[k]) {
         if (isimag[k] < 0) {
           isimag[k] = isimag[j];
-        } else if (isimag[j] >= 0) {   
+        } else if (isimag[j] >= 0) {
           ++ij;
         }
       }
       ibcd += NDECDIP;
     }
     if (ij > 0)
-      fputs(" mixed magnetic and electric dipoles in str file\n",luout);
+      fputs(" mixed magnetic and electric dipoles in str file\n", luout);
   }
   nsav = (nsav + 1) * nbkpj;
   if (diag && (ifdump || maxdm == 1))
@@ -368,33 +370,33 @@ int main(int argc, char* argv[])
     preig = diag;
   /* set block structure */
   blk = sblk_alloc(nsav + 1, maxdm);
-  nl = (size_t) maxdm;
-  nl = ((size_t) ndel + nl) * nl;
+  nl = (size_t)maxdm;
+  nl = ((size_t)ndel + nl) * nl;
   maxmem(&nlsq);
   nlsq = nlsq / nl;
   nbsav = nsav;
-  if (nlsq < (size_t) nbsav)
-    nbsav = (int) nlsq;
+  if (nlsq < (size_t)nbsav)
+    nbsav = (int)nlsq;
   nlsq = nl * sizeof(double);
 #ifdef NDHEAPC
-#if    NDHEAPC
-  nl = (size_t) NDHEAPC;
+#if NDHEAPC
+  nl = (size_t)NDHEAPC;
   nl = nl / nlsq;
-  if (nl < (size_t) nbsav)
-    nbsav = (int) nl;
+  if (nl < (size_t)nbsav)
+    nbsav = (int)nl;
 #endif
 #endif
   if (nbsav < 2)
     nbsav = 2;
-  nl = (size_t) maxdm *sizeof(double);
+  nl = (size_t)maxdm * sizeof(double);
   /* initialize block structure */
-  nlsq = nl * (size_t) maxdm;
-  nl *= (size_t) ndel;
+  nlsq = nl * (size_t)maxdm;
+  nl *= (size_t)ndel;
   pblk = blk;
   for (i = 0; i <= nbsav; ++i) {
-    pblk->egyblk = (double *) mallocq(nl);
-    if (diag) {                 /* allocate eigenvector space */
-      pblk->eigblk = (double *) mallocq(nlsq);
+    pblk->egyblk = (double *)mallocq(nl);
+    if (diag) { /* allocate eigenvector space */
+      pblk->eigblk = (double *)mallocq(nlsq);
     }
     ++pblk;
   }
@@ -403,7 +405,7 @@ int main(int argc, char* argv[])
   /*  set up intensity constants */
   tmc = -tmc;
   tmq = tmc / (tmq * cmc);
-  tmql = tmq * 0.43429448;      /*  tmql= log10(exp(1))*tmq */
+  tmql = tmq * 0.43429448; /*  tmql= log10(exp(1))*tmq */
   thrsh1 -= 10.9542425;
   starg = thrsh - log10(fqmax * fac);
   scomp = -38;
@@ -426,7 +428,7 @@ int main(int argc, char* argv[])
         break;
       pblk = blk;
       jblk = iblk + nbkpj - nsav;
-      for (i = 0; i <= nsav; ++i) {     /* free blocks not needed */
+      for (i = 0; i <= nsav; ++i) { /* free blocks not needed */
         if (pblk->ixblk < jblk)
           pblk->ixblk = 0;
         ++pblk;
@@ -442,10 +444,10 @@ int main(int argc, char* argv[])
     getqn(iblk, 0, 0, iqni, &isiz);
     if (isiz <= 0)
       continue;
-    if ((unsigned) isiz > maxdm)
+    if ((unsigned)isiz > maxdm)
       break;
     pblk->ixblk = iblk;
-    pblk->nsizblk = (unsigned) isiz;
+    pblk->nsizblk = (unsigned)isiz;
     teig = NULL;
     if (diag)
       teig = pblk->eigblk;
@@ -469,23 +471,24 @@ int main(int argc, char* argv[])
       if (ifdump)
         kbgn = i;
       getqn(iblk, i + 1, nqn, iqni, &idgn);
-      if (idgn <= 0) 
+      if (idgn <= 0)
         continue;
       iv = iqni[iposv];
       if (iv > maxv)
         continue;
       if (i == 0 && nfmt > 1 && iv < nfmt) {
-        iqnfmt = iqnfmtv[iv]; newfmt = iqnfmtv[iv + nfmt];
+        iqnfmt = iqnfmtv[iv];
+        newfmt = iqnfmtv[iv + nfmt];
       }
       if (globfmt != 0) {
         ktsp = -1;
-        if (newfmt != 0) 
+        if (newfmt != 0)
           ktsp = iqni[nqn - 2];
         getqn(iblk, i + 1, maxqn, iqni, &idgn);
       }
-      if (diag) {   /* check if eigenvector is zero */
+      if (diag) { /* check if eigenvector is zero */
         if (fabs(teigp[i]) < 0.01) {
-          k = (int) idamax(isiz, teigp, 1);
+          k = (int)idamax(isiz, teigp, 1);
           if (fabs(teigp[k]) < 0.01)
             idgn = 0;
         }
@@ -496,7 +499,7 @@ int main(int argc, char* argv[])
       if (err > bigerr)
         err = bigerr;
       egx = egy[i] / cmc;
-      if (egymin > egx) {     /*  adjust energy zero */
+      if (egymin > egx) { /*  adjust energy zero */
         te = tmc * (egymin - egx);
         egymin = egx;
         for (k = 0; k < ntemp; ++k) {
@@ -508,7 +511,7 @@ int main(int argc, char* argv[])
       }
       /*  accumulate partition function values */
       te = tmc * (egx - egymin);
-      dgn = (double) idgn;
+      dgn = (double)idgn;
       for (k = 0; k < ntemp; ++k) {
         tmp = te / temp[k];
         if (tmp < telim)
@@ -516,22 +519,22 @@ int main(int argc, char* argv[])
         qsum[k] += dgn * exp(tmp);
       }
       if (prfrq) {
-        fprintf(luout, "%6d %4d %17.6f %17.6f %10.6f",
-                iblk, i + 1, egx, err, pmix[i]);
-        if (globfmt != 0) 
+        fprintf(luout, "%6d %4d %17.6f %17.6f %10.6f", iblk, i + 1, egx, err,
+                pmix[i]);
+        if (globfmt != 0)
           fprintf(luout, " (%3d)", ktsp);
         for (k = 0; k < maxqn; ++k) {
-          fprintf(luout, "%3d", (int) iqni[k]);
+          fprintf(luout, "%3d", (int)iqni[k]);
         }
         fputc('\n', luout);
       }
       if (pregy) {
-        fprintf(luegy, "%6d %4d %17.6f %17.6f %10.6f %4d:",
-                iblk, i + 1, egx, err, pmix[i], idgn);
-        if (globfmt != 0) 
+        fprintf(luegy, "%6d %4d %17.6f %17.6f %10.6f %4d:", iblk, i + 1, egx,
+                err, pmix[i], idgn);
+        if (globfmt != 0)
           fprintf(luegy, "(%3d)", ktsp);
         for (k = 0; k < maxqn; ++k) {
-          fprintf(luegy, "%3d", (int) iqni[k]);
+          fprintf(luegy, "%3d", (int)iqni[k]);
         }
         fputc('\n', luegy);
       }
@@ -565,11 +568,11 @@ int main(int argc, char* argv[])
       }
     }
     jblk = 0;
-    do {                        /* loop over previous blocks for intensity */
+    do { /* loop over previous blocks for intensity */
       jnxt = iblk + 1;
       pblk = blk;
       jj = 0;
-      for (j = 0; j <= nsav; ++j) {     /*  find oldest block .GT. jblk */
+      for (j = 0; j <= nsav; ++j) { /*  find oldest block .GT. jblk */
         jx = pblk->ixblk;
         if (jx > jblk && jx < jnxt) {
           jnxt = jx;
@@ -579,16 +582,16 @@ int main(int argc, char* argv[])
       }
       jblk = jnxt;
       pblk = ibufof(jj, ndel, blk);
-      jsiz = (int) pblk->nsizblk;
+      jsiz = (int)pblk->nsizblk;
       teigp = pblk->eigblk;
       if (teigp == NULL)
         teigp = s[0];
       idgn = 0;
       ij = 0;
-      for (i = 0; i < npdip; ++i) {     /*  get intensity */
+      for (i = 0; i < npdip; ++i) { /*  get intensity */
         sij = s[i];
-        idf = intens(iblk, isiz, jblk, jsiz, nvdip[i],
-                     &idip[ij * NDECDIP], &dip[ij], sij);
+        idf = intens(iblk, isiz, jblk, jsiz, nvdip[i], &idip[ij * NDECDIP],
+                     &dip[ij], sij);
         if (idf != 0) {
           if (diag)
             simt(isiz, jsiz, sij, teig, teigp, pmix);
@@ -599,11 +602,11 @@ int main(int argc, char* argv[])
       }
       if (idgn <= 0)
         continue;
-      dgnf = (double) idgn;
+      dgnf = (double)idgn;
       egyp = pblk->egyblk;
       if (egyp == NULL)
         continue;
-      idf = (int) maxdm;
+      idf = (int)maxdm;
       jmax = jsiz;
       for (i = 0; i < isiz; ++i) {
         getqn(iblk, i + 1, nqn, iqni, &idgn);
@@ -616,7 +619,7 @@ int main(int argc, char* argv[])
           if (i - j + idf < 0)
             break;
           getqn(jblk, j + 1, nqn, &iqni[MAXQN], &jdgn);
-          if (jdgn <= 0 || iqni[iposv + MAXQN] > (short) maxv)
+          if (jdgn <= 0 || iqni[iposv + MAXQN] > (short)maxv)
             continue;
           frq = egy[i] - egyp[j];
           ixdp = i;
@@ -642,20 +645,22 @@ int main(int argc, char* argv[])
           }
           ioff = isiz;
           ioff = i + ioff * j;
-          strr = 0.; strq = 0.;
+          strr = 0.;
+          strq = 0.;
           for (ij = 0; ij < npdip; ++ij) {
             sij = s[ij];
             str = sij[ioff];
-            dvec[ij] = str; 
+            dvec[ij] = str;
             strr += str;
             strq += str * str;
           }
           if (strq > stcomp) {
             for (ij = 0; ij < npdip; ++ij) {
               str = dvec[ij];
-              if (isneg != 0 && isimag[ij] > 0) str = -str;
-              fprintf(lustr, "%15.4f%15.6E %4d %s %4d\n", frq, str,
-                      iqnfmt, sqn, ij + 1);
+              if (isneg != 0 && isimag[ij] > 0)
+                str = -str;
+              fprintf(lustr, "%15.4f%15.6E %4d %s %4d\n", frq, str, iqnfmt, sqn,
+                      ij + 1);
             }
           }
           strr *= strr;
@@ -683,30 +688,31 @@ int main(int argc, char* argv[])
             err = bigerr;
           elow /= cmc;
           if (first) {
-            fputs(" FREQUENCY-EST.ERROR.-LINE.STR. DIP**2-LGSTR.-ITD,",
-                  luout);
+            fputs(" FREQUENCY-EST.ERROR.-LINE.STR. DIP**2-LGSTR.-ITD,", luout);
             fputs("-GUP-I.D.-QNFORM-QUANTUM NUMBERS\n", luout);
             first = FALSE;
           }
           if (prfrq) {
-            fprintf(luout, "%13.4f %8.4f %12.5E %8.4f %2d",
-                    frq, err, strr, strlg, itd);
-            fprintf(luout, "%10.4f %3d %7ld %4d %s\n",
-                    elow, igup, itag, iqnfmt, sqn);
+            fprintf(luout, "%13.4f %8.4f %12.5E %8.4f %2d", frq, err, strr,
+                    strlg, itd);
+            fprintf(luout, "%10.4f %3d %7ld %4d %s\n", elow, igup, itag, iqnfmt,
+                    sqn);
           }
           ++nline;
-          gupfmt(igup, sgup); sgup[3] = '\0';
+          gupfmt(igup, sgup);
+          sgup[3] = '\0';
           if (prir) {
-            fprintf(lucat, "%13.6f%8.6f%8.4f%2d%10.4f%s%7ld%4d",
-                    frq, err, strlg, itd, elow, sgup, itag, iqnfmt);
+            fprintf(lucat, "%13.6f%8.6f%8.4f%2d%10.4f%s%7ld%4d", frq, err,
+                    strlg, itd, elow, sgup, itag, iqnfmt);
           } else if (frq < 99999999.) {
-            fprintf(lucat, "%13.4f%8.4f%8.4f%2d%10.4f%s%7ld%4d",
-                    frq, err, strlg, itd, elow, sgup, itag, iqnfmt);
+            fprintf(lucat, "%13.4f%8.4f%8.4f%2d%10.4f%s%7ld%4d", frq, err,
+                    strlg, itd, elow, sgup, itag, iqnfmt);
           } else {
-            fprintf(lucat, "%13.3f%8.3f%8.3f%2d%10.4f%s%7ld%4d",
-                    frq, err, strlg, itd, elow, sgup, itag, iqnfmt);
+            fprintf(lucat, "%13.3f%8.3f%8.3f%2d%10.4f%s%7ld%4d", frq, err,
+                    strlg, itd, elow, sgup, itag, iqnfmt);
           }
-          fputs(sqn,lucat); fputc('\n',lucat);
+          fputs(sqn, lucat);
+          fputc('\n', lucat);
         }
       }
     } while (jblk != iblk);
@@ -720,26 +726,26 @@ int main(int argc, char* argv[])
     fputs(warn, stdout);
     fputs(warn, luout);
   }
-  printf(       "INITIAL Q = %14.4f, NEW Q IS RELATIVE TO MIN.EGY.= %14.4f\n",
-                qrot, egymin);
-  fprintf(luout,"INITIAL Q = %14.4f, NEW Q IS RELATIVE TO MIN.EGY.= %14.4f\n",
+  printf("INITIAL Q = %14.4f, NEW Q IS RELATIVE TO MIN.EGY.= %14.4f\n", qrot,
+         egymin);
+  fprintf(luout, "INITIAL Q = %14.4f, NEW Q IS RELATIVE TO MIN.EGY.= %14.4f\n",
           qrot, egymin);
   printf(" NUMBER OF LINES = %6ld\n", nline);
-  fprintf(luout," NUMBER OF LINES = %6ld\n", nline);
+  fprintf(luout, " NUMBER OF LINES = %6ld\n", nline);
   fputs(headq, stdout);
   fputs(headq, luout);
   for (i = 0; i < ntemp; ++i) {
     qlog = -100;
     if (qsum[i] > zero)
       qlog = log10(qsum[i]);
-    printf(       " %10.3f %14.4f %9.4f\n", temp[i], qsum[i], qlog);
-    fprintf(luout," %10.3f %14.4f %9.4f\n", temp[i], qsum[i], qlog);
+    printf(" %10.3f %14.4f %9.4f\n", temp[i], qsum[i], qlog);
+    fprintf(luout, " %10.3f %14.4f %9.4f\n", temp[i], qsum[i], qlog);
   }
   if (pregy)
     fclose(luegy);
   if (prstr)
     fclose(lustr);
-  setblk(luout, 0, idpar, par, &nbkpj, &i);     /* release storage */
+  setblk(luout, 0, idpar, par, &nbkpj, &i); /* release storage */
   fclose(luout);
   fclose(lucat);
   /* free up memory */
@@ -755,7 +761,8 @@ int main(int argc, char* argv[])
   free(blk);
   sij = NULL;
   for (i = 0; i < npdip; ++i) {
-    free(s[i]); s[i] = NULL;
+    free(s[i]);
+    s[i] = NULL;
   }
   free(s);
   free(pmix);
@@ -765,22 +772,20 @@ int main(int argc, char* argv[])
   free(derv);
   free(par);
   free(iqnfmtv);
-  free(idip); 
-  free(isimag); 
+  free(idip);
+  free(isimag);
   free(nvdip);
   free(dip);
   free(dvec);
   /* sort cat file */
   sortn(fname[ecat], fname[ecat], FALSE);
   return 0;
-}                               /* main */
+} /* main */
 
-int qnfmt(iqu, nqn, sqn)
-short *iqu;
-int nqn;
-char *sqn;
-{ /* subroutine to do quick conversion of quantum integers to characters */
-  static int czero = (int) '0';
+int qnfmt(short *iqu, int nqn,
+          char *sqn) { /* subroutine to do quick conversion of quantum integers
+                          to characters */
+  static int czero = (int)'0';
   int i, k, ix;
   char tqn1, tqn2;
 
@@ -790,24 +795,24 @@ char *sqn;
       i = -i;
       ix = i / 10;
       i -= ix * 10;
-      tqn1 = (char) (i + czero);
+      tqn1 = (char)(i + czero);
       if (ix == 0) {
         tqn2 = '-';
       } else if (ix < 27) {
-        tqn2 = (char) (ix + ((int) 'a' - 1));
+        tqn2 = (char)(ix + ((int)'a' - 1));
       } else {
         tqn1 = tqn2 = '*';
       }
     } else {
       ix = i / 10;
       i -= ix * 10;
-      tqn1 = (char) (i + czero);
+      tqn1 = (char)(i + czero);
       if (ix == 0) {
         tqn2 = ' ';
       } else if (ix < 10) {
-        tqn2 = (char) (ix + czero);
+        tqn2 = (char)(ix + czero);
       } else if (ix < 36) {
-        tqn2 = (char) (ix + ((int) 'A' - 10));
+        tqn2 = (char)(ix + ((int)'A' - 10));
       } else {
         tqn1 = tqn2 = '*';
       }
@@ -817,12 +822,9 @@ char *sqn;
     sqn[ix + 1] = tqn1;
   }
   return 0;
-}                               /* qnfmt */
+} /* qnfmt */
 
-int simt(isiz, jsiz, s, t, u, wk)
-int isiz, jsiz;
-double *s, *t, *u, *wk;
-{
+int simt(int isiz, int jsiz, double *s, double *t, double *u, double *wk) {
   int i, j;
   double *sij, *si, *tc, *uc;
   /*    subroutine to do similarity transform */
@@ -839,7 +841,7 @@ double *s, *t, *u, *wk;
       }
     }
   }
-  if (jsiz > 1 && u != NULL) {  /* do transform on the right */
+  if (jsiz > 1 && u != NULL) { /* do transform on the right */
     si = s;
     for (i = 0; i < isiz; ++i) {
       dcopy(jsiz, si, isiz, wk, 1);
@@ -854,13 +856,9 @@ double *s, *t, *u, *wk;
     }
   }
   return 0;
-}                               /* simt */
+} /* simt */
 
-SBLK *ibufof(ipos, ndel, blk)
-const int ipos;
-const unsigned int ndel;
-SBLK *blk;
-{
+SBLK *ibufof(const int ipos, const unsigned int ndel, SBLK *blk) {
   /* Initialized data */
   static FILE *scratch;
   static long maxrec, lsizb;
@@ -881,11 +879,11 @@ SBLK *blk;
   k = mempos;
   mempos = 0;
   pmblk = blk;
-  while (pmblk->ixblk > 0) {    /* find first empty block */
+  while (pmblk->ixblk > 0) { /* find first empty block */
     ++mempos;
     ++pmblk;
   }
-  if (pmblk->egyblk == NULL) {  /* write memory contents to disk */
+  if (pmblk->egyblk == NULL) { /* write memory contents to disk */
     if (maxrec == 0) {
       scratch = tmpfile();
       if (scratch == NULL) {
@@ -894,12 +892,12 @@ SBLK *blk;
       }
       nbsav = mempos;
       maxdm = pmblk->nsizblk;
-      ldisk = (long) ndel;
+      ldisk = (long)ndel;
       if (blk->eigblk != NULL)
-        ldisk += (long) maxdm;
-      lsizb = (long) maxdm *ldisk * (int) sizeof(double);
+        ldisk += (long)maxdm;
+      lsizb = (long)maxdm * ldisk * (int)sizeof(double);
     }
-    ldisk = (long) (mempos - nbsav);
+    ldisk = (long)(mempos - nbsav);
     if (ldisk != 0)
       ldisk *= lsizb;
     fseek(scratch, ldisk, SEEK_SET);
@@ -910,28 +908,27 @@ SBLK *blk;
       mempos = (orgpos != 0) ? 0 : 1;
     pdblk = pmblk;
     pmblk = &blk[mempos];
-    len = (long) ndel;
-    n = (long) pmblk->nsizblk;
+    len = (long)ndel;
+    n = (long)pmblk->nsizblk;
     len *= n;
     pvec = pmblk->egyblk;
     lret = 0;
     if (pvec != NULL) {
-      lret = (long) fwrite(pvec, sizeof(double), (size_t) len, scratch);
+      lret = (long)fwrite(pvec, sizeof(double), (size_t)len, scratch);
       if (lret == len && pmblk->eigblk != NULL) {
         if (ldisk == maxrec)
-          n = (long) maxdm;
+          n = (long)maxdm;
         len = n * n;
-        lret = (long) fwrite(pmblk->eigblk, sizeof(double), (size_t) len,
-                             scratch);
+        lret =
+            (long)fwrite(pmblk->eigblk, sizeof(double), (size_t)len, scratch);
       }
       if (ldisk == maxrec && lret == len) {
         /*  fill in gaps with junk FIRST time */
-        n = (long) maxdm - (long) pmblk->nsizblk;
-        len = (long) ndel;
+        n = (long)maxdm - (long)pmblk->nsizblk;
+        len = (long)ndel;
         if (n > 0) {
           len *= n;
-          lret =
-              (long) fwrite(pvec, sizeof(double), (size_t) len, scratch);
+          lret = (long)fwrite(pvec, sizeof(double), (size_t)len, scratch);
         }
         maxrec += lsizb;
       }
@@ -946,22 +943,22 @@ SBLK *blk;
   }
   if (ipos < 0) {
     orgpos = mempos;
-  } else {                      /* read from disk */
-    ldisk = (long) (ipos - nbsav);
+  } else { /* read from disk */
+    ldisk = (long)(ipos - nbsav);
     if (ldisk != 0)
       ldisk *= lsizb;
     fseek(scratch, ldisk, SEEK_SET);
     pdblk = &blk[ipos];
-    len = (long) ndel;
-    n = (long) pdblk->nsizblk;
+    len = (long)ndel;
+    n = (long)pdblk->nsizblk;
     len *= n;
     pvec = pmblk->egyblk;
     lret = 0;
     if (pvec != NULL) {
-      lret = (long) fread(pvec, sizeof(double), (size_t) len, scratch);
+      lret = (long)fread(pvec, sizeof(double), (size_t)len, scratch);
       if (lret == len && (pvec = pmblk->eigblk) != NULL) {
         len = n * n;
-        lret = (long) fread(pvec, sizeof(double), (size_t) len, scratch);
+        lret = (long)fread(pvec, sizeof(double), (size_t)len, scratch);
       }
     }
     if (lret != len) {
@@ -973,15 +970,12 @@ SBLK *blk;
     pdblk->ixblk = 0;
   }
   return pmblk;
-}                               /* ibufof */
+} /* ibufof */
 
-SBLK *sblk_alloc(nstruct, mxdem)
-const int nstruct;
-const unsigned mxdem;
-{
+SBLK *sblk_alloc(const int nstruct, const unsigned mxdem) {
   SBLK *pret, *pblk;
   int k;
-  pret = (SBLK *) mallocq((size_t) nstruct * sizeof(SBLK));
+  pret = (SBLK *)mallocq((size_t)nstruct * sizeof(SBLK));
   pblk = pret;
   k = nstruct;
   do {
@@ -993,4 +987,3 @@ const unsigned mxdem;
   } while (--k > 0);
   return pret;
 }
-

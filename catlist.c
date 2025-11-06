@@ -1,10 +1,9 @@
+#include "catread.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "catread.h"
 
-main()
-{
-/*      PROGRAM TO LIST CATALOG BETWEEN FREQUENCY LIMITS */
+int main(void) {
+  /*      PROGRAM TO LIST CATALOG BETWEEN FREQUENCY LIMITS */
   char fqhi[16], buf[82], *molnam, fqlow[16], resp, *xtra, line[82];
   double c, freq, err, dfqlow, dfqhi;
   FILE *flist;
