@@ -4,14 +4,16 @@
 
 /*   Herbert M. Pickett, 20 March 1989 */
 #define MAXITOT 6
-typedef struct {
+typedef struct
+{
   /*@dependent@*/ double *eigvec;
   /*@dependent@*/ short *qsym;
   /*@dependent@*/ short *offset;
   /*@dependent@*/ short *qn;
   int n, neven;
 } EITMIX;
-typedef struct str_itmix {
+typedef struct str_itmix
+{
   /*@null@*/ /*@owned@*/ struct str_itmix *next;
   /*@owned@*/ double *eigvecv;
   /*@owned@*/ short *qnv;
@@ -20,7 +22,8 @@ typedef struct str_itmix {
   int ii, neqi, nitot;
 } ITMIX;
 
-typedef struct str_itot {
+typedef struct str_itot
+{
   /*@null@*/ /*@owned@*/ struct str_itot *next;
   double *val;
   int *ioff;
@@ -28,10 +31,10 @@ typedef struct str_itot {
   int ii, ltot, lv1, lv2, neqi;
 } SITOT;
 
-int tensor(double *z, const int *iscom, const int *jscom, const int *lscom,
-           const int *smap, int npair, int alpha);
-void getzitot(double *z, int lls, int ii, const int *lscom, const int *iscom,
-              const int *jscom, int alpha, int neqi);
-void setzitot(int lv1, int lv2, int ltot, int ii, int neqi);
+int tensor (double *z, const int *iscom, const int *jscom, const int *lscom,
+            const int *smap, int npair, int alpha);
+void getzitot (double *z, int lls, int ii, const int *lscom, const int *iscom,
+               const int *jscom, int alpha, int neqi);
+void setzitot (int lv1, int lv2, int ltot, int ii, int neqi);
 /*@dependent@*/ /*@null@*/
-ITMIX *get_itmix(const int ii, const int nitot);
+ITMIX *get_itmix (const int ii, const int nitot);

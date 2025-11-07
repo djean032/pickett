@@ -1,13 +1,13 @@
-int lsqfit(double *dk, int ndm, int nr, int nvec, double *marqp, double *varv,
-           /*@out@*/ double *dkold,
-           /*@out@*/ double *ediag, /*@out@*/ double *enorm,
-           /*@out@*/ int *iperm);
-int jelim(double *dk, double *vec, int ndm, int nc, int nvec);
-int dqrfac(double *dk, int ndm, int nc, int nr, int nvec,
-           /*@out@*/ double *wk, /*@out@*/ int *iperm);
-int dqrsolv(double *dk, int ndm, int nrank, int nr, int nvec, int *iperm);
-int lmpar(int nr, int nc, int nvec, double *r, int ldr, /*@out@*/ double *x,
-          double *par, /*@out@*/ double *wk);
+int lsqfit (double *dk, int ndm, int nr, int nvec, double *marqp, double *varv,
+            /*@out@*/ double *dkold,
+            /*@out@*/ double *ediag, /*@out@*/ double *enorm,
+            /*@out@*/ int *iperm);
+int jelim (double *dk, double *vec, int ndm, int nc, int nvec);
+int dqrfac (double *dk, int ndm, int nc, int nr, int nvec,
+            /*@out@*/ double *wk, /*@out@*/ int *iperm);
+int dqrsolv (double *dk, int ndm, int nrank, int nr, int nvec, int *iperm);
+int lmpar (int nr, int nc, int nvec, double *r, int ldr, /*@out@*/ double *x,
+           double *par, /*@out@*/ double *wk);
 
 /* nc is the number of columns (number of experiments) */
 /* nr is the number of rows (number of fitted parameters) */

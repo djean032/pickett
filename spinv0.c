@@ -116,8 +116,8 @@
 
 #define MAXNS 20 /* 2 * NSPINS + 2 */
 
-#define MNSQ                                                                   \
-  2 /* bit for operator which is different from previous by                    \
+#define MNSQ                                                                  \
+  2 /* bit for operator which is different from previous by                   \
              only N*(N+1) */
 
 #define MCOS_OK 4 /* bit for operator which uses cosine from previous */
@@ -158,7 +158,8 @@
 
 /* Common Declarations */
 
-typedef struct { /* vibrational information */
+typedef struct
+{ /* vibrational information */
 
   /*@dependent@*/ short *spt;
 
@@ -172,7 +173,8 @@ static SVIB vinfo1;
 
 /*@owned@*/ static SVIB *vinfo = &vinfo1;
 
-typedef struct str_spar { /* local parameter information */
+typedef struct str_spar
+{ /* local parameter information */
 
   /*@null@*/ /*@owned@*/ struct str_spar *next;
 
@@ -194,9 +196,10 @@ typedef /*@null@*/ /*@owned@*/ SPAR *PSPAR;
 
 static PSPAR spar_head[MAXVIB];
 
-static short sptzero[] = {1, 0}; /* default for no spins */
+static short sptzero[] = { 1, 0 }; /* default for no spins */
 
-typedef struct struct_ssp {
+typedef struct struct_ssp
+{
 
   /*@null@*/ /*@owned@*/ /*@reldef@*/ struct struct_ssp *next;
 
@@ -206,15 +209,17 @@ typedef struct struct_ssp {
 
 } SSP;
 
-static SSP ssp_head = {NULL, sptzero, 1, 0};
+static SSP ssp_head = { NULL, sptzero, 1, 0 };
 
-static struct { /* save data for getqn */
+static struct
+{ /* save data for getqn */
 
   int cblk, cnblk, csblk, cff, cwt[5];
 
 } *cgetq, cgetv[2];
 
-typedef struct { /* local dipole information */
+typedef struct
+{ /* local dipole information */
 
   double fac;
 
@@ -242,9 +247,9 @@ static int zivs = 0;
 
 static int zipder = 0;
 
-static int revsym[] = {0, 3, 2, 1};
+static int revsym[] = { 0, 3, 2, 1 };
 
-static int isoddk[] = {0, 1, 1, 0};
+static int isoddk[] = { 0, 1, 1, 0 };
 
 static int is_esym[MAXITOT];
 
@@ -264,7 +269,8 @@ static short zibkptr = 0;
 
 static short zikmin = 0;
 
-static struct {
+static struct
+{
 
   int mxspin, idiag, nvib, nfit, nbkpj, ixz, nqnn, nqn, maxqn, vibfac;
 
@@ -290,137 +296,138 @@ static char sbcd[NSBCD];
 
 /*@owned@*/ static short *idx, *jdx, *ibkptr, *ikmin;
 
-int dclr(const int n1, const int n2, double *vec, const int ix);
+int dclr (const int n1, const int n2, double *vec, const int ix);
 
-int specop(const int neuler, BOOL *newblk, int *nsqj, int *ikq,
+int specop (const int neuler, BOOL *newblk, int *nsqj, int *ikq,
 
-           const int ksi, const int ksj, const int ni, const int nj,
+            const int ksi, const int ksj, const int ni, const int nj,
 
-           const int ncos, double *wk, const short *ix,
+            const int ncos, double *wk, const short *ix,
 
-           const short *jx, const double par);
+            const short *jx, const double par);
 
-int specfc(const int ifc, const int iv, const int jv,
+int specfc (const int ifc, const int iv, const int jv,
 
-           const int kdel, const int ksi, const int ksj,
+            const int kdel, const int ksi, const int ksj,
 
-           const int ncos, double *wk, const short *ix,
+            const int ncos, double *wk, const short *ix,
 
-           const short *jx);
+            const short *jx);
 
-int sznzfix(const int sznz, const int ni, const int nj, int *ixcom,
+int sznzfix (const int sznz, const int ni, const int nj, int *ixcom,
 
-            int *jxcom, int *iscom, int *jscom);
+             int *jxcom, int *iscom, int *jscom);
 
-int sznzop(const int ni, const int nj, const int ksi, const int ksj,
+int sznzop (const int ni, const int nj, const int ksi, const int ksj,
 
-           const int *iscom, const int *jscom, const int ncos,
+            const int *iscom, const int *jscom, const int ncos,
 
-           double *wk, const short *ix, const short *jx);
+            double *wk, const short *ix, const short *jx);
 
-unsigned int blksym(const int *ixcom, const int *jxcom);
+unsigned int blksym (const int *ixcom, const int *jxcom);
 
-int ordham(const int nn, double *egy, const short *isblk,
+int ordham (const int nn, double *egy, const short *isblk,
 
-           short *iswap);
+            short *iswap);
 
-int fixham(const int ndm, const int nn, double *t, double *egy,
+int fixham (const int ndm, const int nn, double *t, double *egy,
 
-           double *p, const short *iswap);
+            double *p, const short *iswap);
 
-BOOL kroll(const int nsizd, double *t, const int nsblk,
+BOOL kroll (const int nsizd, double *t, const int nsblk,
 
-           const short *sbkptr, const short *kmin);
+            const short *sbkptr, const short *kmin);
 
-int getqs(const int mvs, const int iff, const int nsiz, const int kbgn,
+int getqs (const int mvs, const int iff, const int nsiz, const int kbgn,
 
-          /*@out@*/ int *ixcom, /*@out@*/ int *iscom, /*@out@*/ int *iv);
+           /*@out@*/ int *ixcom, /*@out@*/ int *iscom, /*@out@*/ int *iv);
 
-int idpars(SPAR *pspar, /*@out@*/ int *ksq, /*@out@*/ int *itp,
+int idpars (SPAR *pspar, /*@out@*/ int *ksq, /*@out@*/ int *itp,
 
-           /*@out@*/ int *l, /*@out@*/ int *ld, /*@out@*/ int *kdel,
+            /*@out@*/ int *l, /*@out@*/ int *ld, /*@out@*/ int *kdel,
 
-           /*@out@*/ int *ins, /*@out@*/ int *si1, /*@out@*/ int *si2,
+            /*@out@*/ int *ins, /*@out@*/ int *si1, /*@out@*/ int *si2,
 
-           /*@out@*/ int *sznz, /*@out@*/ int *ifc, /*@out@*/ int *alpha,
+            /*@out@*/ int *sznz, /*@out@*/ int *ifc, /*@out@*/ int *alpha,
 
-           /*@out@*/ int *ldel);
+            /*@out@*/ int *ldel);
 
-int getll(const int llf, const int ld, const int kd, const int lt,
+int getll (const int llf, const int ld, const int kd, const int lt,
 
-          const int si1, const int si2, int *lscom, const int *iscom,
+           const int si1, const int si2, int *lscom, const int *iscom,
 
-          const int *jscom);
+           const int *jscom);
 
-int getmask(const int *xbra, const int *xket, const int kd, const int ldel,
+int getmask (const int *xbra, const int *xket, const int kd, const int ldel,
 
-            const int loff, const int alpha);
+             const int loff, const int alpha);
 
-double rmatrx(const int ld, const int lv, const int *ixcom,
+double rmatrx (const int ld, const int lv, const int *ixcom,
 
-              const int *jxcom);
+               const int *jxcom);
 
-int symnsq(const int inq, const int ins, const int *iscom,
+int symnsq (const int inq, const int ins, const int *iscom,
 
-           const int *jscom, double *z);
+            const int *jscom, double *z);
 
-int symksq(const int ikq, const int ksi, const int ksj, const int n,
+int symksq (const int ikq, const int ksi, const int ksj, const int n,
 
-           double *wk, short *ix, short *jx);
+            double *wk, short *ix, short *jx);
 
-int dpmake(const int nsize, double *dp, const double *t,
+int dpmake (const int nsize, double *dp, const double *t,
 
-           const int n, const double *wk, const short *ix,
+            const int n, const double *wk, const short *ix,
 
-           const short *jx, const BOOL isunit);
+            const short *jx, const BOOL isunit);
 
-int pasort(FILE *lu, const int npar, bcd_t *idpar,
+int pasort (FILE *lu, const int npar, bcd_t *idpar,
 
-           const double *par);
+            const double *par);
 
-int idpari(bcd_t *idval, int itp, /*@out@*/ SPAR *pspar);
+int idpari (bcd_t *idval, int itp, /*@out@*/ SPAR *pspar);
 
-int checksp(const BOOL first, int si1, int si2, const short *iiv1,
+int checksp (const BOOL first, int si1, int si2, const short *iiv1,
 
-            const short *iiv2, double *zfac);
+             const short *iiv2, double *zfac);
 
-int setwt(SVIB *pvinfo, const int ivib, const int iax,
+int setwt (SVIB *pvinfo, const int ivib, const int iax,
 
-          const int iwtpl, const int iwtmn, double vsym);
+           const int iwtpl, const int iwtmn, double vsym);
 
-int getwt(SVIB *pvinfo, const int isym, const int iispin,
+int getwt (SVIB *pvinfo, const int isym, const int iispin,
 
-          /*@out@*/ int *ivwt);
+           /*@out@*/ int *ivwt);
 
-int setgsym(const int gsym);
+int setgsym (const int gsym);
 
-int getsp(const bcd_t *ispnx, SVIB *pvinfo);
+int getsp (const bcd_t *ispnx, SVIB *pvinfo);
 
-void setsp(void);
+void setsp (void);
 
-int getqq(const int iblk, /*@out@*/ int *f, /*@out@*/ int *iwtb,
+int getqq (const int iblk, /*@out@*/ int *f, /*@out@*/ int *iwtb,
 
-          /*@out@*/ short *sbkptr, /*@out@*/ short *kmin,
+           /*@out@*/ short *sbkptr, /*@out@*/ short *kmin,
 
-          /*@out@*/ int *vs);
+           /*@out@*/ int *vs);
 
-int dircos(const int *xbra, const int *xket, const int ld,
+int dircos (const int *xbra, const int *xket, const int ld,
 
-           const int kd, const int ncmax, /*@out@*/ double *direl,
+            const int kd, const int ncmax, /*@out@*/ double *direl,
 
-           /*@out@*/ short *ibra, /*@out@*/ short *iket,
+            /*@out@*/ short *ibra, /*@out@*/ short *iket,
 
-           const int ifup, const int loff, int mask,
+            const int ifup, const int loff, int mask,
 
-           /*@out@*/ BOOL *isunit);
+            /*@out@*/ BOOL *isunit);
 
-int ffcal(const int nff, const int kff, /*@out@*/ double *ff);
+int ffcal (const int nff, const int kff, /*@out@*/ double *ff);
 
 /*****************************************************************************/
 
-int hamx(const int iblk, const int nsize, const int npar, const bcd_t *idpar,
-         const double *par, double *egy, double *t, double *dedp, double *pmix,
-         const BOOL ifdump)
+int
+hamx (const int iblk, const int nsize, const int npar, const bcd_t *idpar,
+      const double *par, double *egy, double *t, double *dedp, double *pmix,
+      const BOOL ifdump)
 
 {
 
@@ -474,12 +481,13 @@ int hamx(const int iblk, const int nsize, const int npar, const bcd_t *idpar,
 
   BOOL newblk, firstpar;
 
-  if (ndmx <= 0) {
+  if (ndmx <= 0)
+    {
 
-    puts("working vectors not allocated");
+      puts ("working vectors not allocated");
 
-    exit(EXIT_FAILURE);
-  }
+      exit (EXIT_FAILURE);
+    }
 
   dbar = &wk[ndmx];
 
@@ -497,17 +505,17 @@ int hamx(const int iblk, const int nsize, const int npar, const bcd_t *idpar,
 
   itau = &ikmin[glob.maxblk];
 
-  nsblk = getqq(iblk, &iff, iiwt, ibkptr, ikmin, ivs);
+  nsblk = getqq (iblk, &iff, iiwt, ibkptr, ikmin, ivs);
 
   /* zero hamiltonian matrix */
 
-  dclr(nsize, nsize, t, 1);
+  dclr (nsize, nsize, t, 1);
 
   /* zero derivative matrix */
 
   n = glob.nfit;
 
-  dclr(nsize, n, dedp, 1);
+  dclr (nsize, n, dedp, 1);
 
   /* set up hamiltonian */
 
@@ -520,572 +528,648 @@ int hamx(const int iblk, const int nsize, const int npar, const bcd_t *idpar,
 
   first = TRUE;
 
-  do {
+  do
+    {
 
-    /* loop on wang blocks */
+      /* loop on wang blocks */
 
-    lastvv = 0;
-    newblk = TRUE;
-    egy0 = 0.;
+      lastvv = 0;
+      newblk = TRUE;
+      egy0 = 0.;
 
-    for (ixx = 0; ixx < nsblk; ++ixx) {
+      for (ixx = 0; ixx < nsblk; ++ixx)
+        {
 
-      ibase = ibkptr[ixx];
+          ibase = ibkptr[ixx];
 
-      n = ibkptr[ixx + 1] - ibase;
+          n = ibkptr[ixx + 1] - ibase;
 
-      kbgni = ikmin[ixx];
+          kbgni = ikmin[ixx];
 
-      ispn = ivs[ixx];
+          ispn = ivs[ixx];
 
-      getqs(ispn, iff, n, kbgni, ixcom, iscom, &ivbase);
+          getqs (ispn, iff, n, kbgni, ixcom, iscom, &ivbase);
 
-      ni = ixcom[XNVAL];
+          ni = ixcom[XNVAL];
 
-      /* set up itau */
+          /* set up itau */
 
-      ld = ixcom[XLVAL];
+          ld = ixcom[XLVAL];
 
-      if (ld == 0)
+          if (ld == 0)
 
-        ld = (ni + ixcom[XSYM]) & 1;
+            ld = (ni + ixcom[XSYM]) & 1;
 
+          else
+
+            ld = (ld > 0) ? 1 : 0;
+
+          kd = kbgni + kbgni - ld;
+
+          kd = kd + kd;
+
+          if (ivbase != ixcom[XVIB])
+
+            ++kd; /* upper l-doubled state */
+
+          itau[ixx] = (short)kd;
+
+          if (ni != nold)
+            { /* set up powers of N(N+1) */
+
+              nold = ni;
+
+              dn = (double)ni;
+
+              sqnn = dn * (ni + 1);
+
+              sqj[0] = 1;
+
+              for (i = 1; i <= nsqmax; ++i)
+                {
+
+                  sqj[i] = sqj[i - 1] * sqnn;
+                }
+            }
+
+          for (jxx = 0; jxx <= ixx; ++jxx)
+            { /*  set up sub-block quanta */
+
+              ijd = ixx - jxx;
+
+              jbase = ibkptr[jxx];
+
+              n = ibkptr[jxx + 1] - jbase;
+
+              kbgnj = ikmin[jxx];
+
+              jspn = ivs[jxx];
+
+              getqs (jspn, iff, n, kbgnj, jxcom, jscom, &jvbase);
+
+              nj = jxcom[XNVAL];
+
+              nd = ni - nj;
+
+              if (nd > ndmax)
+                continue;
+
+              ivmin = (ivbase < jvbase) ? ivbase : jvbase;
+
+              ivsym = (unsigned int)(ivbase + jvbase + ivmin * glob.vibfac)
+                      << 2;
+
+              ivcmp = ivsym + 3;
+              ivsym += blksym (ixcom, jxcom);
+
+              if (lastvv != ivcmp)
+                {
+
+                  newblk = TRUE;
+                  lastvv = ivcmp;
+                }
+
+              isegy0 = FALSE;
+              firstpar = TRUE;
+
+              for (spar_now = spar_head[ivmin]; TRUE;
+                   spar_now = spar_now->next)
+                {
+
+                  /* loop over parameters */
+
+                  idflags = 0;
+
+                  if (spar_now != NULL)
+                    {
+
+                      ivcmp = spar_now->ipsym;
+
+                      if (ODD (spar_now->euler))
+                        {
+
+                          if (ivcmp > lastvv)
+                            continue;
+
+                          if (ivcmp == lastvv)
+
+                            idflags = (int)spar_now->flags;
+                        }
+                      else
+                        {
+
+                          if (ivcmp > ivsym)
+                            continue;
+
+                          if (ivcmp == ivsym)
+
+                            idflags = (int)spar_now->flags;
+                        }
+                    }
+
+                  if ((idflags & MCOS_OK) == 0)
+                    { /* new cosine or end */
+
+                      if (oldpar)
+                        {
+
+                          /*  add diagonal or sub-diagonal to Hamiltonian */
+
+                          /*  using composite parameter value PBAR */
+
+                          if (isegy0)
+                            {
+
+                              egy0 += pbar;
+                            }
+                          else
+                            {
+
+                              if (isneg)
+
+                                pbar = -pbar;
+
+                              if (isunit)
+                                {
+
+                                  iz = idx[0];
+
+                                  jz = jdx[0];
+
+                                  pt = &t[jz * ndm];
+
+                                  for (i = 0; i < ncos; ++i)
+                                    {
+
+                                      pt[iz] += pbar;
+
+                                      iz += ndmd;
+                                    }
+                                }
+                              else
+                                {
+
+                                  for (i = 0; i < ncos; ++i)
+                                    {
+
+                                      iz = idx[i];
+
+                                      jz = jdx[i];
+
+                                      t[iz + jz * ndm] += pbar * wk[i];
+                                    }
+                                }
+                            }
+
+                          oldpar = FALSE;
+                        }
+
+                      if (idflags == 0)
+                        break; /* end loop over parameters */
+
+                      ncos = -1;
+                    }
+                  else
+                    { /* check if old cosine operator was zero */
+
+                      if (ncos == 0)
+                        continue;
+                    }
+
+                  if (spar_now == NULL)
+                    break;
+
+                  ipar = spar_now->ip;
+
+                  nsqj = (int)spar_now->njq;
+
+                  if ((idflags & MNSQ) != 0 && nd == 0)
+                    {
+
+                      /* sum parameters which are different only by N*(N+1) */
+
+                      if (parskp)
+                        continue; /* jump if mother operator was zero */
+                    }
+                  else
+                    { /*  new type of operator */
+
+                      parskp = TRUE;
+
+                      if (sznz < 0)
+
+                        sznzfix (sznz, ni, nj, ixcom, jxcom, iscom, jscom);
+
+                      kl = idpars (spar_now, &ikq, &neuler, &lt, &ld, &kd,
+                                   &ins,
+
+                                   &si1, &si2, &sznz, &ifc, &alpha, &ldel);
+
+                      if (sznz > 0)
+                        {
+
+                          sznz = sznzfix (sznz, ni, nj, ixcom, jxcom, iscom,
+                                          jscom);
+
+                          if (sznz == 0)
+                            continue; /* get next parameter */
+                        }
+
+                      mkd = getmask (ixcom, jxcom, kd, ldel, kl, alpha);
+
+                      if (mkd == 0)
+                        continue;
+
+                      /* test tensor compatability */
+
+                      npair = getll (0, ld, lt, kd, si1, si2, lscom, iscom,
+                                     jscom);
+
+                      if (npair < 0)
+                        continue;
+
+                      /* get direction cosines and K dependent part of operator
+                       */
+
+                      if (ncos < 0)
+                        {
+
+                          ncos = dircos (ixcom, jxcom, ld, kd, ndmx, wk, idx,
+                                         jdx,
+
+                                         ijd, kl, mkd, &isunit);
+
+                          if (ncos <= 0)
+                            {
+
+                              if (ncos == 0)
+                                continue; /* get next parameter */
+
+                              printf ("DIRCOS WORKING VECTOR TOO SHORT IN "
+                                      "HAMX BY %d\n",
+
+                                      ncos);
+
+                              exit (EXIT_FAILURE);
+                            }
+
+                          if ((idflags & MNOUNIT) != 0)
+
+                            isunit = FALSE;
+
+                          isgn = 1;
+
+                          if (isunit && wk[0] < 0.)
+
+                            isgn = -1;
+
+                          if (neuler != 0)
+                            { /*Euler operator */
+
+                              ncos = specop (
+                                  neuler, &newblk, &nsqj, &ikq, kbgni, kbgnj,
+
+                                  ni, nj, ncos, wk, idx, jdx, par[ipar]);
+
+                              if (ncos == 0)
+                                continue;
+                            }
+
+                          if (ifc != 0)
+
+                            specfc (ifc, ivbase, jvbase, kd, kbgni, kbgnj,
+                                    ncos,
+
+                                    wk, idx, jdx);
+
+                          if (sznz != 0)
+
+                            sznzop (ni, nj, kbgni, kbgnj, iscom, jscom, ncos,
+                                    wk, idx,
+
+                                    jdx);
+
+                          if (ikq != 0)
+                            { /* find K*K dependence (anti-commutated) */
+
+                              ncos = symksq (ikq, kbgni, kbgnj, ncos, wk, idx,
+                                             jdx);
+
+                              if (ncos == 0)
+                                continue;
+                            }
+
+                          if (ibase != 0)
+                            {
+
+                              for (i = 0; i < ncos; ++i)
+
+                                idx[i] = (short)(idx[i] + ibase);
+                            }
+
+                          if (jbase != 0)
+                            {
+
+                              for (i = 0; i < ncos; ++i)
+
+                                jdx[i] = (short)(jdx[i] + jbase);
+                            }
+
+                          if (first)
+                            {
+
+                              isegy0 = FALSE;
+
+                              pbar = 0.;
+
+                              if (isunit && ixx == jxx)
+                                { /* diagonal unit operator */
+
+                                  oldpar = TRUE;
+
+                                  if (ixx == 0)
+                                    {
+
+                                      isegy0 = TRUE;
+                                    }
+                                  else if (firstpar)
+                                    {
+
+                                      pbar = -egy0;
+
+                                      firstpar = FALSE;
+                                    }
+                                }
+
+                              if (ipar < 0)
+                                continue; /* get next parameter */
+                            }
+                          else
+                            { /*  begin by setting up reduced expectation
+                                 values */
+
+                              if (ipar < 0)
+                                continue; /* get next parameter */
+
+                              dpmake (nsize, dbar, t, ncos, wk, idx, jdx,
+                                      isunit);
+                            }
+                        }
+
+                      /* end for: get direction cosines and K dependent parts
+                       */
+
+                      if (si2 < 0 && nd == 0)
+                        continue; /* commutator with N * N */
+
+                      /* find K independent parts */
+
+                      zpar = rmatrx (ld, lt, ixcom, jxcom);
+
+                      /*  spherical tensor transformations  */
+
+                      tensor (&zpar, iscom, jscom, lscom, ismap, npair, alpha);
+
+                      if (sznz < 0)
+
+                        sznz = sznzfix (sznz, ni, nj, ixcom, jxcom, iscom,
+                                        jscom);
+
+                      /*  find N*(N+1) and N.S dependence */
+
+                      symnsq (nsqj, ins, iscom, jscom, &zpar);
+
+                      parskp = (fabs (zpar) < 1e-30);
+
+                      if (parskp)
+
+                        continue; /* get next parameter */
+
+                      if (si2 < 0)
+                        { /* commutator with N * N / 2 */
+
+                          zpar *= ni;
+                        }
+                    }
+
+                  if (ni == 0 && nsqj != 0)
+                    continue; /* get next parameter */
+
+                  ele = zpar * sqj[nsqj] * spar_now->zfac;
+
+                  if (isgn < 0)
+
+                    ele = -ele;
+
+                  if (first)
+                    { /*  sum into composite parameter */
+
+                      pbar += ele * par[ipar];
+
+                      oldpar = TRUE;
+                    }
+                  else
+                    { /* sum into derivative matrix */
+
+                      i = ipder[ipar];
+
+                      if (i < 0)
+                        {
+
+                          i = -1 - i;
+
+                          ele *= par[ipar];
+
+                          i = ipder[i];
+                        }
+
+                      daxpy (nsize, ele, dbar, 1, &dedp[i * ndm], 1);
+                    }
+
+                } /* end parameter loop */
+
+            } /* end JXX loop */
+
+        } /* end IXX loop */
+
+      if (first)
+        {
+
+          if (ifdump)
+            {
+
+              for (i = 0; i < nsize; ++i)
+                {
+
+                  pt = &t[i + i * ndm];
+
+                  *pt += egy0;
+
+                  egy[i] = (*pt);
+
+                  pmix[i] = 0.;
+                }
+
+              return 0;
+            }
+
+          if (glob.idiag < 0 || nsize <= 1)
+            {
+
+              nd = nsize + 1;
+
+              dcopy (nsize, t, nd, egy, 1);
+
+              for (i = 0; i < nsize; ++i)
+                {
+
+                  pt = &t[i * ndm];
+
+                  dcopy (nsize, &zero, 0, pt, 1);
+
+                  pmix[i] = pt[i] = 1.;
+                }
+            }
+          else
+            {
+
+              if (glob.idiag == 0)
+                {
+
+                  roll = kroll (nsize, t, nsblk, ibkptr, ikmin);
+                }
+              else if (glob.idiag == 2)
+                {
+
+                  nd = nsize + 1;
+
+                  dcopy (nsize, t, nd, egy, 1);
+
+                  ordham (nsize, egy, ibkptr, jdx);
+                }
+
+              /* diagonalize */
+
+              ierr = hdiag (nsize, nsize, t, egy, pmix);
+
+              if (ierr != 0)
+                {
+
+                  printf (
+                      " diagonalization failure, err = %d in block %d, %d\n",
+
+                      ierr, iblk, nsize);
+
+                  exit (EXIT_FAILURE);
+                }
+
+              if (glob.idiag == 0)
+                { /*  energy sort of subblock */
+
+                  ordblk (nsize, nsize, t, egy, ibkptr, pmix, idx);
+                }
+              else if (glob.idiag == 1)
+                { /* projection sort of full block */
+
+                  for (i = 0; i <= nsize; ++i)
+                    {
+
+                      jdx[i] = (short)i;
+                    }
+
+                  ordblk (nsize, nsize, t, egy, jdx, pmix, idx);
+                }
+              else if (glob.idiag == 2)
+                {
+
+                  ordblk (nsize, nsize, t, egy, ibkptr, pmix, idx);
+
+                  fixham (nsize, nsize, t, egy, pmix, jdx);
+                }
+              else if (glob.idiag == 3)
+                {
+
+                  jxx = 0;
+
+                  ivbase = -1;
+
+                  for (i = 0; i < nsblk; ++i)
+                    {
+
+                      ixx = ibkptr[i];
+
+                      jvbase = (int)((unsigned)ivs[i] >> 2) - (itau[i] & 1);
+
+                      if (ivbase != jvbase)
+                        {
+
+                          jdx[jxx++] = (short)ixx;
+
+                          ivbase = jvbase;
+                        }
+
+                      wk[ixx] = (double)(itau[i] / 2);
+
+                      nd = ibkptr[i + 1] - 1;
+
+                      for (ii = ixx; ii < nd; ++ii)
+                        {
+
+                          wk[ii + 1] = wk[ii] + 4;
+                        }
+                    }
+
+                  jdx[jxx] = ibkptr[nsblk];
+
+                  ordblk (nsize, nsize, t, egy, jdx, pmix, idx);
+
+                  ordham (nsize, wk, jdx, idx);
+
+                  fixham (nsize, nsize, t, egy, pmix, idx);
+                }
+            }
+
+          if (isneg)
+            { /* correct for oblate ordering */
+
+              for (i = 0; i < nsize; ++i)
+
+                egy[i] = -egy[i];
+            }
+
+          for (i = 0; i < nsize; ++i) /* add energy offset */
+
+            egy[i] += egy0;
+
+          first = FALSE;
+        }
       else
+        { /* not first */
 
-        ld = (ld > 0) ? 1 : 0;
+          if (roll)
+            { /*  go back and get expectation values */
 
-      kd = kbgni + kbgni - ld;
+              dcopy (nsize, &zero, 0, egy, 1);
 
-      kd = kd + kd;
+              for (ipar = npar - 1; ipar >= 0; --ipar)
+                {
 
-      if (ivbase != ixcom[XVIB])
+                  i = ipder[ipar];
 
-        ++kd; /* upper l-doubled state */
+                  if (i >= 0)
+                    {
 
-      itau[ixx] = (short)kd;
+                      ele = par[ipar];
 
-      if (ni != nold) { /* set up powers of N(N+1) */
-
-        nold = ni;
-
-        dn = (double)ni;
-
-        sqnn = dn * (ni + 1);
-
-        sqj[0] = 1;
-
-        for (i = 1; i <= nsqmax; ++i) {
-
-          sqj[i] = sqj[i - 1] * sqnn;
-        }
-      }
-
-      for (jxx = 0; jxx <= ixx; ++jxx) { /*  set up sub-block quanta */
-
-        ijd = ixx - jxx;
-
-        jbase = ibkptr[jxx];
-
-        n = ibkptr[jxx + 1] - jbase;
-
-        kbgnj = ikmin[jxx];
-
-        jspn = ivs[jxx];
-
-        getqs(jspn, iff, n, kbgnj, jxcom, jscom, &jvbase);
-
-        nj = jxcom[XNVAL];
-
-        nd = ni - nj;
-
-        if (nd > ndmax)
-          continue;
-
-        ivmin = (ivbase < jvbase) ? ivbase : jvbase;
-
-        ivsym = (unsigned int)(ivbase + jvbase + ivmin * glob.vibfac) << 2;
-
-        ivcmp = ivsym + 3;
-        ivsym += blksym(ixcom, jxcom);
-
-        if (lastvv != ivcmp) {
-
-          newblk = TRUE;
-          lastvv = ivcmp;
-        }
-
-        isegy0 = FALSE;
-        firstpar = TRUE;
-
-        for (spar_now = spar_head[ivmin]; TRUE; spar_now = spar_now->next) {
-
-          /* loop over parameters */
-
-          idflags = 0;
-
-          if (spar_now != NULL) {
-
-            ivcmp = spar_now->ipsym;
-
-            if (ODD(spar_now->euler)) {
-
-              if (ivcmp > lastvv)
-                continue;
-
-              if (ivcmp == lastvv)
-
-                idflags = (int)spar_now->flags;
-
-            } else {
-
-              if (ivcmp > ivsym)
-                continue;
-
-              if (ivcmp == ivsym)
-
-                idflags = (int)spar_now->flags;
-            }
-          }
-
-          if ((idflags & MCOS_OK) == 0) { /* new cosine or end */
-
-            if (oldpar) {
-
-              /*  add diagonal or sub-diagonal to Hamiltonian */
-
-              /*  using composite parameter value PBAR */
-
-              if (isegy0) {
-
-                egy0 += pbar;
-
-              } else {
-
-                if (isneg)
-
-                  pbar = -pbar;
-
-                if (isunit) {
-
-                  iz = idx[0];
-
-                  jz = jdx[0];
-
-                  pt = &t[jz * ndm];
-
-                  for (i = 0; i < ncos; ++i) {
-
-                    pt[iz] += pbar;
-
-                    iz += ndmd;
-                  }
-
-                } else {
-
-                  for (i = 0; i < ncos; ++i) {
-
-                    iz = idx[i];
-
-                    jz = jdx[i];
-
-                    t[iz + jz * ndm] += pbar * wk[i];
-                  }
+                      daxpy (nsize, ele, &dedp[i * ndm], 1, egy, 1);
+                    }
                 }
-              }
-
-              oldpar = FALSE;
             }
 
-            if (idflags == 0)
-              break; /* end loop over parameters */
-
-            ncos = -1;
-
-          } else { /* check if old cosine operator was zero */
-
-            if (ncos == 0)
-              continue;
-          }
-
-          if (spar_now == NULL)
-            break;
-
-          ipar = spar_now->ip;
-
-          nsqj = (int)spar_now->njq;
-
-          if ((idflags & MNSQ) != 0 && nd == 0) {
-
-            /* sum parameters which are different only by N*(N+1) */
-
-            if (parskp)
-              continue; /* jump if mother operator was zero */
-
-          } else { /*  new type of operator */
-
-            parskp = TRUE;
-
-            if (sznz < 0)
-
-              sznzfix(sznz, ni, nj, ixcom, jxcom, iscom, jscom);
-
-            kl = idpars(spar_now, &ikq, &neuler, &lt, &ld, &kd, &ins,
-
-                        &si1, &si2, &sznz, &ifc, &alpha, &ldel);
-
-            if (sznz > 0) {
-
-              sznz = sznzfix(sznz, ni, nj, ixcom, jxcom, iscom, jscom);
-
-              if (sznz == 0)
-                continue; /* get next parameter */
-            }
-
-            mkd = getmask(ixcom, jxcom, kd, ldel, kl, alpha);
-
-            if (mkd == 0)
-              continue;
-
-            /* test tensor compatability */
-
-            npair = getll(0, ld, lt, kd, si1, si2, lscom, iscom, jscom);
-
-            if (npair < 0)
-              continue;
-
-            /* get direction cosines and K dependent part of operator */
-
-            if (ncos < 0) {
-
-              ncos = dircos(ixcom, jxcom, ld, kd, ndmx, wk, idx, jdx,
-
-                            ijd, kl, mkd, &isunit);
-
-              if (ncos <= 0) {
-
-                if (ncos == 0)
-                  continue; /* get next parameter */
-
-                printf("DIRCOS WORKING VECTOR TOO SHORT IN HAMX BY %d\n",
-
-                       ncos);
-
-                exit(EXIT_FAILURE);
-              }
-
-              if ((idflags & MNOUNIT) != 0)
-
-                isunit = FALSE;
-
-              isgn = 1;
-
-              if (isunit && wk[0] < 0.)
-
-                isgn = -1;
-
-              if (neuler != 0) { /*Euler operator */
-
-                ncos = specop(neuler, &newblk, &nsqj, &ikq, kbgni, kbgnj,
-
-                              ni, nj, ncos, wk, idx, jdx, par[ipar]);
-
-                if (ncos == 0)
-                  continue;
-              }
-
-              if (ifc != 0)
-
-                specfc(ifc, ivbase, jvbase, kd, kbgni, kbgnj, ncos,
-
-                       wk, idx, jdx);
-
-              if (sznz != 0)
-
-                sznzop(ni, nj, kbgni, kbgnj, iscom, jscom, ncos, wk, idx,
-
-                       jdx);
-
-              if (ikq != 0) { /* find K*K dependence (anti-commutated) */
-
-                ncos = symksq(ikq, kbgni, kbgnj, ncos, wk, idx, jdx);
-
-                if (ncos == 0)
-                  continue;
-              }
-
-              if (ibase != 0) {
-
-                for (i = 0; i < ncos; ++i)
-
-                  idx[i] = (short)(idx[i] + ibase);
-              }
-
-              if (jbase != 0) {
-
-                for (i = 0; i < ncos; ++i)
-
-                  jdx[i] = (short)(jdx[i] + jbase);
-              }
-
-              if (first) {
-
-                isegy0 = FALSE;
-
-                pbar = 0.;
-
-                if (isunit && ixx == jxx) { /* diagonal unit operator */
-
-                  oldpar = TRUE;
-
-                  if (ixx == 0) {
-
-                    isegy0 = TRUE;
-
-                  } else if (firstpar) {
-
-                    pbar = -egy0;
-
-                    firstpar = FALSE;
-                  }
-                }
-
-                if (ipar < 0)
-                  continue; /* get next parameter */
-
-              } else { /*  begin by setting up reduced expectation values */
-
-                if (ipar < 0)
-                  continue; /* get next parameter */
-
-                dpmake(nsize, dbar, t, ncos, wk, idx, jdx, isunit);
-              }
-            }
-
-            /* end for: get direction cosines and K dependent parts */
-
-            if (si2 < 0 && nd == 0)
-              continue; /* commutator with N * N */
-
-            /* find K independent parts */
-
-            zpar = rmatrx(ld, lt, ixcom, jxcom);
-
-            /*  spherical tensor transformations  */
-
-            tensor(&zpar, iscom, jscom, lscom, ismap, npair, alpha);
-
-            if (sznz < 0)
-
-              sznz = sznzfix(sznz, ni, nj, ixcom, jxcom, iscom, jscom);
-
-            /*  find N*(N+1) and N.S dependence */
-
-            symnsq(nsqj, ins, iscom, jscom, &zpar);
-
-            parskp = (fabs(zpar) < 1e-30);
-
-            if (parskp)
-
-              continue; /* get next parameter */
-
-            if (si2 < 0) { /* commutator with N * N / 2 */
-
-              zpar *= ni;
-            }
-          }
-
-          if (ni == 0 && nsqj != 0)
-            continue; /* get next parameter */
-
-          ele = zpar * sqj[nsqj] * spar_now->zfac;
-
-          if (isgn < 0)
-
-            ele = -ele;
-
-          if (first) { /*  sum into composite parameter */
-
-            pbar += ele * par[ipar];
-
-            oldpar = TRUE;
-
-          } else { /* sum into derivative matrix */
-
-            i = ipder[ipar];
-
-            if (i < 0) {
-
-              i = -1 - i;
-
-              ele *= par[ipar];
-
-              i = ipder[i];
-            }
-
-            daxpy(nsize, ele, dbar, 1, &dedp[i * ndm], 1);
-          }
-
-        } /* end parameter loop */
-
-      } /* end JXX loop */
-
-    } /* end IXX loop */
-
-    if (first) {
-
-      if (ifdump) {
-
-        for (i = 0; i < nsize; ++i) {
-
-          pt = &t[i + i * ndm];
-
-          *pt += egy0;
-
-          egy[i] = (*pt);
-
-          pmix[i] = 0.;
+          break;
         }
-
-        return 0;
-      }
-
-      if (glob.idiag < 0 || nsize <= 1) {
-
-        nd = nsize + 1;
-
-        dcopy(nsize, t, nd, egy, 1);
-
-        for (i = 0; i < nsize; ++i) {
-
-          pt = &t[i * ndm];
-
-          dcopy(nsize, &zero, 0, pt, 1);
-
-          pmix[i] = pt[i] = 1.;
-        }
-
-      } else {
-
-        if (glob.idiag == 0) {
-
-          roll = kroll(nsize, t, nsblk, ibkptr, ikmin);
-
-        } else if (glob.idiag == 2) {
-
-          nd = nsize + 1;
-
-          dcopy(nsize, t, nd, egy, 1);
-
-          ordham(nsize, egy, ibkptr, jdx);
-        }
-
-        /* diagonalize */
-
-        ierr = hdiag(nsize, nsize, t, egy, pmix);
-
-        if (ierr != 0) {
-
-          printf(" diagonalization failure, err = %d in block %d, %d\n",
-
-                 ierr, iblk, nsize);
-
-          exit(EXIT_FAILURE);
-        }
-
-        if (glob.idiag == 0) { /*  energy sort of subblock */
-
-          ordblk(nsize, nsize, t, egy, ibkptr, pmix, idx);
-
-        } else if (glob.idiag == 1) { /* projection sort of full block */
-
-          for (i = 0; i <= nsize; ++i) {
-
-            jdx[i] = (short)i;
-          }
-
-          ordblk(nsize, nsize, t, egy, jdx, pmix, idx);
-
-        } else if (glob.idiag == 2) {
-
-          ordblk(nsize, nsize, t, egy, ibkptr, pmix, idx);
-
-          fixham(nsize, nsize, t, egy, pmix, jdx);
-
-        } else if (glob.idiag == 3) {
-
-          jxx = 0;
-
-          ivbase = -1;
-
-          for (i = 0; i < nsblk; ++i) {
-
-            ixx = ibkptr[i];
-
-            jvbase = (int)((unsigned)ivs[i] >> 2) - (itau[i] & 1);
-
-            if (ivbase != jvbase) {
-
-              jdx[jxx++] = (short)ixx;
-
-              ivbase = jvbase;
-            }
-
-            wk[ixx] = (double)(itau[i] / 2);
-
-            nd = ibkptr[i + 1] - 1;
-
-            for (ii = ixx; ii < nd; ++ii) {
-
-              wk[ii + 1] = wk[ii] + 4;
-            }
-          }
-
-          jdx[jxx] = ibkptr[nsblk];
-
-          ordblk(nsize, nsize, t, egy, jdx, pmix, idx);
-
-          ordham(nsize, wk, jdx, idx);
-
-          fixham(nsize, nsize, t, egy, pmix, idx);
-        }
-      }
-
-      if (isneg) { /* correct for oblate ordering */
-
-        for (i = 0; i < nsize; ++i)
-
-          egy[i] = -egy[i];
-      }
-
-      for (i = 0; i < nsize; ++i) /* add energy offset */
-
-        egy[i] += egy0;
-
-      first = FALSE;
-
-    } else { /* not first */
-
-      if (roll) { /*  go back and get expectation values */
-
-        dcopy(nsize, &zero, 0, egy, 1);
-
-        for (ipar = npar - 1; ipar >= 0; --ipar) {
-
-          i = ipder[ipar];
-
-          if (i >= 0) {
-
-            ele = par[ipar];
-
-            daxpy(nsize, ele, &dedp[i * ndm], 1, egy, 1);
-          }
-        }
-      }
-
-      break;
     }
-
-  } while (!first); /* first loop */
+  while (!first); /* first loop */
 
   i = 1;
 
@@ -1097,7 +1181,8 @@ int hamx(const int iblk, const int nsize, const int npar, const bcd_t *idpar,
 
 } /* hamx */
 
-int dclr(const int n1, const int n2, double *vec, const int ix)
+int
+dclr (const int n1, const int n2, double *vec, const int ix)
 
 { /*  clear a N1*N2 block */
 
@@ -1111,24 +1196,26 @@ int dclr(const int n1, const int n2, double *vec, const int ix)
 
   nsq = n1 * (long)n2;
 
-  while (nsq > nbig) {
+  while (nsq > nbig)
+    {
 
-    dcopy((int)nbig, &zero, 0, pvec, ix);
+      dcopy ((int)nbig, &zero, 0, pvec, ix);
 
-    pvec += nbig;
+      pvec += nbig;
 
-    nsq -= nbig;
-  }
+      nsq -= nbig;
+    }
 
-  dcopy((int)nsq, &zero, 0, pvec, ix);
+  dcopy ((int)nsq, &zero, 0, pvec, ix);
 
   return 0;
 
 } /* dclr */
 
-int specop(const int neuler, BOOL *newblk, int *nsqj, int *ikq, const int ksi,
-           const int ksj, const int ni, const int nj, const int ncos,
-           double *wk, const short *ix, const short *jx, const double par)
+int
+specop (const int neuler, BOOL *newblk, int *nsqj, int *ikq, const int ksi,
+        const int ksj, const int ni, const int nj, const int ncos, double *wk,
+        const short *ix, const short *jx, const double par)
 
 {
 
@@ -1168,17 +1255,19 @@ int specop(const int neuler, BOOL *newblk, int *nsqj, int *ikq, const int ksi,
 
   unsigned int ipwr;
 
-  if (*newblk) {
+  if (*newblk)
+    {
 
-    for (i = 0; i < NSPOP; ++i) {
+      for (i = 0; i < NSPOP; ++i)
+        {
 
-      aden[i] = 0.;
+          aden[i] = 0.;
 
-      bden[i] = 0.;
+          bden[i] = 0.;
+        }
+
+      *newblk = FALSE;
     }
-
-    *newblk = FALSE;
-  }
 
   ist = (neuler - 2) >> 1;
 
@@ -1191,19 +1280,22 @@ int specop(const int neuler, BOOL *newblk, int *nsqj, int *ikq, const int ksi,
 
   nnq0 = (*nsqj);
 
-  if (ODD(neuler)) {
+  if (ODD (neuler))
+    {
 
-    if (nnq0 == 0 && nkq0 == 1) {
+      if (nnq0 == 0 && nkq0 == 1)
+        {
 
-      aden[i] = par;
+          aden[i] = par;
+        }
+      else if (nnq0 == 1 && nkq0 == 0)
+        {
 
-    } else if (nnq0 == 1 && nkq0 == 0) {
+          bden[i] = par;
+        }
 
-      bden[i] = par;
+      return 0;
     }
-
-    return 0;
-  }
 
   dd = bden[i];
   da = aden[i] - dd;
@@ -1211,146 +1303,162 @@ int specop(const int neuler, BOOL *newblk, int *nsqj, int *ikq, const int ksi,
   sqi = (double)(ni * (ni + 1));
   di0 = 1. + dd * sqi;
 
-  if (ni == nj) {
+  if (ni == nj)
+    {
 
-    sqj = sqi;
-    dj0 = di0;
-
-  } else {
-
-    sqj = (double)(nj * (nj + 1));
-    dj0 = 1. + dd * sqj;
-  }
-
-  for (i = 0; i < ncos; ++i) {
-
-    nkq = nkq0;
-
-    nnq = nnq0;
-
-    xi = wk[i];
-
-    ki = ksi + ((int)ix[i] << 1);
-
-    akisq = (double)(ki * ki);
-
-    di = di0 + da * akisq;
-
-    akisq /= di;
-
-    kj = ksj + ((int)jx[i] << 1);
-
-    if (ki == kj && ni == nj) {
-
-      if (nnq > 0) { /* N*N+N-K*K part */
-
-        ipwr = (unsigned int)nnq;
-
-        anisq = sqi / di - akisq;
-
-        for (;;) {
-
-          if (ODD(ipwr))
-            xi *= anisq;
-
-          if ((ipwr >>= 1) == 0)
-            break;
-
-          anisq *= anisq;
-        }
-      }
-
-      if (nkq > 0) { /* K*K part */
-
-        ipwr = (unsigned int)nkq;
-
-        for (;;) {
-
-          if (ODD(ipwr))
-            xi *= akisq;
-
-          if ((ipwr >>= 1) == 0)
-            break;
-
-          akisq *= akisq;
-        }
-      }
-
-      if (ist != 0)
-
-        xi /= di; /* extra part */
-
-      wk[i] = xi;
-
-    } else {
-
-      akjsq = (double)(kj * kj);
-
-      dj = dj0 + da * akjsq;
-
-      akjsq /= dj;
-
-      xj = xi;
-
-      if (nnq > 0) { /* N*N+N-K*K part */
-
-        ipwr = (unsigned int)nnq;
-
-        anisq = sqi / di - akisq;
-
-        anjsq = sqj / dj - akjsq;
-
-        for (;;) {
-
-          if (ODD(ipwr)) {
-
-            xi *= anisq;
-
-            xj *= anjsq;
-          }
-
-          if ((ipwr >>= 1) == 0)
-            break;
-
-          anisq *= anisq;
-
-          anjsq *= anjsq;
-        }
-      }
-
-      if (nkq > 0) { /* K*K part */
-
-        ipwr = (unsigned int)nkq;
-
-        for (;;) {
-
-          if (ODD(ipwr)) {
-
-            xi *= akisq;
-
-            xj *= akjsq;
-          }
-
-          if ((ipwr >>= 1) == 0)
-            break;
-
-          akisq *= akisq;
-
-          akjsq *= akjsq;
-        }
-      }
-
-      if (ist != 0) {
-
-        xi /= di;
-
-        xj /= dj;
-
-      } /* extra part */
-
-      wk[i] = 0.5 * (xi + xj);
+      sqj = sqi;
+      dj0 = di0;
     }
-  }
+  else
+    {
+
+      sqj = (double)(nj * (nj + 1));
+      dj0 = 1. + dd * sqj;
+    }
+
+  for (i = 0; i < ncos; ++i)
+    {
+
+      nkq = nkq0;
+
+      nnq = nnq0;
+
+      xi = wk[i];
+
+      ki = ksi + ((int)ix[i] << 1);
+
+      akisq = (double)(ki * ki);
+
+      di = di0 + da * akisq;
+
+      akisq /= di;
+
+      kj = ksj + ((int)jx[i] << 1);
+
+      if (ki == kj && ni == nj)
+        {
+
+          if (nnq > 0)
+            { /* N*N+N-K*K part */
+
+              ipwr = (unsigned int)nnq;
+
+              anisq = sqi / di - akisq;
+
+              for (;;)
+                {
+
+                  if (ODD (ipwr))
+                    xi *= anisq;
+
+                  if ((ipwr >>= 1) == 0)
+                    break;
+
+                  anisq *= anisq;
+                }
+            }
+
+          if (nkq > 0)
+            { /* K*K part */
+
+              ipwr = (unsigned int)nkq;
+
+              for (;;)
+                {
+
+                  if (ODD (ipwr))
+                    xi *= akisq;
+
+                  if ((ipwr >>= 1) == 0)
+                    break;
+
+                  akisq *= akisq;
+                }
+            }
+
+          if (ist != 0)
+
+            xi /= di; /* extra part */
+
+          wk[i] = xi;
+        }
+      else
+        {
+
+          akjsq = (double)(kj * kj);
+
+          dj = dj0 + da * akjsq;
+
+          akjsq /= dj;
+
+          xj = xi;
+
+          if (nnq > 0)
+            { /* N*N+N-K*K part */
+
+              ipwr = (unsigned int)nnq;
+
+              anisq = sqi / di - akisq;
+
+              anjsq = sqj / dj - akjsq;
+
+              for (;;)
+                {
+
+                  if (ODD (ipwr))
+                    {
+
+                      xi *= anisq;
+
+                      xj *= anjsq;
+                    }
+
+                  if ((ipwr >>= 1) == 0)
+                    break;
+
+                  anisq *= anisq;
+
+                  anjsq *= anjsq;
+                }
+            }
+
+          if (nkq > 0)
+            { /* K*K part */
+
+              ipwr = (unsigned int)nkq;
+
+              for (;;)
+                {
+
+                  if (ODD (ipwr))
+                    {
+
+                      xi *= akisq;
+
+                      xj *= akjsq;
+                    }
+
+                  if ((ipwr >>= 1) == 0)
+                    break;
+
+                  akisq *= akisq;
+
+                  akjsq *= akjsq;
+                }
+            }
+
+          if (ist != 0)
+            {
+
+              xi /= di;
+
+              xj /= dj;
+
+            } /* extra part */
+
+          wk[i] = 0.5 * (xi + xj);
+        }
+    }
 
   *nsqj = 0;
 
@@ -1360,9 +1468,10 @@ int specop(const int neuler, BOOL *newblk, int *nsqj, int *ikq, const int ksi,
 
 } /* specop */
 
-int specfc(const int ifc, const int iv, const int jv, const int kdel,
-           const int ksi, const int ksj, const int ncos, double *wk,
-           const short *ix, const short *jx)
+int
+specfc (const int ifc, const int iv, const int jv, const int kdel,
+        const int ksi, const int ksj, const int ncos, double *wk,
+        const short *ix, const short *jx)
 
 {
 
@@ -1396,33 +1505,38 @@ int specfc(const int ifc, const int iv, const int jv, const int kdel,
 
   int i, n, ki, kj, kd;
 
-  if (ifc == 0) {
+  if (ifc == 0)
+    {
 
-    if (ncos == 0) {
+      if (ncos == 0)
+        {
 
-      for (i = 0; i < MAXVIB; ++i) {
+          for (i = 0; i < MAXVIB; ++i)
+            {
 
-        pfac[i] = 0.;
+              pfac[i] = 0.;
 
-        ipfac[i] = 0;
-      }
+              ipfac[i] = 0;
+            }
+        }
+      else
+        {
 
-    } else {
+          /*  multiply by pi/3 */
 
-      /*  multiply by pi/3 */
+          pfac[iv] = wk[0] * acos (0.5);
 
-      pfac[iv] = wk[0] * acos(0.5);
+          if (pfac[iv] < 0.)
+            {
 
-      if (pfac[iv] < 0.) {
+              pfac[iv] = -pfac[iv];
 
-        pfac[iv] = -pfac[iv];
+              ipfac[iv] = 1;
+            }
+        }
 
-        ipfac[iv] = 1;
-      }
+      return 0;
     }
-
-    return 0;
-  }
 
   n = ifc;
 
@@ -1432,147 +1546,159 @@ int specfc(const int ifc, const int iv, const int jv, const int kdel,
 
   ang = (double)n;
 
-  if (ODD(ipfac[iv] + ipfac[jv]))
+  if (ODD (ipfac[iv] + ipfac[jv]))
     ang -= 0.5;
 
   di = ang * pfac[iv];
 
   dj = ang * pfac[jv];
 
-  for (i = 0; i < ncos; ++i) {
+  for (i = 0; i < ncos; ++i)
+    {
 
-    ki = ksi + (ix[i] << 1);
+      ki = ksi + (ix[i] << 1);
 
-    kj = ksj + (jx[i] << 1);
+      kj = ksj + (jx[i] << 1);
 
-    kd = ki - kj;
+      kd = ki - kj;
 
-    if (kd < 0)
+      if (kd < 0)
 
-      kd = -kd;
+        kd = -kd;
 
-    if (kdel != kd)
+      if (kdel != kd)
 
-      kj = -kj;
+        kj = -kj;
 
-    if (n != 0) {
+      if (n != 0)
+        {
 
-      ang = di * ki + dj * kj;
+          ang = di * ki + dj * kj;
 
-      if (ifc < 0) {
+          if (ifc < 0)
+            {
 
-        wk[i] *= sin(ang);
+              wk[i] *= sin (ang);
+            }
+          else
+            {
 
-      } else {
+              wk[i] *= cos (ang);
+            }
+        }
+      else
+        {
 
-        wk[i] *= cos(ang);
-      }
-
-    } else {
-
-      wk[i] *= 0.5 * (ki + kj);
+          wk[i] *= 0.5 * (ki + kj);
+        }
     }
-  }
 
   return 0;
 
 } /* specfc */
 
-int sznzfix(const int sznz, const int ni, const int nj, int *ixcom, int *jxcom,
-            int *iscom, int *jscom)
+int
+sznzfix (const int sznz, const int ni, const int nj, int *ixcom, int *jxcom,
+         int *iscom, int *jscom)
 
 {
 
-  if (sznz <= 0) {
+  if (sznz <= 0)
+    {
 
-    if (sznz <= -4) {
+      if (sznz <= -4)
+        {
 
-      jscom[nspin] = nj << 1;
+          jscom[nspin] = nj << 1;
 
-      jxcom[XNVAL] = nj;
+          jxcom[XNVAL] = nj;
+        }
+      else
+        {
 
-    } else {
+          iscom[nspin] = ni << 1;
 
-      iscom[nspin] = ni << 1;
-
-      ixcom[XNVAL] = ni;
-    }
-
-    return 0;
-
-  } else {
-
-    switch (sznz) {
-
-    case 1:
-
-      if (ni + nj == 0)
-
-        return 0;
-
-      break;
-
-    case 2:
-
-      if (ni <= 1)
-
-        return 0;
-
-      iscom[nspin] -= 2;
-
-      --ixcom[XNVAL];
-
-      break;
-
-    case 3:
-
-      if (ni <= 0)
-
-        return 0;
-
-      iscom[nspin] += 2;
-
-      ++ixcom[XNVAL];
-
-      break;
-
-    case 4:
-
-      if (nj <= 1)
-
-        return 0;
-
-      jscom[nspin] -= 2;
-
-      --jxcom[XNVAL];
-
-      break;
-
-    case 5:
-
-      if (nj <= 0)
-
-        return 0;
-
-      jscom[nspin] += 2;
-
-      ++jxcom[XNVAL];
-
-      break;
-
-    default:
+          ixcom[XNVAL] = ni;
+        }
 
       return 0;
     }
+  else
+    {
 
-    return -sznz;
-  }
+      switch (sznz)
+        {
+
+        case 1:
+
+          if (ni + nj == 0)
+
+            return 0;
+
+          break;
+
+        case 2:
+
+          if (ni <= 1)
+
+            return 0;
+
+          iscom[nspin] -= 2;
+
+          --ixcom[XNVAL];
+
+          break;
+
+        case 3:
+
+          if (ni <= 0)
+
+            return 0;
+
+          iscom[nspin] += 2;
+
+          ++ixcom[XNVAL];
+
+          break;
+
+        case 4:
+
+          if (nj <= 1)
+
+            return 0;
+
+          jscom[nspin] -= 2;
+
+          --jxcom[XNVAL];
+
+          break;
+
+        case 5:
+
+          if (nj <= 0)
+
+            return 0;
+
+          jscom[nspin] += 2;
+
+          ++jxcom[XNVAL];
+
+          break;
+
+        default:
+
+          return 0;
+        }
+
+      return -sznz;
+    }
 
 } /* sznzfix */
 
-int sznzop(const int ni, const int nj, const int ksi, const int ksj,
-           const int *iscom, const int *jscom, const int ncos, double *wk,
-           const short *ix, const short *jx)
+int
+sznzop (const int ni, const int nj, const int ksi, const int ksj,
+        const int *iscom, const int *jscom, const int ncos, double *wk,
+        const short *ix, const short *jx)
 
 {
 
@@ -1612,85 +1738,94 @@ int sznzop(const int ni, const int nj, const int ksi, const int ksj,
 
   valj = (double)(nnj0 + 1);
 
-  if (nni != nni0) {
+  if (nni != nni0)
+    {
 
-    iflg = 1;
+      iflg = 1;
 
-    vali = sqrt(vali * (nni + 1));
+      vali = sqrt (vali * (nni + 1));
+    }
+  else if (nnj != nnj0)
+    {
 
-  } else if (nnj != nnj0) {
+      iflg = -1;
 
-    iflg = -1;
+      valj = sqrt (valj * (nnj + 1));
+    }
+  else
+    {
 
-    valj = sqrt(valj * (nnj + 1));
-
-  } else {
-
-    iflg = 0;
-  }
-
-  if (iflg <= 0) {
-
-    jj = jscom[0];
-
-    iis = jscom[nspin + 1];
-
-    k = ksj + ksj + nnj0 + nnj + jj + iis;
-
-    if ((k & 3) != 0)
-
-      valj = -valj;
-
-    valj *= c6jj(nnj0, 2, nnj, iis, jj, iis);
-  }
-
-  if (iflg >= 0) {
-
-    jj = iscom[0];
-
-    iis = iscom[nspin + 1];
-
-    k = ksi + ksi + nni0 + nni + jj + iis;
-
-    if ((k & 3) != 0)
-
-      vali = -vali;
-
-    vali *= c6jj(nni, 2, nni0, iis, jj, iis);
-  }
-
-  for (i = 0; i < ncos; ++i) {
-
-    twk = wk[i];
-
-    sum = 0.;
-
-    if (iflg <= 0) {
-
-      k = ksj + ((int)jx[i] << 1);
-
-      kk = k << 1;
-
-      sum = valj * twk * k * c3jj(nnj0, 2, nnj, -kk, 0, kk);
+      iflg = 0;
     }
 
-    if (iflg >= 0) {
+  if (iflg <= 0)
+    {
 
-      k = ksi + ((int)ix[i] << 1);
+      jj = jscom[0];
 
-      kk = k << 1;
+      iis = jscom[nspin + 1];
 
-      sum += vali * twk * k * c3jj(nni, 2, nni0, -kk, 0, kk);
+      k = ksj + ksj + nnj0 + nnj + jj + iis;
+
+      if ((k & 3) != 0)
+
+        valj = -valj;
+
+      valj *= c6jj (nnj0, 2, nnj, iis, jj, iis);
     }
 
-    wk[i] = sum;
-  }
+  if (iflg >= 0)
+    {
+
+      jj = iscom[0];
+
+      iis = iscom[nspin + 1];
+
+      k = ksi + ksi + nni0 + nni + jj + iis;
+
+      if ((k & 3) != 0)
+
+        vali = -vali;
+
+      vali *= c6jj (nni, 2, nni0, iis, jj, iis);
+    }
+
+  for (i = 0; i < ncos; ++i)
+    {
+
+      twk = wk[i];
+
+      sum = 0.;
+
+      if (iflg <= 0)
+        {
+
+          k = ksj + ((int)jx[i] << 1);
+
+          kk = k << 1;
+
+          sum = valj * twk * k * c3jj (nnj0, 2, nnj, -kk, 0, kk);
+        }
+
+      if (iflg >= 0)
+        {
+
+          k = ksi + ((int)ix[i] << 1);
+
+          kk = k << 1;
+
+          sum += vali * twk * k * c3jj (nni, 2, nni0, -kk, 0, kk);
+        }
+
+      wk[i] = sum;
+    }
 
   return 0;
 
 } /* sznzop */
 
-unsigned int blksym(const int *ixcom, const int *jxcom)
+unsigned int
+blksym (const int *ixcom, const int *jxcom)
 
 { /* get block symmetry from state symmetry */
 
@@ -1698,7 +1833,8 @@ unsigned int blksym(const int *ixcom, const int *jxcom)
 
 } /* blksym */
 
-int ordham(const int nn, double *egy, const short *isblk, short *iswap)
+int
+ordham (const int nn, double *egy, const short *isblk, short *iswap)
 
 {
 
@@ -1716,47 +1852,54 @@ int ordham(const int nn, double *egy, const short *isblk, short *iswap)
 
   inext = isblk[1];
 
-  for (is = 1; is < nn; ++is) {
+  for (is = 1; is < nn; ++is)
+    {
 
-    if (is == inext) {
+      if (is == inext)
+        {
 
-      inext = isblk[++iblk];
-
-    } else { /* find min energy */
-
-      tmp = egy[i];
-
-      iq = i;
-
-      for (ii = is; ii < inext; ++ii) {
-
-        if (egy[ii] < tmp) {
-
-          tmp = egy[ii];
-
-          iq = ii;
+          inext = isblk[++iblk];
         }
-      }
+      else
+        { /* find min energy */
 
-      iswap[i] = (short)iq;
+          tmp = egy[i];
 
-      if (iq > i) {
+          iq = i;
 
-        egy[iq] = egy[i];
+          for (ii = is; ii < inext; ++ii)
+            {
 
-        egy[i] = tmp;
-      }
+              if (egy[ii] < tmp)
+                {
+
+                  tmp = egy[ii];
+
+                  iq = ii;
+                }
+            }
+
+          iswap[i] = (short)iq;
+
+          if (iq > i)
+            {
+
+              egy[iq] = egy[i];
+
+              egy[i] = tmp;
+            }
+        }
+
+      i = is;
     }
-
-    i = is;
-  }
 
   return 0;
 
 } /* ordham */
 
-int fixham(const int ndm, const int nn, double *t, double *egy, double *p,
-           const short *iswap)
+int
+fixham (const int ndm, const int nn, double *t, double *egy, double *p,
+        const short *iswap)
 
 {
 
@@ -1774,41 +1917,45 @@ int fixham(const int ndm, const int nn, double *t, double *egy, double *p,
 
   ndml = ndm;
 
-  if (is >= 0) {
+  if (is >= 0)
+    {
 
-    tp = &t[is * ndml];
+      tp = &t[is * ndml];
 
-    for (i = is; i >= 0; --i) {
+      for (i = is; i >= 0; --i)
+        {
 
-      iq = iswap[i];
+          iq = iswap[i];
 
-      if (iq > i) {
+          if (iq > i)
+            {
 
-        tmp = egy[iq];
+              tmp = egy[iq];
 
-        egy[iq] = egy[i];
+              egy[iq] = egy[i];
 
-        egy[i] = tmp;
+              egy[i] = tmp;
 
-        tmp = p[iq];
+              tmp = p[iq];
 
-        p[iq] = p[i];
+              p[iq] = p[i];
 
-        p[i] = tmp;
+              p[i] = tmp;
 
-        dswap(nn, tp, 1, &t[iq * ndml], 1);
-      }
+              dswap (nn, tp, 1, &t[iq * ndml], 1);
+            }
 
-      tp -= ndm;
+          tp -= ndm;
+        }
     }
-  }
 
   return 0;
 
 } /* fixham */
 
-BOOL kroll(const int nsizd, double *t, const int nsblk, const short *sbkptr,
-           const short *kmin)
+BOOL
+kroll (const int nsizd, double *t, const int nsblk, const short *sbkptr,
+       const short *kmin)
 
 {
 
@@ -1830,74 +1977,78 @@ BOOL kroll(const int nsizd, double *t, const int nsblk, const short *sbkptr,
 
   roll = FALSE;
 
-  for (ixx = 0; ixx < nsblk; ++ixx) {
+  for (ixx = 0; ixx < nsblk; ++ixx)
+    {
 
-    i = 5 - kmin[ixx];
+      i = 5 - kmin[ixx];
 
-    ibgn = sbkptr[ixx];
+      ibgn = sbkptr[ixx];
 
-    if (i >= 2)
+      if (i >= 2)
 
-      ibgn += i >> 1;
+        ibgn += i >> 1;
 
-    iend = sbkptr[ixx + 1] - 1;
+      iend = sbkptr[ixx + 1] - 1;
 
-    if (ibgn >= iend)
-      continue;
+      if (ibgn >= iend)
+        continue;
 
-    ptmp = &t[ibgn * ndmt];
+      ptmp = &t[ibgn * ndmt];
 
-    tmp = tlast = *ptmp;
+      tmp = tlast = *ptmp;
 
-    ++ibgn;
+      ++ibgn;
 
-    for (i = ibgn; i <= iend; ++i) {
+      for (i = ibgn; i <= iend; ++i)
+        {
 
-      ptmp += ndmt;
+          ptmp += ndmt;
 
-      tlast = tmp;
+          tlast = tmp;
 
-      tmp = (*ptmp);
+          tmp = (*ptmp);
 
-      if (tmp < tlast)
-        break;
+          if (tmp < tlast)
+            break;
+        }
+
+      if (i > iend)
+        continue;
+
+      k = kmin[ixx] + ((i - sbkptr[ixx]) << 1);
+
+      printf (" roll-over at K = %d\n", k);
+
+      roll = TRUE;
+
+      vall = 1e15;
+
+      for (; i <= iend; ++i)
+        {
+
+          n = i - 1;
+
+          dcopy (n, &zero, 0, &t[i], nsizd);
+
+          n = nsizd - i;
+
+          dcopy (n, &zero, 0, &t[i * ndmt], 1);
+
+          tlast += vall;
+
+          *ptmp = tlast;
+
+          ptmp += ndmt;
+        }
     }
-
-    if (i > iend)
-      continue;
-
-    k = kmin[ixx] + ((i - sbkptr[ixx]) << 1);
-
-    printf(" roll-over at K = %d\n", k);
-
-    roll = TRUE;
-
-    vall = 1e15;
-
-    for (; i <= iend; ++i) {
-
-      n = i - 1;
-
-      dcopy(n, &zero, 0, &t[i], nsizd);
-
-      n = nsizd - i;
-
-      dcopy(n, &zero, 0, &t[i * ndmt], 1);
-
-      tlast += vall;
-
-      *ptmp = tlast;
-
-      ptmp += ndmt;
-    }
-  }
 
   return roll;
 
 } /* kroll */
 
-int getqs(const int im, const int iff, const int nsiz, const int kbgn,
-          int *ixcom, int *iscom, int *iv)
+int
+getqs (const int im, const int iff, const int nsiz, const int kbgn, int *ixcom,
+       int *iscom, int *iv)
 
 {
 
@@ -1976,22 +2127,23 @@ int getqs(const int im, const int iff, const int nsiz, const int kbgn,
 
   if (nsiz < 0)
 
-    setgsym((int)pvinfo->gsym);
+    setgsym ((int)pvinfo->gsym);
 
   k = kbgn;
 
-  if (k < 0) {
+  if (k < 0)
+    {
 
-    k = pvinfo->knmin[i];
+      k = pvinfo->knmin[i];
 
-    i = pvinfo->knmin[3 - i];
+      i = pvinfo->knmin[3 - i];
 
-    if (k > i)
-      k = i;
+      if (k > i)
+        k = i;
 
-    if (k < 0)
-      k = 0;
-  }
+      if (k < 0)
+        k = 0;
+    }
 
   ixcom[XKBGN] = k;
 
@@ -2001,7 +2153,7 @@ int getqs(const int im, const int iff, const int nsiz, const int kbgn,
 
   lupper = pvinfo->lvupper;
 
-  if (ODD(lupper))
+  if (ODD (lupper))
     --iiv;
 
   *iv = iiv;
@@ -2029,60 +2181,66 @@ int getqs(const int im, const int iff, const int nsiz, const int kbgn,
 
   isscom[0] = iscom[0];
 
-  for (i = 1; i < nspinv; ++i) {
+  for (i = 1; i < nspinv; ++i)
+    {
 
-    iscom[i - 1] = iff + jjs[i];
+      iscom[i - 1] = iff + jjs[i];
 
-    isscom[i] = iis[i];
-  }
+      isscom[i] = iis[i];
+    }
 
   iscom[i - 1] = iff;
 
   isscom[i] = iis[i];
 
-  while (i < nspin) {
+  while (i < nspin)
+    {
 
-    ++i;
-    iscom[i - 1] = iff;
-    isscom[i] = 0;
-  }
-
-  if (glob.nitot > 0) {
-
-    if (glob.nitot >= 3) {
-
-      if (itsym < nspinv) {
-
-        i = jjs[itsym + 1];
-        iscom[itsym] = i;
-
-        k = MOD(i >> 2, glob.nitot);
-
-        i -= k << 2;
-
-        if (is_esym[k] != 0)
-          ++i;
-
-        ixcom[XISYM] = k;
-
-        ixcom[XIQN] |= i;
-
-      } else {
-
-        iscom[itsym] = 0;
-      }
+      ++i;
+      iscom[i - 1] = iff;
+      isscom[i] = 0;
     }
 
-    iscom[itptr] = jjs[itptr + 1];
-  }
+  if (glob.nitot > 0)
+    {
+
+      if (glob.nitot >= 3)
+        {
+
+          if (itsym < nspinv)
+            {
+
+              i = jjs[itsym + 1];
+              iscom[itsym] = i;
+
+              k = MOD (i >> 2, glob.nitot);
+
+              i -= k << 2;
+
+              if (is_esym[k] != 0)
+                ++i;
+
+              ixcom[XISYM] = k;
+
+              ixcom[XIQN] |= i;
+            }
+          else
+            {
+
+              iscom[itsym] = 0;
+            }
+        }
+
+      iscom[itptr] = jjs[itptr + 1];
+    }
 
   return ispx;
 
 } /* getqs */
 
-int idpars(SPAR *pspar, int *ksq, int *itp, int *ln, int *ld, int *kdel,
-           int *ins, int *si1, int *si2, int *sznz, int *ifc, int *alpha,
-           int *ldel)
+int
+idpars (SPAR *pspar, int *ksq, int *itp, int *ln, int *ld, int *kdel, int *ins,
+        int *si1, int *si2, int *sznz, int *ifc, int *alpha, int *ldel)
 
 {
 
@@ -2140,9 +2298,9 @@ int idpars(SPAR *pspar, int *ksq, int *itp, int *ln, int *ld, int *kdel,
 
 } /* idpars */
 
-int getll(const int llf, const int ld, const int ln, const int kd,
-          const int si1, const int si2, int lscom[], const int iscom[],
-          const int jscom[])
+int
+getll (const int llf, const int ld, const int ln, const int kd, const int si1,
+       const int si2, int lscom[], const int iscom[], const int jscom[])
 
 {
 
@@ -2187,30 +2345,32 @@ int getll(const int llf, const int ld, const int ln, const int kd,
 
     jdif = -jdif;
 
-  if (lld >= llj) {
+  if (lld >= llj)
+    {
 
-    if (llj < jdif)
+      if (llj < jdif)
 
-      return ierr;
+        return ierr;
 
-    llmax = kd << 1;
+      llmax = kd << 1;
 
-    if (llmax < lld)
+      if (llmax < lld)
 
-      llmax = lld;
+        llmax = lld;
+    }
+  else
+    {
 
-  } else {
+      if (lld < jdif)
 
-    if (lld < jdif)
+        return ierr;
 
-      return ierr;
+      llmax = kd << 1;
 
-    llmax = kd << 1;
+      if (llmax < llj)
 
-    if (llmax < llj)
-
-      llmax = llj;
-  }
+        llmax = llj;
+    }
 
   jsum = iscom[nspin] + jscom[nspin];
 
@@ -2218,12 +2378,13 @@ int getll(const int llf, const int ld, const int ln, const int kd,
 
     return ierr;
 
-  if (nspin == 0) {
+  if (nspin == 0)
+    {
 
-    lscom[0] = llj;
+      lscom[0] = llj;
 
-    return 0;
-  }
+      return 0;
+    }
 
   maxspin = si1;
 
@@ -2234,70 +2395,78 @@ int getll(const int llf, const int ld, const int ln, const int kd,
   lsscom = &lscom[nspin];
   lsscom[0] = llj;
 
-  for (i = 1; i <= nspin; ++i) {
+  for (i = 1; i <= nspin; ++i)
+    {
 
-    lsscom[i] = 0;
-  }
+      lsscom[i] = 0;
+    }
 
-  if (si1 > 0) {
+  if (si1 > 0)
+    {
 
-    lsscom[si1] = 2;
+      lsscom[si1] = 2;
 
-    if (si2 > 0)
+      if (si2 > 0)
 
-      lsscom[si2] += 2;
-  }
+        lsscom[si2] += 2;
+    }
 
   /* generate list of tensor orders, checking quantum numbers along the way */
 
   nm2 = nspin - 2;
 
-  for (i = 0; i <= nm2; ++i) {
+  for (i = 0; i <= nm2; ++i)
+    {
 
-    if (i == itsym) { /* special for Itot */
+      if (i == itsym)
+        { /* special for Itot */
 
-      if (si1 <= itsym) {
+          if (si1 <= itsym)
+            {
 
-        llj = 0;
+              llj = 0;
+            }
+          else if (si2 <= itsym || si1 == si2)
+            {
 
-      } else if (si2 <= itsym || si1 == si2) {
+              llj = lsscom[si1];
+            }
 
-        llj = lsscom[si1];
-      }
+          i = nm2;
+        }
+      else if (i >= maxspin)
+        { /* operator complete */
 
-      i = nm2;
+          llj = llf;
+        }
+      else
+        {
 
-    } else if (i >= maxspin) { /* operator complete */
+          llj -= lsscom[i + 1]; /* reduce order by spin operator order */
 
-      llj = llf;
+          if (llj < 0)
 
-    } else {
+            llj = -llj;
+        }
 
-      llj -= lsscom[i + 1]; /* reduce order by spin operator order */
+      lscom[i] = llj;
 
-      if (llj < 0)
+      jdif = iscom[i] - jscom[i];
 
-        llj = -llj;
+      if (jdif < 0)
+
+        jdif = -jdif;
+
+      if (llj < jdif)
+
+        return ierr;
+
+      jsum = iscom[i] + jscom[i];
+
+      if (llj > jsum)
+
+        return ierr;
     }
-
-    lscom[i] = llj;
-
-    jdif = iscom[i] - jscom[i];
-
-    if (jdif < 0)
-
-      jdif = -jdif;
-
-    if (llj < jdif)
-
-      return ierr;
-
-    jsum = iscom[i] + jscom[i];
-
-    if (llj > jsum)
-
-      return ierr;
-  }
 
   lscom[nspin - 1] = llf;
 
@@ -2309,9 +2478,10 @@ int getll(const int llf, const int ld, const int ln, const int kd,
 
 } /* getll */
 
-int getmask(const int *xbra, const int *xket, const int kd, const int ldel,
+int
+getmask (const int *xbra, const int *xket, const int kd, const int ldel,
 
-            const int loff, const int alpha)
+         const int loff, const int alpha)
 
 {
 
@@ -2325,62 +2495,69 @@ int getmask(const int *xbra, const int *xket, const int kd, const int ldel,
 
   nitot = glob.nitot;
 
-  if (nitot >= 3) { /* check Itot symmetry */
+  if (nitot >= 3)
+    { /* check Itot symmetry */
 
-    ksbra = xbra[XISYM];
-    ksket = xket[XISYM];
+      ksbra = xbra[XISYM];
+      ksket = xket[XISYM];
 
-    kk = (xbra[XIQN] ^ xket[XIQN]) >> 1;
+      kk = (xbra[XIQN] ^ xket[XIQN]) >> 1;
 
-    if ((loff & MIDEN) != 0) { /* Identity operator */
+      if ((loff & MIDEN) != 0)
+        { /* Identity operator */
 
-      if (kk != 0)
-        return 0;
+          if (kk != 0)
+            return 0;
+        }
+      else if (EVEN (kk))
+        { /* A1|A1, A1|E, E|E, A2|A2, ..*/
 
-    } else if (EVEN(kk)) { /* A1|A1, A1|E, E|E, A2|A2, ..*/
+          if ((loff & MSYM2) != 0)
+            return 0;
+        }
+      else
+        { /* kk is ODD */
 
-      if ((loff & MSYM2) != 0)
-        return 0;
+          if ((loff & MSYM2) == 0)
+            return 0; /* <A2| I_alpha |E> */
 
-    } else { /* kk is ODD */
+          if (is_esym[ksbra] == 0 && is_esym[ksket] == 0)
 
-      if ((loff & MSYM2) == 0)
-        return 0; /* <A2| I_alpha |E> */
+            return 0; /*  <A1 |I_alpha| A2> == 0 */
+        }
 
-      if (is_esym[ksbra] == 0 && is_esym[ksket] == 0)
+      mask = 0;
 
-        return 0; /*  <A1 |I_alpha| A2> == 0 */
+      kk = ksket - ksbra;
+
+      if (alpha == 0)
+        {
+
+          if (kk == 0)
+            mask = 5;
+        }
+      else if (alpha < nitot)
+        {
+
+          if (MOD (kk + alpha, nitot) == 0)
+
+            mask = 1;
+
+          if (MOD (kk - alpha, nitot) == 0)
+
+            mask += 4;
+        }
+      else
+        { /* quasi-diagonal */
+
+          if (MOD (ksbra + ksket - alpha, nitot) == 0)
+
+            mask = 2;
+        }
+
+      if (mask == 0)
+        return mask;
     }
-
-    mask = 0;
-
-    kk = ksket - ksbra;
-
-    if (alpha == 0) {
-
-      if (kk == 0)
-        mask = 5;
-
-    } else if (alpha < nitot) {
-
-      if (MOD(kk + alpha, nitot) == 0)
-
-        mask = 1;
-
-      if (MOD(kk - alpha, nitot) == 0)
-
-        mask += 4;
-
-    } else { /* quasi-diagonal */
-
-      if (MOD(ksbra + ksket - alpha, nitot) == 0)
-
-        mask = 2;
-    }
-
-    if (mask == 0)
-      return mask;
-  }
 
   /* mask bit 0 (val = 1): kbra = kket + kd, lbra = lket + ldel */
 
@@ -2393,27 +2570,32 @@ int getmask(const int *xbra, const int *xket, const int kd, const int ldel,
 
   ldif = lbra - lket;
 
-  if (ldel == 0) { /* operator diagonal in l */
+  if (ldel == 0)
+    { /* operator diagonal in l */
 
-    if (ldif != 0)
+      if (ldif != 0)
 
-      mask &= 2; /* clear bits 0 and 2 */
-
-  } else { /* operator off-diagonal in l */
-
-    if (ldif == 0) {
-
-      mask &= 2; /* clear bits 0 and 2 */
-
-    } else if (ldif != ldel) {
-
-      mask &= 6; /* clear bit 0 */
-
-    } else if (-ldif != ldel) {
-
-      mask &= 3; /* clear bit 2 */
+        mask &= 2; /* clear bits 0 and 2 */
     }
-  }
+  else
+    { /* operator off-diagonal in l */
+
+      if (ldif == 0)
+        {
+
+          mask &= 2; /* clear bits 0 and 2 */
+        }
+      else if (ldif != ldel)
+        {
+
+          mask &= 6; /* clear bit 0 */
+        }
+      else if (-ldif != ldel)
+        {
+
+          mask &= 3; /* clear bit 2 */
+        }
+    }
 
   if ((mask & 2) == 0)
     return mask; /* bit 1 not set */
@@ -2433,10 +2615,10 @@ int getmask(const int *xbra, const int *xket, const int kd, const int ldel,
   if (kk < 0)
     return mask;
 
-  if (EVEN(xket[XIQN]))
+  if (EVEN (xket[XIQN]))
     kk -= 2;
 
-  if (EVEN(xbra[XIQN]))
+  if (EVEN (xbra[XIQN]))
     kk -= 2;
 
   if (kk < 0)
@@ -2446,7 +2628,8 @@ int getmask(const int *xbra, const int *xket, const int kd, const int ldel,
 
 } /* getmask */
 
-double rmatrx(const int ld, const int lv, const int *ixcom, const int *jxcom)
+double
+rmatrx (const int ld, const int lv, const int *ixcom, const int *jxcom)
 
 { /* find  N corrections to reduced matrix elements */
 
@@ -2470,32 +2653,36 @@ double rmatrx(const int ld, const int lv, const int *ixcom, const int *jxcom)
 
   dnsq = dn * dn;
 
-  if (ld > lv) { /* contracting tensor order */
+  if (ld > lv)
+    { /* contracting tensor order */
 
-    lmin = lv;
+      lmin = lv;
 
-    lt = ld;
+      lt = ld;
 
-    if (lmin == 0) {
+      if (lmin == 0)
+        {
 
-      lmin = 1;
+          lmin = 1;
 
-      tmp = ni * (double)(ni + 1) / dn;
+          tmp = ni * (double)(ni + 1) / dn;
+        }
     }
+  else
+    { /* expanding tensor order */
 
-  } else { /* expanding tensor order */
+      lmin = ld;
 
-    lmin = ld;
+      lt = lv;
 
-    lt = lv;
+      if (lmin == 0)
+        {
 
-    if (lmin == 0) {
+          lmin = 1;
 
-      lmin = 1;
-
-      tmp = ni * (double)(ni + 1) * dn;
+          tmp = ni * (double)(ni + 1) * dn;
+        }
     }
-  }
 
   if (lt >= nsum)
 
@@ -2507,25 +2694,27 @@ double rmatrx(const int ld, const int lv, const int *ixcom, const int *jxcom)
 
     del = (double)(ndif * ndif);
 
-  while (lt > lmin) {
+  while (lt > lmin)
+    {
 
-    dlsq = (double)(lt * lt);
+      dlsq = (double)(lt * lt);
 
-    tmp *= 0.25 * (dnsq - dlsq);
+      tmp *= 0.25 * (dnsq - dlsq);
 
-    if (ndif != 0)
+      if (ndif != 0)
 
-      tmp -= tmp * del / dlsq;
+        tmp -= tmp * del / dlsq;
 
-    --lt;
-  }
+      --lt;
+    }
 
-  return sqrt(tmp);
+  return sqrt (tmp);
 
 } /* rmatrx */
 
-int symnsq(const int inq, const int ins, const int *iscom, const int *jscom,
-           double *zval)
+int
+symnsq (const int inq, const int ins, const int *iscom, const int *jscom,
+        double *zval)
 
 {
 
@@ -2569,68 +2758,75 @@ int symnsq(const int inq, const int ins, const int *iscom, const int *jscom,
 
   zl = zr = 0.5 * (*zval);
 
-  if (modf != 0) { /*  CORRECT ELE FOR COMMUTATION */
+  if (modf != 0)
+    { /*  CORRECT ELE FOR COMMUTATION */
 
-    if (nnj == 0) {
+      if (nnj == 0)
+        {
 
-      zr = 0.;
+          zr = 0.;
+        }
+      else
+        {
 
-    } else {
+          x = nnj * (double)(nnj + 2) / (nni * (double)(nni + 2));
 
-      x = nnj * (double)(nnj + 2) / (nni * (double)(nni + 2));
+          ipwr = (unsigned int)inq;
 
-      ipwr = (unsigned int)inq;
+          for (;;)
+            {
 
-      for (;;) {
+              if (ODD (ipwr))
+                zr *= x;
 
-        if (ODD(ipwr))
-          zr *= x;
+              if ((ipwr >>= 1) == 0)
+                break;
 
-        if ((ipwr >>= 1) == 0)
-          break;
-
-        x *= x;
-      }
+              x *= x;
+            }
+        }
     }
-  }
 
-  if (ins > 0) {
+  if (ins > 0)
+    {
 
-    j = iscom[0];
+      j = iscom[0];
 
-    ispn = iscom[nspin + 1];
+      ispn = iscom[nspin + 1];
 
-    x = (double)(ispn * (ispn + 2));
+      x = (double)(ispn * (ispn + 2));
 
-    dotns = 0.125 * ((j - nni) * (double)(j + nni + 2) - x);
+      dotns = 0.125 * ((j - nni) * (double)(j + nni + 2) - x);
 
-    j = jscom[0];
+      j = jscom[0];
 
-    ispn = jscom[nspin + 1];
+      ispn = jscom[nspin + 1];
 
-    x = (double)(ispn * (ispn + 2));
+      x = (double)(ispn * (ispn + 2));
 
-    dotnsp = 0.125 * ((j - nnj) * (double)(j + nnj + 2) - x);
+      dotnsp = 0.125 * ((j - nnj) * (double)(j + nnj + 2) - x);
 
-    ipwr = (unsigned int)ins;
+      ipwr = (unsigned int)ins;
 
-    for (;;) {
+      for (;;)
+        {
 
-      if (ODD(ipwr)) {
+          if (ODD (ipwr))
+            {
 
-        zl *= dotns;
+              zl *= dotns;
 
-        zr *= dotnsp;
-      }
+              zr *= dotnsp;
+            }
 
-      if ((ipwr >>= 1) == 0)
-        break;
+          if ((ipwr >>= 1) == 0)
+            break;
 
-      dotns *= dotns;
+          dotns *= dotns;
 
-      dotnsp *= dotnsp;
+          dotnsp *= dotnsp;
+        }
     }
-  }
 
   *zval = zl + zr;
 
@@ -2638,8 +2834,9 @@ int symnsq(const int inq, const int ins, const int *iscom, const int *jscom,
 
 } /* symnsq */
 
-int symksq(const int ikq, const int ksi, const int ksj, const int n, double *wk,
-           short *ix, short *jx)
+int
+symksq (const int ikq, const int ksi, const int ksj, const int n, double *wk,
+        short *ix, short *jx)
 
 {
 
@@ -2673,90 +2870,100 @@ int symksq(const int ikq, const int ksi, const int ksj, const int n, double *wk,
 
   zflg = 0;
 
-  for (i = 0; i < n; ++i) {
+  for (i = 0; i < n; ++i)
+    {
 
-    xi = wk[i];
+      xi = wk[i];
 
-    ki = ksi + ((int)ix[i] << 1);
+      ki = ksi + ((int)ix[i] << 1);
 
-    kj = ksj + ((int)jx[i] << 1);
+      kj = ksj + ((int)jx[i] << 1);
 
-    if (ikq > 0) {
+      if (ikq > 0)
+        {
 
-      nkq = (unsigned int)ikq;
+          nkq = (unsigned int)ikq;
 
-      if (ki != kj) {
+          if (ki != kj)
+            {
 
-        zflg = n;
+              zflg = n;
 
-        xj = xi;
+              xj = xi;
 
-        akisq = (double)(ki * ki);
+              akisq = (double)(ki * ki);
 
-        akjsq = (double)(kj * kj);
+              akjsq = (double)(kj * kj);
 
-        for (;;) {
+              for (;;)
+                {
 
-          if (ODD(nkq)) {
+                  if (ODD (nkq))
+                    {
 
-            xi *= akisq;
+                      xi *= akisq;
 
-            xj *= akjsq;
-          }
+                      xj *= akjsq;
+                    }
 
-          if ((nkq >>= 1) == 0)
-            break;
+                  if ((nkq >>= 1) == 0)
+                    break;
 
-          akisq *= akisq;
+                  akisq *= akisq;
 
-          akjsq *= akjsq;
+                  akjsq *= akjsq;
+                }
+
+              wk[i] = 0.5 * (xi + xj);
+            }
+          else if (ki > 0)
+            {
+
+              zflg = n;
+
+              akisq = (double)(ki * ki);
+
+              for (;;)
+                {
+
+                  if (ODD (nkq))
+                    xi *= akisq;
+
+                  if ((nkq >>= 1) == 0)
+                    break;
+
+                  akisq *= akisq;
+                }
+
+              wk[i] = xi;
+            }
+          else
+            {
+
+              wk[i] = 0.;
+            }
         }
+      else if (ki == kcmp && ki == kj)
+        {
 
-        wk[i] = 0.5 * (xi + xj);
+          ix[0] = ix[i];
 
-      } else if (ki > 0) {
+          jx[0] = jx[i];
 
-        zflg = n;
+          wk[0] = xi;
 
-        akisq = (double)(ki * ki);
-
-        for (;;) {
-
-          if (ODD(nkq))
-            xi *= akisq;
-
-          if ((nkq >>= 1) == 0)
-            break;
-
-          akisq *= akisq;
+          return 1;
         }
-
-        wk[i] = xi;
-
-      } else {
-
-        wk[i] = 0.;
-      }
-
-    } else if (ki == kcmp && ki == kj) {
-
-      ix[0] = ix[i];
-
-      jx[0] = jx[i];
-
-      wk[0] = xi;
-
-      return 1;
     }
-  }
 
   return zflg;
 
 } /* symksq */
 
-int dpmake(const int nsize, double *dp, const double *t, const int n,
-           const double *wk, const short *idx, const short *jdx,
-           const BOOL isunit)
+int
+dpmake (const int nsize, double *dp, const double *t, const int n,
+        const double *wk, const short *idx, const short *jdx,
+        const BOOL isunit)
 
 { /*  find derivative contribution from sub-diagonal */
 
@@ -2766,80 +2973,92 @@ int dpmake(const int nsize, double *dp, const double *t, const int n,
 
   int i, k, iz, jz;
 
-  if (isunit) {
+  if (isunit)
+    {
 
-    iz = idx[0];
+      iz = idx[0];
 
-    jz = jdx[0];
+      jz = jdx[0];
 
-    if (iz != jz) { /* off-diagonal unit matrix */
+      if (iz != jz)
+        { /* off-diagonal unit matrix */
 
-      for (k = 0; k < nsize; ++k) {
+          for (k = 0; k < nsize; ++k)
+            {
 
-        dp[k] = 2. * ddot(n, &t[iz], 1, &t[jz], 1);
+              dp[k] = 2. * ddot (n, &t[iz], 1, &t[jz], 1);
 
-        iz += nsize;
+              iz += nsize;
 
-        jz += nsize;
-      }
-
-    } else { /* diagonal unit matrix */
-
-      for (k = 0; k < nsize; ++k) {
-
-        pt = &t[iz];
-
-        dp[k] = ddot(n, pt, 1, pt, 1);
-
-        iz += nsize;
-      }
-    }
-
-  } else {
-
-    dcopy(nsize, &zero, 0, dp, 1);
-
-    for (i = 0; i < n; ++i) {
-
-      iz = idx[i];
-
-      jz = jdx[i];
-
-      ele = wk[i];
-
-      if (iz != jz) {
-
-        ele *= 2;
-
-        for (k = 0; k < nsize; ++k) {
-
-          dp[k] += t[iz] * t[jz] * ele;
-
-          iz += nsize;
-
-          jz += nsize;
+              jz += nsize;
+            }
         }
+      else
+        { /* diagonal unit matrix */
 
-      } else {
+          for (k = 0; k < nsize; ++k)
+            {
 
-        for (k = 0; k < nsize; ++k) {
+              pt = &t[iz];
 
-          tz = t[iz];
+              dp[k] = ddot (n, pt, 1, pt, 1);
 
-          dp[k] += tz * tz * ele;
-
-          iz += nsize;
+              iz += nsize;
+            }
         }
-      }
     }
-  }
+  else
+    {
+
+      dcopy (nsize, &zero, 0, dp, 1);
+
+      for (i = 0; i < n; ++i)
+        {
+
+          iz = idx[i];
+
+          jz = jdx[i];
+
+          ele = wk[i];
+
+          if (iz != jz)
+            {
+
+              ele *= 2;
+
+              for (k = 0; k < nsize; ++k)
+                {
+
+                  dp[k] += t[iz] * t[jz] * ele;
+
+                  iz += nsize;
+
+                  jz += nsize;
+                }
+            }
+          else
+            {
+
+              for (k = 0; k < nsize; ++k)
+                {
+
+                  tz = t[iz];
+
+                  dp[k] += tz * tz * ele;
+
+                  iz += nsize;
+                }
+            }
+        }
+    }
 
   return 0;
 
 } /* dpmake */
 
-int tensor(double *zval, const int iscom[], const int jscom[],
-           const int lscom[], const int imap[], int npair, int alpha)
+int
+tensor (double *zval, const int iscom[], const int jscom[], const int lscom[],
+        const int imap[], int npair, int alpha)
 
 {
 
@@ -2873,109 +3092,117 @@ int tensor(double *zval, const int iscom[], const int jscom[],
   isgn = 0;
   zsq = 1.;
 
-  for (i = 0; i < npair; ++i) {
+  for (i = 0; i < npair; ++i)
+    {
 
-    ix = imap[i + i];
+      ix = imap[i + i];
 
-    lln = lscom[ix];
-    nni = iscom[ix];
-    nnf = jscom[ix];
+      lln = lscom[ix];
+      nni = iscom[ix];
+      nnf = jscom[ix];
 
-    ix = imap[i + i + 1];
+      ix = imap[i + i + 1];
 
-    lls = lscom[ix];
-    ssi = iscom[ix];
-    ssf = jscom[ix];
+      lls = lscom[ix];
+      ssi = iscom[ix];
+      ssf = jscom[ix];
 
-    if (alpha >= 0 && ix == itptr) {
+      if (alpha >= 0 && ix == itptr)
+        {
 
-      ix = itsym + nspin + 1;
+          ix = itsym + nspin + 1;
 
-      getzitot(&z, lls, iscom[ix], &lscom[ix],
+          getzitot (&z, lls, iscom[ix], &lscom[ix],
 
-               &iscom[itsym], &jscom[itsym], alpha, glob.nitot);
+                    &iscom[itsym], &jscom[itsym], alpha, glob.nitot);
 
-      i = nspin - 1;
+          i = nspin - 1;
+        }
+
+      llj = lscom[i];
+      jji = iscom[i];
+      jjf = jscom[i];
+
+      if (lln != 0)
+        {
+
+          if (llj == 0)
+            { /* T * U */
+
+              isgn += jji + ssi + nnf;
+
+              z *= c6jj (nni, lln, nnf, ssf, jji, ssi);
+            }
+          else if (lls == 0)
+            { /* U = 1 */
+
+              isgn += jjf + nni + ssi + llj;
+
+              zsq *= jji + 1;
+
+              zsq *= jjf + 1;
+
+              z *= c6jj (nni, llj, nnf, jjf, ssi, jji);
+            }
+          else
+            { /* T X U */
+
+              isgn += 2;
+
+              zsq *= 2.5;
+
+              ix = (jjf + 1) * (llj + 1);
+
+              zsq *= ix;
+
+              zsq *= jji + 1;
+
+              jj[0] = nnf;
+
+              jj[1] = lln;
+
+              jj[2] = nni;
+
+              jj[3] = ssf;
+
+              jj[4] = lls;
+
+              jj[5] = ssi;
+
+              jj[6] = jjf;
+
+              jj[7] = llj;
+
+              jj[8] = jji;
+
+              z *= c9jj (jj);
+            }
+        }
+      else if (lls != 0)
+        { /* T = 1 */
+
+          isgn += jji + nni + ssf + llj;
+
+          zsq *= jji + 1;
+
+          zsq *= jjf + 1;
+
+          z *= c6jj (ssi, llj, ssf, jjf, nni, jji);
+        }
     }
 
-    llj = lscom[i];
-    jji = iscom[i];
-    jjf = jscom[i];
-
-    if (lln != 0) {
-
-      if (llj == 0) { /* T * U */
-
-        isgn += jji + ssi + nnf;
-
-        z *= c6jj(nni, lln, nnf, ssf, jji, ssi);
-
-      } else if (lls == 0) { /* U = 1 */
-
-        isgn += jjf + nni + ssi + llj;
-
-        zsq *= jji + 1;
-
-        zsq *= jjf + 1;
-
-        z *= c6jj(nni, llj, nnf, jjf, ssi, jji);
-
-      } else { /* T X U */
-
-        isgn += 2;
-
-        zsq *= 2.5;
-
-        ix = (jjf + 1) * (llj + 1);
-
-        zsq *= ix;
-
-        zsq *= jji + 1;
-
-        jj[0] = nnf;
-
-        jj[1] = lln;
-
-        jj[2] = nni;
-
-        jj[3] = ssf;
-
-        jj[4] = lls;
-
-        jj[5] = ssi;
-
-        jj[6] = jjf;
-
-        jj[7] = llj;
-
-        jj[8] = jji;
-
-        z *= c9jj(jj);
-      }
-
-    } else if (lls != 0) { /* T = 1 */
-
-      isgn += jji + nni + ssf + llj;
-
-      zsq *= jji + 1;
-
-      zsq *= jjf + 1;
-
-      z *= c6jj(ssi, llj, ssf, jjf, nni, jji);
-    }
-  }
-
-  if (ODD2(isgn))
+  if (ODD2 (isgn))
     z = -z;
 
-  *zval = z * sqrt(zsq);
+  *zval = z * sqrt (zsq);
 
   return 0;
 
 } /* tensor */
 
-int setint(FILE *lu, BOOL *ifdiag, int *nsav, const int ndip, bcd_t *idip,
-           int *isimag)
+int
+setint (FILE *lu, BOOL *ifdiag, int *nsav, const int ndip, bcd_t *idip,
+        int *isimag)
 
 { /*   subroutine to initialize intensity data */
 
@@ -2999,9 +3226,9 @@ int setint(FILE *lu, BOOL *ifdiag, int *nsav, const int ndip, bcd_t *idip,
 
   *nsav = 1;
 
-  free(dipinfo);
+  free (dipinfo);
 
-  dipinfo = (SDIP *)mallocq((size_t)ndip * sizeof(SDIP));
+  dipinfo = (SDIP *)mallocq ((size_t)ndip * sizeof (SDIP));
 
   nddip = ndip;
 
@@ -3022,379 +3249,402 @@ int setint(FILE *lu, BOOL *ifdiag, int *nsav, const int ndip, bcd_t *idip,
   ndecv = glob.vibdec;
   nbcd = (int)idip[0] & 0x7f;
 
-  for (i = 0, ibcd = 0; i < ndip; ++i, ibcd += nbcd) {
+  for (i = 0, ibcd = 0; i < ndip; ++i, ibcd += nbcd)
+    {
 
-    ii = (int)idip[ibcd + ndecv + 1];
+      ii = (int)idip[ibcd + ndecv + 1];
 
-    si1 = (ii >> 4) & 0x0f;
+      si1 = (ii >> 4) & 0x0f;
 
-    ii &= 0x0f;
+      ii &= 0x0f;
 
-    if (ndecv > 2)
+      if (ndecv > 2)
 
-      ii = 100 * ii + bcd2i(idip[ibcd + 3]);
+        ii = 100 * ii + bcd2i (idip[ibcd + 3]);
 
-    if (ndecv > 1)
+      if (ndecv > 1)
 
-      ii = 100 * ii + bcd2i(idip[ibcd + 2]);
+        ii = 100 * ii + bcd2i (idip[ibcd + 2]);
 
-    itmp = idip[ibcd + 1];
+      itmp = idip[ibcd + 1];
 
-    isym = (int)itmp & 0x0f;
+      isym = (int)itmp & 0x0f;
 
-    ii = 10 * ii + ((int)(itmp >> 4) & 0x0f);
+      ii = 10 * ii + ((int)(itmp >> 4) & 0x0f);
 
-    iv2 = ii / ifac;
+      iv2 = ii / ifac;
 
-    iv1 = ii - iv2 * ifac;
+      iv1 = ii - iv2 * ifac;
 
-    icase = bcd2i(idip[ibcd + ndecv + 2]);
+      icase = bcd2i (idip[ibcd + ndecv + 2]);
 
-    ivdif = iv1 - iv2;
+      ivdif = iv1 - iv2;
 
-    if (ivdif < 0) {
+      if (ivdif < 0)
+        {
 
-      ii = iv1;
-      iv1 = iv2;
-      iv2 = ii;
-    }
-
-    pvib1 = &vinfo[iv1];
-    pvib2 = &vinfo[iv2];
-
-    lv1 = pvib1->lvupper;
-    lv2 = pvib2->lvupper;
-
-    if (ODD(lv1))
-      --iv1;
-
-    if (ODD(lv2))
-      --iv2;
-
-    ipty = ((lv1 ^ lv2) & 2) >> 1;
-
-    lv1 = pvib1->lvqn;
-    lv2 = pvib2->lvqn;
-
-    /* MAKE SURE VIBRATIONS ARE ORDERED */
-
-    bad_dip = TRUE;
-    ifc = 0;
-    zfac = 1.;
-
-    do { /* one pass */
-
-      /*  CONVERT SYMMETRY */
-
-      if (isym > 3 || icase > MAXINT)
-        break;
-
-      if (iv1 >= glob.nvib)
-        break;
-
-      if (iv2 >= glob.nvib)
-        break;
-
-      if ((lv1 + lv2) < 0)
-        break;
-
-      if (pvib1->spt != pvib2->spt)
-        break;
-
-      if (pvib1->gsym != pvib2->gsym)
-        break;
-
-      if (pvib1->ewt[0] != pvib2->ewt[0])
-        break;
-
-      if (pvib1->ewt[1] != pvib2->ewt[1])
-        break;
-
-      if (glob.oblate == FALSE)
-
-        isym = revsym[isym];
-
-      iflg = 1;
-
-      if (isym == 0) {
-
-        ld = 0;
-        zfac = 0.009274;
-
-      } else {
-
-        ld = 1;
-        iflg |= MELEC;
-      }
-
-      imag = 0;
-
-      kd = isoddk[isym]; /* ld = 0,1; kd = 0, 1, 1, 0 */
-
-      if (icase > 0) {
-
-        switch (icase) {
-
-        case 1: /* ld = 2,2; kd = 0, 1, 1, 2 */
-
-          ld = 2;
-
-          if (isym == 3)
-
-            kd = 2;
-
-          break;
-
-        case 2: /* ld = 2,2; kd = 2, 1, 1, 2 */
-
-        case 11:
-
-        case 12:
-
-          ld = 2;
-
-          if (kd == 0)
-
-            kd = 2;
-
-          if (icase == 11) {
-
-            iflg |= MINOQ;
-            ++imag; /* commutator */
-
-          } else if (icase == 12) {
-
-            ifc = -1;
-
-            ++imag;
-            isym = 3 - isym;
-          }
-
-          break;
-
-        case 5:
-
-          if (isym != 0) {
-
-            iflg |= MINOQ;
-            ++imag; /* commutator */
-          }
-
-          break;
-
-        case 6: /* ld = 0,3; kd = 2, 3, 3, 2 */
-
-          if (isym != 0)
-
-            ld = 3;
-
-          kd += 2;
-
-          break;
-
-        case 7:
-
-        case 8:
-
-          ifc = icase * 10 + si1 - 70;
-
-          if (ifc > 10) {
-
-            ifc = 9 - ifc;
-
-            ++imag;
-            isym = 3 - isym;
-          }
-
-          si1 = 0;
-
-          break;
-
-        case 10:
-
-          iflg |= MINOQ; /* double commutator */
-
-          break;
+          ii = iv1;
+          iv1 = iv2;
+          iv2 = ii;
         }
 
-        if ((iflg & MINOQ) != 0 && isym == 0)
-          break;
-      }
+      pvib1 = &vinfo[iv1];
+      pvib2 = &vinfo[iv2];
 
-      if (icase == 11 && isym == 0)
-        break;
+      lv1 = pvib1->lvupper;
+      lv2 = pvib2->lvupper;
 
-      for (ii = 0; ii < 4; ++ii) {
+      if (ODD (lv1))
+        --iv1;
 
-        jsym = ii ^ isym;
+      if (ODD (lv2))
+        --iv2;
 
-        if (pvib1->wt[ii] != pvib2->wt[jsym]) {
+      ipty = ((lv1 ^ lv2) & 2) >> 1;
 
-          jj = pvib1->wt[4];
+      lv1 = pvib1->lvqn;
+      lv2 = pvib2->lvqn;
 
-          if (jj == 0)
+      /* MAKE SURE VIBRATIONS ARE ORDERED */
+
+      bad_dip = TRUE;
+      ifc = 0;
+      zfac = 1.;
+
+      do
+        { /* one pass */
+
+          /*  CONVERT SYMMETRY */
+
+          if (isym > 3 || icase > MAXINT)
             break;
 
-          if (pvib1->wt[ii] != pvib2->wt[jsym ^ jj])
+          if (iv1 >= glob.nvib)
             break;
+
+          if (iv2 >= glob.nvib)
+            break;
+
+          if ((lv1 + lv2) < 0)
+            break;
+
+          if (pvib1->spt != pvib2->spt)
+            break;
+
+          if (pvib1->gsym != pvib2->gsym)
+            break;
+
+          if (pvib1->ewt[0] != pvib2->ewt[0])
+            break;
+
+          if (pvib1->ewt[1] != pvib2->ewt[1])
+            break;
+
+          if (glob.oblate == FALSE)
+
+            isym = revsym[isym];
+
+          iflg = 1;
+
+          if (isym == 0)
+            {
+
+              ld = 0;
+              zfac = 0.009274;
+            }
+          else
+            {
+
+              ld = 1;
+              iflg |= MELEC;
+            }
+
+          imag = 0;
+
+          kd = isoddk[isym]; /* ld = 0,1; kd = 0, 1, 1, 0 */
+
+          if (icase > 0)
+            {
+
+              switch (icase)
+                {
+
+                case 1: /* ld = 2,2; kd = 0, 1, 1, 2 */
+
+                  ld = 2;
+
+                  if (isym == 3)
+
+                    kd = 2;
+
+                  break;
+
+                case 2: /* ld = 2,2; kd = 2, 1, 1, 2 */
+
+                case 11:
+
+                case 12:
+
+                  ld = 2;
+
+                  if (kd == 0)
+
+                    kd = 2;
+
+                  if (icase == 11)
+                    {
+
+                      iflg |= MINOQ;
+                      ++imag; /* commutator */
+                    }
+                  else if (icase == 12)
+                    {
+
+                      ifc = -1;
+
+                      ++imag;
+                      isym = 3 - isym;
+                    }
+
+                  break;
+
+                case 5:
+
+                  if (isym != 0)
+                    {
+
+                      iflg |= MINOQ;
+                      ++imag; /* commutator */
+                    }
+
+                  break;
+
+                case 6: /* ld = 0,3; kd = 2, 3, 3, 2 */
+
+                  if (isym != 0)
+
+                    ld = 3;
+
+                  kd += 2;
+
+                  break;
+
+                case 7:
+
+                case 8:
+
+                  ifc = icase * 10 + si1 - 70;
+
+                  if (ifc > 10)
+                    {
+
+                      ifc = 9 - ifc;
+
+                      ++imag;
+                      isym = 3 - isym;
+                    }
+
+                  si1 = 0;
+
+                  break;
+
+                case 10:
+
+                  iflg |= MINOQ; /* double commutator */
+
+                  break;
+                }
+
+              if ((iflg & MINOQ) != 0 && isym == 0)
+                break;
+            }
+
+          if (icase == 11 && isym == 0)
+            break;
+
+          for (ii = 0; ii < 4; ++ii)
+            {
+
+              jsym = ii ^ isym;
+
+              if (pvib1->wt[ii] != pvib2->wt[jsym])
+                {
+
+                  jj = pvib1->wt[4];
+
+                  if (jj == 0)
+                    break;
+
+                  if (pvib1->wt[ii] != pvib2->wt[jsym ^ jj])
+                    break;
+                }
+            }
+
+          if (ii < 4)
+            break;
+
+          if (pvib1->wt[4] != pvib2->wt[4])
+            break;
+
+          imag += ld;
+
+          ldel = lv1 - lv2;
+
+          nsym = setgsym ((int)pvib1->gsym);
+
+          if (ldel != 0)
+            {
+
+              if (icase == 5 && isym == 0)
+                break;
+
+              if (ldel < 0)
+
+                ldel = -ldel;
+
+              if (ivdif < 0) /* DELTA K * DELTA L < 0 */
+
+                ldel = -ldel;
+            }
+          else if (icase == 5 && isym == 0)
+            {
+
+              if (lv1 == 0 || si1 > 0)
+                break;
+
+              iflg |= MLZ;
+              ld = 1;
+            }
+
+          if (ODD (imag))
+            {
+
+              iflg |= MODD;
+            }
+          else if (isym > 0)
+            {
+
+              if (iv1 == iv2 && ldel == 0)
+                break;
+            }
+
+          if (glob.nitot >= 3)
+            {
+
+              if (MOD (kd - ldel, glob.nitot) != 0)
+
+                break; /* require alpha == 0 */
+
+              if (si1 <= itsym)
+
+                iflg |= MIDEN; /* identity operator */
+            }
+
+          lv = 1;
+
+          if (si1 > 0)
+            {
+
+              /* check spin properties */
+
+              if (ld == 0 && isym != 0)
+                break;
+
+              iiv1 = pvib1->spt;
+              iiv2 = pvib2->spt;
+
+              if (checksp (TRUE, si1, 0, iiv1, iiv2, &zfac) != 0)
+                break;
+
+              lv = iflg & MELEC; /*  simple electric dipole, lv = 2 */
+            }
+
+          if (ld == kd && ld < lv)
+
+            ld -= (ld - lv) & 0x7fe; /* subtract even number */
+
+          isimag[i] = (isym > 0) ? 1 : 0;
+
+          dipinfo[i].fac = zfac;
+
+          dipinfo[i].flg = (short)iflg;
+
+          dipinfo[i].kd = (signed char)kd;
+
+          dipinfo[i].ld = (signed char)ld;
+
+          dipinfo[i].ldel = (signed char)ldel;
+
+          dipinfo[i].fc = (signed char)ifc;
+
+          bad_dip = FALSE;
         }
-      }
+      while (FALSE);
 
-      if (ii < 4)
-        break;
+      if (bad_dip)
+        {
 
-      if (pvib1->wt[4] != pvib2->wt[4])
-        break;
+          putbcd (sbcd, NSBCD, &idip[ibcd]);
 
-      imag += ld;
+          fprintf (lu,
 
-      ldel = lv1 - lv2;
+                   " WARNING: dipole %3d %s has no matrix elements\n",
 
-      nsym = setgsym((int)pvib1->gsym);
+                   (i + 1), sbcd);
 
-      if (ldel != 0) {
+          dipinfo[i].fac = 0.;
 
-        if (icase == 5 && isym == 0)
-          break;
+          dipinfo[i].flg = (short)0;
 
-        if (ldel < 0)
+          dipinfo[i].kd = C0;
 
-          ldel = -ldel;
+          dipinfo[i].ld = C0;
 
-        if (ivdif < 0) /* DELTA K * DELTA L < 0 */
+          dipinfo[i].ldel = C0;
 
-          ldel = -ldel;
+          dipinfo[i].fc = C0;
 
-      } else if (icase == 5 && isym == 0) {
+          iv2 = iv1 = glob.vibfac;
+          isym = 0;
+        }
 
-        if (lv1 == 0 || si1 > 0)
-          break;
+      ii = iv2 * ifac + iv1;
 
-        iflg |= MLZ;
-        ld = 1;
-      }
+      ijv = ((unsigned int)ii << 2) + (unsigned int)isym;
 
-      if (ODD(imag)) {
+      if (ndecv < 3)
+        {
 
-        iflg |= MODD;
+          idip[ibcd + 5] = idip[ibcd + ndecv + 2];
 
-      } else if (isym > 0) {
+          idip[ibcd + 4] = idip[ibcd + ndecv + 1];
 
-        if (iv1 == iv2 && ldel == 0)
-          break;
-      }
+          idip[ibcd + 3] = (bcd_t)0;
+        }
+      else
+        {
 
-      if (glob.nitot >= 3) {
+          idip[ibcd + 4] &= 0xf0;
 
-        if (MOD(kd - ldel, glob.nitot) != 0)
+          idip[ibcd + 3] = (bcd_t)((ijv >> 16) & 0xff);
+        }
 
-          break; /* require alpha == 0 */
+      idip[ibcd + 2] = (bcd_t)(ijv >> 8);
 
-        if (si1 <= itsym)
+      idip[ibcd + 1] = (bcd_t)ijv;
 
-          iflg |= MIDEN; /* identity operator */
-      }
+      if (si1 == 0)
 
-      lv = 1;
-
-      if (si1 > 0) {
-
-        /* check spin properties */
-
-        if (ld == 0 && isym != 0)
-          break;
-
-        iiv1 = pvib1->spt;
-        iiv2 = pvib2->spt;
-
-        if (checksp(TRUE, si1, 0, iiv1, iiv2, &zfac) != 0)
-          break;
-
-        lv = iflg & MELEC; /*  simple electric dipole, lv = 2 */
-      }
-
-      if (ld == kd && ld < lv)
-
-        ld -= (ld - lv) & 0x7fe; /* subtract even number */
-
-      isimag[i] = (isym > 0) ? 1 : 0;
-
-      dipinfo[i].fac = zfac;
-
-      dipinfo[i].flg = (short)iflg;
-
-      dipinfo[i].kd = (signed char)kd;
-
-      dipinfo[i].ld = (signed char)ld;
-
-      dipinfo[i].ldel = (signed char)ldel;
-
-      dipinfo[i].fc = (signed char)ifc;
-
-      bad_dip = FALSE;
-
-    } while (FALSE);
-
-    if (bad_dip) {
-
-      putbcd(sbcd, NSBCD, &idip[ibcd]);
-
-      fprintf(lu,
-
-              " WARNING: dipole %3d %s has no matrix elements\n",
-
-              (i + 1), sbcd);
-
-      dipinfo[i].fac = 0.;
-
-      dipinfo[i].flg = (short)0;
-
-      dipinfo[i].kd = C0;
-
-      dipinfo[i].ld = C0;
-
-      dipinfo[i].ldel = C0;
-
-      dipinfo[i].fc = C0;
-
-      iv2 = iv1 = glob.vibfac;
-      isym = 0;
+        idip[ibcd + 4] &= 0x0f;
     }
-
-    ii = iv2 * ifac + iv1;
-
-    ijv = ((unsigned int)ii << 2) + (unsigned int)isym;
-
-    if (ndecv < 3) {
-
-      idip[ibcd + 5] = idip[ibcd + ndecv + 2];
-
-      idip[ibcd + 4] = idip[ibcd + ndecv + 1];
-
-      idip[ibcd + 3] = (bcd_t)0;
-
-    } else {
-
-      idip[ibcd + 4] &= 0xf0;
-
-      idip[ibcd + 3] = (bcd_t)((ijv >> 16) & 0xff);
-    }
-
-    idip[ibcd + 2] = (bcd_t)(ijv >> 8);
-
-    idip[ibcd + 1] = (bcd_t)ijv;
-
-    if (si1 == 0)
-
-      idip[ibcd + 4] &= 0x0f;
-  }
 
   return 0;
 
 } /* setint */
 
-int intens(const int iblk, const int isiz, const int jblk, const int jsiz,
-           const int ndip, const bcd_t *idip, const double *dip, double *s)
+int
+intens (const int iblk, const int isiz, const int jblk, const int jsiz,
+        const int ndip, const bcd_t *idip, const double *dip, double *s)
 
 {
 
@@ -3438,12 +3688,13 @@ int intens(const int iblk, const int isiz, const int jblk, const int jsiz,
 
   bcd_t bijv1, bijv2, bijv3;
 
-  if (ndmx <= 0) {
+  if (ndmx <= 0)
+    {
 
-    puts("working vectors not allocated");
+      puts ("working vectors not allocated");
 
-    exit(EXIT_FAILURE);
-  }
+      exit (EXIT_FAILURE);
+    }
 
   dipoff = idipoff;
 
@@ -3461,11 +3712,11 @@ int intens(const int iblk, const int isiz, const int jblk, const int jsiz,
 
   /*     get quantum information */
 
-  nblki = getqq(iblk, &iff, iwt, ibkptr, ikmin, ivs);
+  nblki = getqq (iblk, &iff, iwt, ibkptr, ikmin, ivs);
 
   ioff = glob.maxblk;
 
-  nblkj = getqq(jblk, &jff, jwt, &ibkptr[ioff], &ikmin[ioff], &ivs[ioff]);
+  nblkj = getqq (jblk, &jff, jwt, &ibkptr[ioff], &ikmin[ioff], &ivs[ioff]);
 
   ixx = iff - jff;
 
@@ -3474,7 +3725,7 @@ int intens(const int iblk, const int isiz, const int jblk, const int jsiz,
 
   ixx = iff + jff;
 
-  if (ixx < 2 || ODD(ixx))
+  if (ixx < 2 || ODD (ixx))
     return 0;
 
   if (iwt[0] != jwt[0])
@@ -3491,7 +3742,7 @@ int intens(const int iblk, const int isiz, const int jblk, const int jsiz,
 
   /* clear dipole matrix */
 
-  dclr(isiz, jsiz, s, 1);
+  dclr (isiz, jsiz, s, 1);
 
   /* loop over sub-blocks */
 
@@ -3499,242 +3750,257 @@ int intens(const int iblk, const int isiz, const int jblk, const int jsiz,
   ndecv = glob.vibdec;
   nbcd = (int)idip[0] & 0x7f;
 
-  for (ixx = 0; ixx < nblki; ++ixx) {
+  for (ixx = 0; ixx < nblki; ++ixx)
+    {
 
-    ibase = ibkptr[ixx];
+      ibase = ibkptr[ixx];
 
-    n = ibkptr[ixx + 1] - ibase;
+      n = ibkptr[ixx + 1] - ibase;
 
-    kbgni = ikmin[ixx];
+      kbgni = ikmin[ixx];
 
-    ixtmp = ivs[ixx];
+      ixtmp = ivs[ixx];
 
-    getqs(ixtmp, iff, n, kbgni, ixcom, iscom, &ivv);
+      getqs (ixtmp, iff, n, kbgni, ixcom, iscom, &ivv);
 
-    nni = iscom[0];
+      nni = iscom[0];
 
-    for (jxx = 0; jxx < nblkj; ++jxx) {
+      for (jxx = 0; jxx < nblkj; ++jxx)
+        {
 
-      joff = jxx + ioff;
+          joff = jxx + ioff;
 
-      jbase = ibkptr[joff];
+          jbase = ibkptr[joff];
 
-      n = ibkptr[joff + 1] - jbase;
+          n = ibkptr[joff + 1] - jbase;
 
-      kbgnj = ikmin[joff];
+          kbgnj = ikmin[joff];
 
-      ixtmp = ivs[joff];
+          ixtmp = ivs[joff];
 
-      getqs(ixtmp, jff, n, kbgnj, jxcom, jscom, &jvv);
+          getqs (ixtmp, jff, n, kbgnj, jxcom, jscom, &jvv);
 
-      nnj = jscom[0];
+          nnj = jscom[0];
 
-      nx = ((nni > nnj) ? nni : nnj) >> 1;
+          nx = ((nni > nnj) ? nni : nnj) >> 1;
 
-      i = (ivv < jvv) ? ivv : jvv;
+          i = (ivv < jvv) ? ivv : jvv;
 
-      ijv = (unsigned int)(ivv + jvv + i * glob.vibfac);
+          ijv = (unsigned int)(ivv + jvv + i * glob.vibfac);
 
-      ijv = (ijv << 2) + blksym(ixcom, jxcom);
+          ijv = (ijv << 2) + blksym (ixcom, jxcom);
 
-      bijv1 = (bcd_t)ijv;
+          bijv1 = (bcd_t)ijv;
 
-      bijv2 = (bcd_t)(ijv >> 8);
+          bijv2 = (bcd_t)(ijv >> 8);
 
-      if (ndecv == 3)
+          if (ndecv == 3)
 
-        bijv3 = (bcd_t)(ijv >> 16);
+            bijv3 = (bcd_t)(ijv >> 16);
 
-      for (i = 0, ibcd = 0; i < ndip; ++i, ibcd += nbcd) {
+          for (i = 0, ibcd = 0; i < ndip; ++i, ibcd += nbcd)
+            {
 
-        /*  set dipole for transition */
+              /*  set dipole for transition */
 
-        if (bijv1 != idip[ibcd + 1])
-          continue;
+              if (bijv1 != idip[ibcd + 1])
+                continue;
 
-        if (bijv2 != idip[ibcd + 2])
-          continue;
+              if (bijv2 != idip[ibcd + 2])
+                continue;
 
-        if (bijv3 != idip[ibcd + 3])
-          continue;
+              if (bijv3 != idip[ibcd + 3])
+                continue;
 
-        pdip = &dipinfo[dipoff + i];
+              pdip = &dipinfo[dipoff + i];
 
-        kl = pdip->flg;
+              kl = pdip->flg;
 
-        if ((kl & MINOQ) != 0 && nni == nnj)
-          continue;
+              if ((kl & MINOQ) != 0 && nni == nnj)
+                continue;
 
-        isym = (int)(bijv1 & 3);
+              isym = (int)(bijv1 & 3);
 
-        si1 = (int)(idip[ibcd + 4] >> 4) & 0x0f;
-        si2 = 0;
+              si1 = (int)(idip[ibcd + 4] >> 4) & 0x0f;
+              si2 = 0;
 
-        icase = bcd2i(idip[ibcd + 5]);
+              icase = bcd2i (idip[ibcd + 5]);
 
-        kd = (int)pdip->kd;
-        ifc = (int)pdip->fc;
-        ldel = (int)pdip->ldel;
+              kd = (int)pdip->kd;
+              ifc = (int)pdip->fc;
+              ldel = (int)pdip->ldel;
 
-        lv = 1;
-        ld = (int)pdip->ld;
+              lv = 1;
+              ld = (int)pdip->ld;
 
-        if (si1 > 0)
+              if (si1 > 0)
 
-          lv = kl & MELEC;
+                lv = kl & MELEC;
 
-        ksym = 0;
+              ksym = 0;
 
-        if (nitot >= 3 && kd > 0) {
+              if (nitot >= 3 && kd > 0)
+                {
 
-          alpha = nitot;
-          ksym = 1;
+                  alpha = nitot;
+                  ksym = 1;
+                }
+
+              do
+                {
+
+                  if (ksym == 0)
+                    {
+
+                      alpha = 0;
+                    }
+
+                  /*  find matrix elements */
+
+                  mkd = getmask (ixcom, jxcom, kd, ldel, kl, alpha);
+
+                  if (mkd == 0)
+                    continue;
+
+                  npair = getll (2, ld, lv, kd, si1, si2, lscom, iscom, jscom);
+
+                  if (npair < 0)
+                    continue;
+
+                  ifup = 1 - (kl & MELEC);
+
+                  ncos = dircos (ixcom, jxcom, ld, kd, ndmx, wk, idx, jdx,
+
+                                 ifup, kl, mkd, &isunit);
+
+                  if (ncos == 0)
+                    continue;
+
+                  if (ncos < 0)
+                    {
+
+                      puts ("DIRCOS WORKING VECTOR TOO SHORT IN INTENS");
+
+                      exit (EXIT_FAILURE);
+                    }
+
+                  dd = dip[i] * pdip->fac;
+
+                  /* correct for special cases */
+
+                  switch (icase)
+                    {
+
+                    case 3:
+
+                      if (nni == nnj)
+                        {
+
+                          k = nx * (nx + 1);
+                        }
+                      else
+                        {
+
+                          k = nx * nx;
+                        }
+
+                      dd *= k;
+
+                      break;
+
+                    case 4:
+
+                      symksq (1, kbgni, kbgnj, ncos, wk, idx, jdx);
+
+                      break;
+
+                    case 5:
+
+                    case 11:
+
+                      if (ifup > 0)
+                        break;
+
+                      if (nni < nnj)
+
+                        dd = -dd;
+
+                      dd *= nx;
+
+                      break;
+
+                    case 9:
+
+                      if (nni == nnj)
+                        {
+
+                          k = nx * (nx + 1);
+
+                          dd *= k;
+                        }
+                      else
+                        {
+
+                          k = nx * nx;
+
+                          dd *= k + 1;
+                        }
+
+                      dd *= k;
+
+                      break;
+
+                    case 10:
+
+                      dd *= nx * nx;
+
+                      break;
+
+                    case 7:
+
+                    case 8:
+
+                    case 12:
+
+                      specfc (ifc, ivv, jvv, kd, kbgni, kbgnj, ncos, wk, idx,
+                              jdx);
+
+                      break;
+                    }
+
+                  /*  correct for reduced matrix of N */
+
+                  if (ld != lv)
+
+                    dd *= rmatrx (ld, lv, ixcom, jxcom);
+
+                  /*  couple dipoles through the spins */
+
+                  tensor (&dd, iscom, jscom, lscom, ismap, npair, alpha);
+
+                  for (k = 0; k < ncos; ++k)
+                    {
+
+                      ix = idx[k] + ibase;
+
+                      jx = jdx[k] + jbase;
+
+                      s[ix + jx * ndms] += dd * wk[k];
+                    }
+
+                  iret = iff + 1;
+                }
+              while (--ksym >= 0);
+            }
         }
-
-        do {
-
-          if (ksym == 0) {
-
-            alpha = 0;
-          }
-
-          /*  find matrix elements */
-
-          mkd = getmask(ixcom, jxcom, kd, ldel, kl, alpha);
-
-          if (mkd == 0)
-            continue;
-
-          npair = getll(2, ld, lv, kd, si1, si2, lscom, iscom, jscom);
-
-          if (npair < 0)
-            continue;
-
-          ifup = 1 - (kl & MELEC);
-
-          ncos = dircos(ixcom, jxcom, ld, kd, ndmx, wk, idx, jdx,
-
-                        ifup, kl, mkd, &isunit);
-
-          if (ncos == 0)
-            continue;
-
-          if (ncos < 0) {
-
-            puts("DIRCOS WORKING VECTOR TOO SHORT IN INTENS");
-
-            exit(EXIT_FAILURE);
-          }
-
-          dd = dip[i] * pdip->fac;
-
-          /* correct for special cases */
-
-          switch (icase) {
-
-          case 3:
-
-            if (nni == nnj) {
-
-              k = nx * (nx + 1);
-
-            } else {
-
-              k = nx * nx;
-            }
-
-            dd *= k;
-
-            break;
-
-          case 4:
-
-            symksq(1, kbgni, kbgnj, ncos, wk, idx, jdx);
-
-            break;
-
-          case 5:
-
-          case 11:
-
-            if (ifup > 0)
-              break;
-
-            if (nni < nnj)
-
-              dd = -dd;
-
-            dd *= nx;
-
-            break;
-
-          case 9:
-
-            if (nni == nnj) {
-
-              k = nx * (nx + 1);
-
-              dd *= k;
-
-            } else {
-
-              k = nx * nx;
-
-              dd *= k + 1;
-            }
-
-            dd *= k;
-
-            break;
-
-          case 10:
-
-            dd *= nx * nx;
-
-            break;
-
-          case 7:
-
-          case 8:
-
-          case 12:
-
-            specfc(ifc, ivv, jvv, kd, kbgni, kbgnj, ncos, wk, idx, jdx);
-
-            break;
-          }
-
-          /*  correct for reduced matrix of N */
-
-          if (ld != lv)
-
-            dd *= rmatrx(ld, lv, ixcom, jxcom);
-
-          /*  couple dipoles through the spins */
-
-          tensor(&dd, iscom, jscom, lscom, ismap, npair, alpha);
-
-          for (k = 0; k < ncos; ++k) {
-
-            ix = idx[k] + ibase;
-
-            jx = jdx[k] + jbase;
-
-            s[ix + jx * ndms] += dd * wk[k];
-          }
-
-          iret = iff + 1;
-
-        } while (--ksym >= 0);
-      }
     }
-  }
 
   return iret;
 
 } /* intens */
 
-int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
+int
+setopt (FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
 
 {
 
@@ -3762,9 +4028,9 @@ int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
 
 #define MAXIAX 11
 
-  static int isymv[] = {2, 2, 2, 2, 2, 2, 3, 4, 4, 5, 6, 6};
+  static int isymv[] = { 2, 2, 2, 2, 2, 2, 3, 4, 4, 5, 6, 6 };
 
-  static int iaxv[] = {2, 1, 2, 3, 4, 5, 2, 4, 5, 2, 4, 5};
+  static int iaxv[] = { 2, 1, 2, 3, 4, 5, 2, 4, 5, 2, 4, 5 };
 
   SVIB *pvinfo, *pvinfom;
 
@@ -3786,7 +4052,7 @@ int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
 
   cgetv[0].cblk = cgetv[1].cblk = 0; /* reset store for getqn */
 
-  cjjini();
+  cjjini ();
 
   glob.lsym = TRUE;
   glob.esym = TRUE;
@@ -3820,353 +4086,382 @@ int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
 
   /*     read option cards */
 
-  do {
+  do
+    {
 
-    if (fgetstr(card, 82, luin) <= 0)
+      if (fgetstr (card, 82, luin) <= 0)
 
-      return -1;
+        return -1;
 
-    ++ncards;
+      ++ncards;
 
-    ctyp = C0;
+      ctyp = C0;
 
-    if (isalpha((int)card[0]))
+      if (isalpha ((int)card[0]))
 
-      ctyp = card[0];
+        ctyp = card[0];
 
-    else if (isalpha((int)card[1]))
+      else if (isalpha ((int)card[1]))
 
-      ctyp = card[1];
+        ctyp = card[1];
 
-    iend = getbcd(card, bcdspin, NDECSPIN);
+      iend = getbcd (card, bcdspin, NDECSPIN);
 
-    spinsgn = NEGBCD(bcdspin[0]);
+      spinsgn = NEGBCD (bcdspin[0]);
 
-    dcopy(NVEC, rvec0, 1, rvec, 1);
+      dcopy (NVEC, rvec0, 1, rvec, 1);
 
-    rvec[7] = 0.;
+      rvec[7] = 0.;
 
-    pcard(&card[iend], rvec, NVEC, NULL);
+      pcard (&card[iend], rvec, NVEC, NULL);
 
-    lopt = (int)rvec[0];
+      lopt = (int)rvec[0];
 
-    knnmin = (int)rvec[1];
+      knnmin = (int)rvec[1];
 
-    knnmax = (int)rvec[2];
+      knnmax = (int)rvec[2];
 
-    iax = (int)rvec[4];
+      iax = (int)rvec[4];
 
-    iwtpl = (int)rvec[5];
+      iwtpl = (int)rvec[5];
 
-    iwtmn = (int)rvec[6];
+      iwtmn = (int)rvec[6];
 
-    vsym = rvec[7];
+      vsym = rvec[7];
 
-    ewt0 = (int)rvec[8];
-    ewt1 = 0;
+      ewt0 = (int)rvec[8];
+      ewt1 = 0;
 
-    if (vsym < -0.5) {
+      if (vsym < -0.5)
+        {
 
-      ivsym = -1;
-      vsym = 0.;
+          ivsym = -1;
+          vsym = 0.;
+        }
+      else if (vsym > 0.5 && vsym < 2.e+15)
+        {
 
-    } else if (vsym > 0.5 && vsym < 2.e+15) {
+          ivsym = 1;
+        }
+      else
+        {
 
-      ivsym = 1;
+          ivsym = 0;
+          vsym = 0.;
+        }
 
-    } else {
+      ivib = lopt;
 
-      ivsym = 0;
-      vsym = 0.;
-    }
+      if (ivib < 0)
 
-    ivib = lopt;
+        ivib = -ivib;
 
-    if (ivib < 0)
+      if (knnmax < 0 || knnmax > MAXN_DIRCOS)
 
-      ivib = -ivib;
+        knnmax = MAXN_DIRCOS;
 
-    if (knnmax < 0 || knnmax > MAXN_DIRCOS)
+      if (knnmin > knnmax)
 
-      knnmax = MAXN_DIRCOS;
+        knnmax = knnmin;
 
-    if (knnmin > knnmax)
+      if (knnmin != knnmax)
 
-      knnmax = knnmin;
+        *itd = 3;
 
-    if (knnmin != knnmax)
+      if (ncards == 1)
+        {
 
-      *itd = 3;
+          dcopy (NVEC, rvec, 1, rvec0, 1);
 
-    if (ncards == 1) {
+          strcpy (namfil, "sping.nam");
 
-      dcopy(NVEC, rvec, 1, rvec0, 1);
+          if (ctyp != C0)
 
-      strcpy(namfil, "sping.nam");
+            namfil[4] = ctyp;
 
-      if (ctyp != C0)
+          glob.ixz = (int)rvec[3];
 
-        namfil[4] = ctyp;
+          glob.idiag = (int)rvec[9];
 
-      glob.ixz = (int)rvec[3];
+          if (glob.idiag > 3)
+            {
 
-      glob.idiag = (int)rvec[9];
+              glob.idiag = 0;
+            }
+          else if (glob.idiag < 0)
+            {
 
-      if (glob.idiag > 3) {
+              glob.idiag = -1;
+            }
 
-        glob.idiag = 0;
+          if (ivib > 80)
+            {
 
-      } else if (glob.idiag < 0) {
+              if (ivib > MAXVIB)
 
-        glob.idiag = -1;
-      }
+                ivib = MAXVIB;
 
-      if (ivib > 80) {
+              if (ivib > 80 && sizeof (int) == 2)
 
-        if (ivib > MAXVIB)
+                ivib = 80;
+            }
+          else if (ivib <= 0)
+            {
 
-          ivib = MAXVIB;
+              ivib = 1;
+            }
 
-        if (ivib > 80 && sizeof(int) == 2)
+          if (glob.nvib > 1)
+            {
 
-          ivib = 80;
+              free (vinfo);
 
-      } else if (ivib <= 0) {
+              vinfo = NULL;
+            }
 
-        ivib = 1;
-      }
+          vinfo1.spt = sptzero;
 
-      if (glob.nvib > 1) {
+          if (ivib > 1)
+            {
 
-        free(vinfo);
+              nvibm = ivib - 1;
 
-        vinfo = NULL;
-      }
+              nl = (size_t)ivib * sizeof (SVIB);
 
-      vinfo1.spt = sptzero;
+              vinfo = (SVIB *)mallocq (nl);
 
-      if (ivib > 1) {
+              memcpy (vinfo, &vinfo1, sizeof (SVIB));
+            }
+          else
+            {
 
-        nvibm = ivib - 1;
+              vinfo = &vinfo1;
+            }
 
-        nl = (size_t)ivib * sizeof(SVIB);
+          for (k = 0; k <= 4; ++k)
 
-        vinfo = (SVIB *)mallocq(nl);
+            vinfo->wt[k] = 0;
 
-        memcpy(vinfo, &vinfo1, sizeof(SVIB));
+          vinfo->ewt[0] = vinfo->ewt[1] = 0;
 
-      } else {
+          glob.nvib = ivib;
 
-        vinfo = &vinfo1;
-      }
+          if (ivib <= 9)
+            {
 
-      for (k = 0; k <= 4; ++k)
+              glob.vibfac = 9;
+              glob.vibdec = 1;
+              k = 4; /* 16 */
+            }
+          else if (ivib <= 99)
+            {
 
-        vinfo->wt[k] = 0;
+              glob.vibfac = 99;
+              glob.vibdec = 2;
+              k = 7; /* 128 */
+            }
+          else
+            {
 
-      vinfo->ewt[0] = vinfo->ewt[1] = 0;
+              glob.vibfac = 999;
+              glob.vibdec = 3;
+              k = 10; /* 1024 */
+            }
 
-      glob.nvib = ivib;
+          glob.msshft = (unsigned int)(k + 2);
 
-      if (ivib <= 9) {
+          /* msshft = shifts needed for vib and symmetry */
 
-        glob.vibfac = 9;
-        glob.vibdec = 1;
-        k = 4; /* 16 */
+          glob.msmask = (int)(1 << (unsigned int)k) - 1;
 
-      } else if (ivib <= 99) {
+          ivib = 0;
 
-        glob.vibfac = 99;
-        glob.vibdec = 2;
-        k = 7; /* 128 */
+          glob.oblate = (lopt < 0);
 
-      } else {
+          glob.nqnn = 3;
 
-        glob.vibfac = 999;
-        glob.vibdec = 3;
-        k = 10; /* 1024 */
-      }
+          if (spinsgn != 0)
 
-      glob.msshft = (unsigned int)(k + 2);
+            glob.nqnn = 1;
 
-      /* msshft = shifts needed for vib and symmetry */
+          if (ewt0 < 0)
+            glob.esymdec = 1000;
+        }
+      else if (ivib >= glob.nvib)
+        {
 
-      glob.msmask = (int)(1 << (unsigned int)k) - 1;
+          /* if IVIB out of range read another card */
 
-      ivib = 0;
+          continue;
+        }
 
-      glob.oblate = (lopt < 0);
+      pvinfo = &vinfo[ivib];
 
-      glob.nqnn = 3;
+      k = iax;
 
-      if (spinsgn != 0)
+      if (iax < 0)
 
-        glob.nqnn = 1;
+        iax = -iax;
 
-      if (ewt0 < 0)
-        glob.esymdec = 1000;
+      if (iax > MAXIAX)
 
-    } else if (ivib >= glob.nvib) {
+        iax = 0;
 
-      /* if IVIB out of range read another card */
+      if (iax <= 3 && glob.oblate)
 
-      continue;
-    }
+        iax = revsym[iax];
 
-    pvinfo = &vinfo[ivib];
+      isym = isymv[iax];
 
-    k = iax;
+      iax = iaxv[iax];
 
-    if (iax < 0)
+      pvinfo->gsym = (short)(isym << 1);
 
-      iax = -iax;
+      /*  set up minimum K values */
 
-    if (iax > MAXIAX)
-
-      iax = 0;
-
-    if (iax <= 3 && glob.oblate)
-
-      iax = revsym[iax];
-
-    isym = isymv[iax];
-
-    iax = iaxv[iax];
-
-    pvinfo->gsym = (short)(isym << 1);
-
-    /*  set up minimum K values */
-
-    pvinfo->knmax = (short)knnmax;
-
-    pvinfo->knmin[0] = 0;
-
-    pvinfo->knmin[1] = 1;
-
-    pvinfo->knmin[2] = 1;
-
-    pvinfo->knmin[3] = 2;
-
-    if (k < 0) { /* iax was negative */
-
-      if (isym >= 3) {
-
-        pvinfo->knmin[0] = -2;
-
-        pvinfo->knmin[3] = -2;
-      }
-
-      pvinfo->gsym |= 1;
-    }
-
-    if (knnmax != 0 && glob.nqnn == 1)
-
-      glob.nqnn = 2;
-
-    /* set ewt */
-
-    if (ewt0 < 0)
-
-      ewt0 = -ewt0;
-
-    if (ewt0 >= glob.esymdec) {
-
-      ewt1 = ewt0 / glob.esymdec;
-      ewt0 -= glob.esymdec * ewt1;
-    }
-
-    if (isym < 3) {
-
-      ewt0 = glob.esymdec - 1;
-      glob.esym = FALSE;
-
-    } else if (isym == 4 && iax == 5) { /* 4-fold B entry has no E */
-
-      ewt0 = -1;
-    }
-
-    if (isym > 3 && pvinfo->wt[4] < 4) {
-
-      pvinfo->ewt[0] = pvinfo->ewt[1] = (short)0;
-
-      pvinfo->wt[4] |= 4;
-    }
-
-    if (isym == 6) { /* six-fold, iax = 4,5 */
-
-      pvinfo->ewt[iax - 4] = (short)ewt0;
-
-    } else if (ewt0 >= 0) {
-
-      pvinfo->ewt[0] = pvinfo->ewt[1] = (short)ewt0;
-    }
-
-    pvinfo->lvupper = 0;
-
-    if (ewt1 != 0) {
-
-      if (ewt1 > 10) {
-
-        pvinfo->lvupper = 2;
-
-        ewt1 -= 10;
-      }
-
-      if (isym >= 3 && ewt1 > isym)
-
-        ewt1 = MOD(ewt1 - 1, isym) + 1;
-
-      pvinfo->lvupper += (short)(ewt1 << 2);
+      pvinfo->knmax = (short)knnmax;
 
       pvinfo->knmin[0] = 0;
 
-      pvinfo->knmin[3] = 0; /* 0,1,1,0 */
+      pvinfo->knmin[1] = 1;
+
+      pvinfo->knmin[2] = 1;
+
+      pvinfo->knmin[3] = 2;
+
+      if (k < 0)
+        { /* iax was negative */
+
+          if (isym >= 3)
+            {
+
+              pvinfo->knmin[0] = -2;
+
+              pvinfo->knmin[3] = -2;
+            }
+
+          pvinfo->gsym |= 1;
+        }
+
+      if (knnmax != 0 && glob.nqnn == 1)
+
+        glob.nqnn = 2;
+
+      /* set ewt */
+
+      if (ewt0 < 0)
+
+        ewt0 = -ewt0;
+
+      if (ewt0 >= glob.esymdec)
+        {
+
+          ewt1 = ewt0 / glob.esymdec;
+          ewt0 -= glob.esymdec * ewt1;
+        }
+
+      if (isym < 3)
+        {
+
+          ewt0 = glob.esymdec - 1;
+          glob.esym = FALSE;
+        }
+      else if (isym == 4 && iax == 5)
+        { /* 4-fold B entry has no E */
+
+          ewt0 = -1;
+        }
+
+      if (isym > 3 && pvinfo->wt[4] < 4)
+        {
+
+          pvinfo->ewt[0] = pvinfo->ewt[1] = (short)0;
+
+          pvinfo->wt[4] |= 4;
+        }
+
+      if (isym == 6)
+        { /* six-fold, iax = 4,5 */
+
+          pvinfo->ewt[iax - 4] = (short)ewt0;
+        }
+      else if (ewt0 >= 0)
+        {
+
+          pvinfo->ewt[0] = pvinfo->ewt[1] = (short)ewt0;
+        }
+
+      pvinfo->lvupper = 0;
+
+      if (ewt1 != 0)
+        {
+
+          if (ewt1 > 10)
+            {
+
+              pvinfo->lvupper = 2;
+
+              ewt1 -= 10;
+            }
+
+          if (isym >= 3 && ewt1 > isym)
+
+            ewt1 = MOD (ewt1 - 1, isym) + 1;
+
+          pvinfo->lvupper += (short)(ewt1 << 2);
+
+          pvinfo->knmin[0] = 0;
+
+          pvinfo->knmin[3] = 0; /* 0,1,1,0 */
+        }
+
+      pvinfo->lvqn = (short)ewt1;
+
+      for (i = 0; i <= 3; ++i)
+        {
+
+          k = pvinfo->knmin[i];
+
+          if (k < 0 && knnmin == 0)
+
+            continue;
+
+          while (k < knnmin)
+
+            k += 2;
+
+          pvinfo->knmin[i] = (short)k;
+        }
+
+      k = getsp (bcdspin, pvinfo);
+
+      if (nspinqn < k)
+
+        nspinqn = k;
+
+      pvinfo->nqn = (short)k;
+
+      if (ncards == 1)
+        { /* fill in defaults with wt = 0 */
+
+          pvinfom = vinfo;
+
+          for (i = 1; i <= nvibm; ++i)
+            {
+
+              ++pvinfom;
+
+              memcpy (pvinfom, vinfo, sizeof (SVIB));
+            }
+
+          ivib = -glob.nvib;
+        }
+
+      setwt (pvinfo, ivib, iax, iwtpl, iwtmn, vsym); /* set up weights */
     }
+  while (ivsym < 0); /*   end of reading */
 
-    pvinfo->lvqn = (short)ewt1;
-
-    for (i = 0; i <= 3; ++i) {
-
-      k = pvinfo->knmin[i];
-
-      if (k < 0 && knnmin == 0)
-
-        continue;
-
-      while (k < knnmin)
-
-        k += 2;
-
-      pvinfo->knmin[i] = (short)k;
-    }
-
-    k = getsp(bcdspin, pvinfo);
-
-    if (nspinqn < k)
-
-      nspinqn = k;
-
-    pvinfo->nqn = (short)k;
-
-    if (ncards == 1) { /* fill in defaults with wt = 0 */
-
-      pvinfom = vinfo;
-
-      for (i = 1; i <= nvibm; ++i) {
-
-        ++pvinfom;
-
-        memcpy(pvinfom, vinfo, sizeof(SVIB));
-      }
-
-      ivib = -glob.nvib;
-    }
-
-    setwt(pvinfo, ivib, iax, iwtpl, iwtmn, vsym); /* set up weights */
-
-  } while (ivsym < 0); /*   end of reading */
-
-  setsp();
+  setsp ();
 
   /* set up format */
 
@@ -4179,12 +4474,13 @@ int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
   glob.vibfmt = (nvibm != 0);
   glob.iqfmt0 = 0;
 
-  if (glob.vibfmt) {
+  if (glob.vibfmt)
+    {
 
-    glob.nqn += 1;
+      glob.nqn += 1;
 
-    glob.iqfmt0 = 1000;
-  }
+      glob.iqfmt0 = 1000;
+    }
 
   nt = glob.nqn;
   k = nt + nspinqn;
@@ -4204,143 +4500,156 @@ int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
 
   k = 0;
 
-  for (i = 0; i <= nvibm; ++i) {
+  for (i = 0; i <= nvibm; ++i)
+    {
 
-    pvinfo->nqn += (short)nt;
+      pvinfo->nqn += (short)nt;
 
-    pvinfo->wt[4] &= 3;
+      pvinfo->wt[4] &= 3;
 
-    j = pvinfo->wt[4];
+      j = pvinfo->wt[4];
 
-    if (j != 0) {
+      if (j != 0)
+        {
 
-      if (EVEN(pvinfo->gsym)) {
+          if (EVEN (pvinfo->gsym))
+            {
 
-        pvinfo->wt[4] = 0; /* no Itot */
+              pvinfo->wt[4] = 0; /* no Itot */
+            }
+          else if (pvinfo->wt[0] == pvinfo->wt[j] &&
 
-      } else if (pvinfo->wt[0] == pvinfo->wt[j] &&
+                   pvinfo->wt[1] == pvinfo->wt[j ^ 1])
+            {
 
-                 pvinfo->wt[1] == pvinfo->wt[j ^ 1]) {
+              pvinfo->wt[4] = 0;
+            }
+        }
 
-        pvinfo->wt[4] = 0;
-      }
+      j = pvinfo->lvqn;
+
+      if (k != 0)
+        { /* previous l was non-zero and first of pair */
+
+          isym = (int)((unsigned int)pvinfo->gsym >> 1);
+
+          if (isym >= 3 && MOD (j + k, isym) != 0)
+            break;
+
+          if (k > j)
+            {
+
+              if (j == 0)
+                break;
+
+              pvinfom->lvqn = (short)(-j);
+
+              if (pvinfo->knmin[0] == 0)
+                pvinfo->knmin[0] = 2;
+
+              if (pvinfo->knmin[3] == 0)
+                pvinfo->knmin[3] = 2;
+            }
+          else
+            {
+
+              pvinfo->lvqn = (short)(-k);
+
+              if (pvinfom->knmin[0] == 0)
+                pvinfom->knmin[0] = 2;
+
+              if (pvinfom->knmin[3] == 0)
+                pvinfom->knmin[3] = 2;
+            }
+
+          for (j = 0; j <= 4; ++j)
+            {
+
+              if (pvinfo->wt[j] != pvinfom->wt[j])
+                break;
+            }
+
+          if (j <= 4)
+            break;
+
+          if (pvinfo->gsym != pvinfom->gsym)
+            break;
+
+          if (pvinfo->ewt[0] != pvinfom->ewt[0])
+            break;
+
+          if (pvinfo->ewt[1] != pvinfom->ewt[1])
+            break;
+
+          pvinfo->lvupper += 1;
+
+          j = 0;
+        }
+
+      k = j;
+
+      pvinfom = pvinfo;
+      ++pvinfo;
     }
 
-    j = pvinfo->lvqn;
+  if (k != 0)
+    {
 
-    if (k != 0) { /* previous l was non-zero and first of pair */
+      puts ("L DOUBLETS SHOULD BE IN PAIRS");
 
-      isym = (int)((unsigned int)pvinfo->gsym >> 1);
-
-      if (isym >= 3 && MOD(j + k, isym) != 0)
-        break;
-
-      if (k > j) {
-
-        if (j == 0)
-          break;
-
-        pvinfom->lvqn = (short)(-j);
-
-        if (pvinfo->knmin[0] == 0)
-          pvinfo->knmin[0] = 2;
-
-        if (pvinfo->knmin[3] == 0)
-          pvinfo->knmin[3] = 2;
-
-      } else {
-
-        pvinfo->lvqn = (short)(-k);
-
-        if (pvinfom->knmin[0] == 0)
-          pvinfom->knmin[0] = 2;
-
-        if (pvinfom->knmin[3] == 0)
-          pvinfom->knmin[3] = 2;
-      }
-
-      for (j = 0; j <= 4; ++j) {
-
-        if (pvinfo->wt[j] != pvinfom->wt[j])
-          break;
-      }
-
-      if (j <= 4)
-        break;
-
-      if (pvinfo->gsym != pvinfom->gsym)
-        break;
-
-      if (pvinfo->ewt[0] != pvinfom->ewt[0])
-        break;
-
-      if (pvinfo->ewt[1] != pvinfom->ewt[1])
-        break;
-
-      pvinfo->lvupper += 1;
-
-      j = 0;
+      exit (EXIT_FAILURE);
     }
-
-    k = j;
-
-    pvinfom = pvinfo;
-    ++pvinfo;
-  }
-
-  if (k != 0) {
-
-    puts("L DOUBLETS SHOULD BE IN PAIRS");
-
-    exit(EXIT_FAILURE);
-  }
 
   k = 0;
 
   pvinfo = vinfo;
 
-  for (ivib = 0; ivib <= nvibm; ++ivib) {
+  for (ivib = 0; ivib <= nvibm; ++ivib)
+    {
 
-    nt = pvinfo->nspstat;
+      nt = pvinfo->nspstat;
 
-    for (isym = 0; isym < 4; ++isym) {
+      for (isym = 0; isym < 4; ++isym)
+        {
 
-      if (getwt(pvinfo, isym, 0, ivwt) <= 0)
-        continue;
+          if (getwt (pvinfo, isym, 0, ivwt) <= 0)
+            continue;
 
-      for (ii = 1; ii <= nt; ++ii) {
+          for (ii = 1; ii <= nt; ++ii)
+            {
 
-        if (getwt(pvinfo, isym, ii, ivwt) > 0)
+              if (getwt (pvinfo, isym, ii, ivwt) > 0)
 
-          ++k;
-      }
+                ++k;
+            }
+        }
+
+      ++pvinfo;
     }
 
-    ++pvinfo;
-  }
+  if (glob.nbkpj > 0)
+    {
 
-  if (glob.nbkpj > 0) {
+      free (moldv);
 
-    free(moldv);
+      moldv = NULL;
 
-    moldv = NULL;
+      free (blkptr);
 
-    free(blkptr);
-
-    blkptr = NULL;
-  }
+      blkptr = NULL;
+    }
 
   glob.nbkpj = k;
 
-  nl = (size_t)k * sizeof(int);
+  nl = (size_t)k * sizeof (int);
 
-  moldv = (int *)mallocq(nl);
+  moldv = (int *)mallocq (nl);
 
   moldv[0] = 0;
 
-  nl += sizeof(int);
+  nl += sizeof (int);
 
-  blkptr = (int *)mallocq(nl);
+  blkptr = (int *)mallocq (nl);
 
   blkptr[0] = 0;
 
@@ -4348,30 +4657,34 @@ int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
 
   pvinfo = vinfo;
 
-  for (ivib = 0; ivib <= nvibm; ++ivib) {
+  for (ivib = 0; ivib <= nvibm; ++ivib)
+    {
 
-    nt = pvinfo->nspstat;
+      nt = pvinfo->nspstat;
 
-    for (isym = 0; isym < 4; ++isym) {
+      for (isym = 0; isym < 4; ++isym)
+        {
 
-      if (getwt(pvinfo, isym, 0, ivwt) <= 0)
-        continue;
+          if (getwt (pvinfo, isym, 0, ivwt) <= 0)
+            continue;
 
-      for (ii = 1; ii <= nt; ++ii) {
+          for (ii = 1; ii <= nt; ++ii)
+            {
 
-        if (getwt(pvinfo, isym, ii, ivwt) > 0) {
+              if (getwt (pvinfo, isym, ii, ivwt) > 0)
+                {
 
-          blkptr[k] = k;
+                  blkptr[k] = k;
 
-          moldv[k] = isym + (ivib << 2) + (ii << glob.msshft);
+                  moldv[k] = isym + (ivib << 2) + (ii << glob.msshft);
 
-          ++k;
+                  ++k;
+                }
+            }
         }
-      }
-    }
 
-    ++pvinfo;
-  }
+      ++pvinfo;
+    }
 
   blkptr[k] = k;
 
@@ -4379,24 +4692,26 @@ int setopt(FILE *luin, int *nfmt, int *itd, int *nbcd, char *namfil)
 
   *nbcd = (NDECPAR + 1) + glob.vibdec;
 
-  if (sizeof(int) == 2 && glob.vibdec > 2) {
+  if (sizeof (int) == 2 && glob.vibdec > 2)
+    {
 
-    puts("too many vibrations for 16-bit integer computer");
+      puts ("too many vibrations for 16-bit integer computer");
 
-    ncards = 0;
-  }
+      ncards = 0;
+    }
 
   *nfmt = 1;
 
   if (nspinqn != 0 && nvibm != 0)
 
-    *nfmt = setfmt(&k, -1);
+    *nfmt = setfmt (&k, -1);
 
   return ncards;
 
 } /* setopt */
 
-int setfmt(int *iqnfmt, int nfmt)
+int
+setfmt (int *iqnfmt, int nfmt)
 
 {
 
@@ -4416,93 +4731,102 @@ int setfmt(int *iqnfmt, int nfmt)
 
   pvinfo = vinfo;
 
-  for (iv = 0; iv < nvib; ++iv) {
+  for (iv = 0; iv < nvib; ++iv)
+    {
 
-    iqfmtq = glob.iqfmt0;
+      iqfmtq = glob.iqfmt0;
 
-    i = setgsym((int)pvinfo->gsym);
+      i = setgsym ((int)pvinfo->gsym);
 
-    jjs = pvinfo->spt;
+      jjs = pvinfo->spt;
 
-    nset = jjs[0];
+      nset = jjs[0];
 
-    nspinv = nset - 1;
+      nspinv = nset - 1;
 
-    if (nspinv > nspin)
+      if (nspinv > nspin)
 
-      nspinv = nspin;
+        nspinv = nspin;
 
-    jjs += nset;
+      jjs += nset;
 
-    ff = 200 - jjs[0];
+      ff = 200 - jjs[0];
 
-    if ((int)pvinfo->nqn > glob.maxqn) {
+      if ((int)pvinfo->nqn > glob.maxqn)
+        {
 
-      iqfmtq += 10 * (ff & 1) + 4000;
+          iqfmtq += 10 * (ff & 1) + 4000;
+        }
+      else
+        {
 
-    } else {
+          si2 = 0;
+          k = glob.maxqn - glob.nqn0 - 1;
 
-      si2 = 0;
-      k = glob.maxqn - glob.nqn0 - 1;
+          for (i = 0; i < k; ++i)
+            {
 
-      for (i = 0; i < k; ++i) {
+              if (i == itsym && itsym < itptr)
+                {
 
-        if (i == itsym && itsym < itptr) {
+                  i = itptr;
+                  j = 0;
 
-          i = itptr;
-          j = 0;
+                  si2 = si2 << 1;
+                }
 
-          si2 = si2 << 1;
+              if (i < nspinv)
+                {
+
+                  j = jjs[i + 1];
+
+                  if (i < itsym)
+
+                    j += ff;
+                }
+              else
+                {
+
+                  j = ff;
+                }
+
+              si2 = (si2 + (j & 1)) << 1;
+            }
+
+          si2 += (ff & 1);
+
+          if (si2 > 9)
+
+            si2 &= 7;
+
+          if (itptr < nspin)
+
+            iqfmtq += 2000;
+
+          if (itsym < itptr)
+
+            iqfmtq += 4000;
+
+          iqfmtq += 10 * si2;
         }
 
-        if (i < nspinv) {
+      if (iv == 0)
+        iqfmt0 = iqfmtq;
 
-          j = jjs[i + 1];
+      if (nfmt < 0)
+        {
 
-          if (i < itsym)
+          if (iqfmtq != iqfmt0)
+            return nvib;
+        }
+      else
+        {
 
-            j += ff;
-
-        } else {
-
-          j = ff;
+          iqnfmt[iv] = iqfmtq;
         }
 
-        si2 = (si2 + (j & 1)) << 1;
-      }
-
-      si2 += (ff & 1);
-
-      if (si2 > 9)
-
-        si2 &= 7;
-
-      if (itptr < nspin)
-
-        iqfmtq += 2000;
-
-      if (itsym < itptr)
-
-        iqfmtq += 4000;
-
-      iqfmtq += 10 * si2;
+      ++pvinfo;
     }
-
-    if (iv == 0)
-      iqfmt0 = iqfmtq;
-
-    if (nfmt < 0) {
-
-      if (iqfmtq != iqfmt0)
-        return nvib;
-
-    } else {
-
-      iqnfmt[iv] = iqfmtq;
-    }
-
-    ++pvinfo;
-  }
 
   if (nfmt <= 0)
     return 1;
@@ -4510,8 +4834,9 @@ int setfmt(int *iqnfmt, int nfmt)
   return glob.maxqn;
 }
 
-int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
-           int *nbkpf, int *negy)
+int
+setblk (FILE *lu, const int npar, bcd_t *idpar, const double *par, int *nbkpf,
+        int *negy)
 
 {
 
@@ -4533,9 +4858,9 @@ int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
 
   /*         NEGY= possibly downsized NEGY to account for local storage */
 
-  static char csym[] = {'x', 'c', 'b', 'a'};
+  static char csym[] = { 'x', 'c', 'b', 'a' };
 
-  static int nvwt[] = {1, 1, 1, 2, 3, 2, 3};
+  static int nvwt[] = { 1, 1, 1, 2, 3, 2, 3 };
 
   SVIB *pvinfo;
 
@@ -4566,91 +4891,97 @@ int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
 
   kdiag = glob.idiag;
 
-  if (pasort(lu, npar, idpar, par) == 0)
+  if (pasort (lu, npar, idpar, par) == 0)
 
     glob.idiag = -1;
 
-  if (npar <= 0) {
+  if (npar <= 0)
+    {
 
-    if (glob.nvib > 1)
+      if (glob.nvib > 1)
 
-      free(vinfo);
+        free (vinfo);
 
-    vinfo = &vinfo1;
+      vinfo = &vinfo1;
 
-    glob.nvib = 0;
+      glob.nvib = 0;
 
-    if (glob.nbkpj > 0) {
+      if (glob.nbkpj > 0)
+        {
 
-      free(moldv);
-      moldv = &zmoldv;
+          free (moldv);
+          moldv = &zmoldv;
 
-      free(blkptr);
-      blkptr = &zblkptr;
+          free (blkptr);
+          blkptr = &zblkptr;
 
-      glob.nbkpj = 0;
+          glob.nbkpj = 0;
+        }
+
+      if (glob.maxblk > 0)
+        {
+
+          free (ivs);
+          ivs = &zivs;
+
+          free (ikmin);
+          ikmin = &zikmin;
+
+          free (ibkptr);
+          ibkptr = &zibkptr;
+
+          glob.maxblk = 0;
+        }
+
+      if (ndmx > 0)
+        {
+
+          free (idx);
+          idx = &zidx;
+
+          free (jdx);
+          jdx = &zjdx;
+
+          free (wk);
+          wk = &zwk;
+
+          ndmx = 0;
+        }
+
+      return 0;
     }
-
-    if (glob.maxblk > 0) {
-
-      free(ivs);
-      ivs = &zivs;
-
-      free(ikmin);
-      ikmin = &zikmin;
-
-      free(ibkptr);
-      ibkptr = &zibkptr;
-
-      glob.maxblk = 0;
-    }
-
-    if (ndmx > 0) {
-
-      free(idx);
-      idx = &zidx;
-
-      free(jdx);
-      jdx = &zjdx;
-
-      free(wk);
-      wk = &zwk;
-
-      ndmx = 0;
-    }
-
-    return 0;
-  }
 
   nvibm = glob.nvib - 1;
 
   n = (*nbkpf);
 
-  if (n > 0) {
+  if (n > 0)
+    {
 
-    iff0 = n << 1;
+      iff0 = n << 1;
 
-    pvinfo = vinfo;
+      pvinfo = vinfo;
 
-    for (i = 0; i <= nvibm; ++i) {
+      for (i = 0; i <= nvibm; ++i)
+        {
 
-      jjs = pvinfo->spt;
+          jjs = pvinfo->spt;
 
-      k = jjs[0];
+          k = jjs[0];
 
-      /*  select largest N relative to F */
+          /*  select largest N relative to F */
 
-      ni = (iff0 - jjs[k]) >> 1;
+          ni = (iff0 - jjs[k]) >> 1;
 
-      if ((int)pvinfo->knmax > ni)
+          if ((int)pvinfo->knmax > ni)
 
-        pvinfo->knmax = (short)ni;
+            pvinfo->knmax = (short)ni;
 
-      ++pvinfo;
+          ++pvinfo;
+        }
+
+      pvinfo = NULL;
     }
-
-    pvinfo = NULL;
-  }
 
   pvinfo = NULL;
 
@@ -4668,372 +4999,398 @@ int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
 
   nf = nspin - 1;
 
-  for (ii = 0; ii < ntstat; ++ii) {
+  for (ii = 0; ii < ntstat; ++ii)
+    {
 
-    im = moldv[ii];
+      im = moldv[ii];
 
-    iff = iff0;
+      iff = iff0;
 
-    kk = getqs(im, iff, -1, -1, ixcom, iscom, &iv);
+      kk = getqs (im, iff, -1, -1, ixcom, iscom, &iv);
 
-    if (ODD(iscom[nspin])) {
+      if (ODD (iscom[nspin]))
+        {
 
-      /* special for odd spin multiplicity (make N integer) */
+          /* special for odd spin multiplicity (make N integer) */
 
-      kk = getqs(im, --iff, 0, -1, ixcom, iscom, &iv);
-    }
-
-    isym = ixcom[XSYM];
-
-    ni = ixcom[XNVAL];
-
-    pvinfo = &vinfo[ixcom[XVIB]];
-
-    gsym = pvinfo->gsym;
-
-    nsym = setgsym(gsym);
-
-    getwt(pvinfo, isym, kk, ivwt);
-
-    for (jj = 0; jj < ii; ++jj) {
-
-      jjt = moldv[jj];
-
-      kk = getqs(jjt, iff, 0, -1, jxcom, jscom, &jv);
-
-      jsym = jxcom[XSYM];
-
-      nj = jxcom[XNVAL];
-
-      nd = ni - nj;
-
-      pvinfo = &vinfo[jxcom[XVIB]];
-
-      if (pvinfo->gsym != (short)gsym)
-        continue;
-
-      getwt(pvinfo, jsym, kk, jvwt);
-
-      iwt = nvwt[nsym];
-
-      for (k = 0; k < iwt; ++k) {
-
-        if (ivwt[k] != jvwt[k])
-          break;
-      }
-
-      if (k < iwt)
-        continue;
-
-      /* check for connection restrictions on N */
-
-      ixzt = glob.ixz;
-
-      if (ODD(ixzt) && iscom[nspin] != jscom[nspin])
-        continue;
-
-      for (k = 0; k < nf; ++k) {
-
-        if (k == itsym)
-
-          k = itptr;
-
-        ixzt = ixzt >> 1;
-
-        /* check for matching spin multiplicity*/
-
-        if (ODD(iscom[k] + jscom[k]))
-          break;
-
-        /* check for connection restrictions on spin */
-
-        if (ODD(ixzt) && iscom[k] != jscom[k])
-          break;
-      }
-
-      if (k < nf)
-
-        continue;
-
-      ivmin = (iv < jv) ? iv : jv;
-
-      itmp = iv + jv + ivmin * glob.vibfac;
-
-      ivsym = blksym(ixcom, jxcom) + ((unsigned int)itmp << 2);
-
-      for (spar_now = spar_head[ivmin]; spar_now != NULL;
-
-           spar_now = spar_now->next) {
-
-        if (spar_now->ipsym < ivsym)
-          break;
-
-        if (spar_now->ipsym > ivsym)
-          continue;
-
-        if (((int)spar_now->flags & MNSQ) != 0)
-          continue;
-
-        if (sznz < 0)
-
-          sznzfix(sznz, ni, nj, ixcom, jxcom, iscom, jscom);
-
-        kl = idpars(spar_now, &ikq, &neuler, &lt, &ld, &kd, &ins, &si1, &si2,
-
-                    &sznz, &ifc, &alpha, &ldel);
-
-        if (ODD(neuler))
-          continue;
-
-        if (sznz > 0) {
-
-          sznz = sznzfix(sznz, ni, nj, ixcom, jxcom, iscom, jscom);
+          kk = getqs (im, --iff, 0, -1, ixcom, iscom, &iv);
         }
 
-        if (getmask(ixcom, jxcom, kd, ldel, kl, alpha) == 0)
-          continue;
+      isym = ixcom[XSYM];
 
-        npair = getll(0, ld, lt, kd, si1, si2, lscom, iscom, jscom);
+      ni = ixcom[XNVAL];
 
-        if (npair < 0)
-          continue;
+      pvinfo = &vinfo[ixcom[XVIB]];
 
-        if (kd > 0)
+      gsym = pvinfo->gsym;
 
-          glob.idiag = kdiag;
+      nsym = setgsym (gsym);
 
-        if (nd > ndmax)
+      getwt (pvinfo, isym, kk, ivwt);
 
-          ndmax = nd;
+      for (jj = 0; jj < ii; ++jj)
+        {
 
-        kd = blkptr[ii] - blkptr[jj];
+          jjt = moldv[jj];
 
-        if (kd != 0) { /* II and JJ are coupled */
+          kk = getqs (jjt, iff, 0, -1, jxcom, jscom, &jv);
 
-          if (kd > 0) { /* rename ptr II to ptr JJ */
+          jsym = jxcom[XSYM];
 
-            kk = blkptr[ii];
+          nj = jxcom[XNVAL];
 
-            ix = jj;
+          nd = ni - nj;
 
-          } else { /* rename ptr JJ to ptr II */
+          pvinfo = &vinfo[jxcom[XVIB]];
 
-            kk = blkptr[jj];
+          if (pvinfo->gsym != (short)gsym)
+            continue;
 
-            ix = ii;
-          }
+          getwt (pvinfo, jsym, kk, jvwt);
 
-          glob.idiag = kdiag;
+          iwt = nvwt[nsym];
 
-          for (k = 0; k <= ii; ++k) {
+          for (k = 0; k < iwt; ++k)
+            {
 
-            if (blkptr[k] == kk)
+              if (ivwt[k] != jvwt[k])
+                break;
+            }
 
-              blkptr[k] = blkptr[ix];
-          }
-        }
+          if (k < iwt)
+            continue;
 
-        break;
+          /* check for connection restrictions on N */
 
-      } /* loop over parameters */
+          ixzt = glob.ixz;
 
-    } /* jj loop */
+          if (ODD (ixzt) && iscom[nspin] != jscom[nspin])
+            continue;
 
-  } /* ii loop */
+          for (k = 0; k < nf; ++k)
+            {
+
+              if (k == itsym)
+
+                k = itptr;
+
+              ixzt = ixzt >> 1;
+
+              /* check for matching spin multiplicity*/
+
+              if (ODD (iscom[k] + jscom[k]))
+                break;
+
+              /* check for connection restrictions on spin */
+
+              if (ODD (ixzt) && iscom[k] != jscom[k])
+                break;
+            }
+
+          if (k < nf)
+
+            continue;
+
+          ivmin = (iv < jv) ? iv : jv;
+
+          itmp = iv + jv + ivmin * glob.vibfac;
+
+          ivsym = blksym (ixcom, jxcom) + ((unsigned int)itmp << 2);
+
+          for (spar_now = spar_head[ivmin]; spar_now != NULL;
+
+               spar_now = spar_now->next)
+            {
+
+              if (spar_now->ipsym < ivsym)
+                break;
+
+              if (spar_now->ipsym > ivsym)
+                continue;
+
+              if (((int)spar_now->flags & MNSQ) != 0)
+                continue;
+
+              if (sznz < 0)
+
+                sznzfix (sznz, ni, nj, ixcom, jxcom, iscom, jscom);
+
+              kl = idpars (spar_now, &ikq, &neuler, &lt, &ld, &kd, &ins, &si1,
+                           &si2,
+
+                           &sznz, &ifc, &alpha, &ldel);
+
+              if (ODD (neuler))
+                continue;
+
+              if (sznz > 0)
+                {
+
+                  sznz = sznzfix (sznz, ni, nj, ixcom, jxcom, iscom, jscom);
+                }
+
+              if (getmask (ixcom, jxcom, kd, ldel, kl, alpha) == 0)
+                continue;
+
+              npair = getll (0, ld, lt, kd, si1, si2, lscom, iscom, jscom);
+
+              if (npair < 0)
+                continue;
+
+              if (kd > 0)
+
+                glob.idiag = kdiag;
+
+              if (nd > ndmax)
+
+                ndmax = nd;
+
+              kd = blkptr[ii] - blkptr[jj];
+
+              if (kd != 0)
+                { /* II and JJ are coupled */
+
+                  if (kd > 0)
+                    { /* rename ptr II to ptr JJ */
+
+                      kk = blkptr[ii];
+
+                      ix = jj;
+                    }
+                  else
+                    { /* rename ptr JJ to ptr II */
+
+                      kk = blkptr[jj];
+
+                      ix = ii;
+                    }
+
+                  glob.idiag = kdiag;
+
+                  for (k = 0; k <= ii; ++k)
+                    {
+
+                      if (blkptr[k] == kk)
+
+                        blkptr[k] = blkptr[ix];
+                    }
+                }
+
+              break;
+
+            } /* loop over parameters */
+
+        } /* jj loop */
+
+    } /* ii loop */
 
   /*  block connections now found */
 
-  switch (glob.idiag) {
+  switch (glob.idiag)
+    {
 
-  case -1:
+    case -1:
 
-    fputs("NO DIAGONALIZATION NEEDED\n", lu);
+      fputs ("NO DIAGONALIZATION NEEDED\n", lu);
 
-    break;
+      break;
 
-  case 0:
+    case 0:
 
-    fputs("ENERGY SORT OF WANG SUB-BLOCKS\n", lu);
+      fputs ("ENERGY SORT OF WANG SUB-BLOCKS\n", lu);
 
-    break;
+      break;
 
-  case 1:
+    case 1:
 
-    fputs("EIGENVECTOR SORT OF STATES\n", lu);
+      fputs ("EIGENVECTOR SORT OF STATES\n", lu);
 
-    break;
+      break;
 
-  case 2:
+    case 2:
 
-    fputs("ENERGY FOLLOWS FIRST ORDER WITHIN WANG SUB-BLOCK\n", lu);
+      fputs ("ENERGY FOLLOWS FIRST ORDER WITHIN WANG SUB-BLOCK\n", lu);
 
-    break;
+      break;
 
-  case 3:
+    case 3:
 
-    fputs("ENERGY FOLLOWS FIRST ORDER WITHIN V AND SPIN SUB-BLOCKS\n", lu);
+      fputs ("ENERGY FOLLOWS FIRST ORDER WITHIN V AND SPIN SUB-BLOCKS\n", lu);
 
-    break;
-  }
+      break;
+    }
 
-  if (glob.oblate) {
+  if (glob.oblate)
+    {
 
-    fputs("OBLATE ROTOR\n", lu);
+      fputs ("OBLATE ROTOR\n", lu);
 
-    ctmp = csym[1];
+      ctmp = csym[1];
 
-    csym[1] = csym[3];
+      csym[1] = csym[3];
 
-    csym[3] = ctmp;
+      csym[3] = ctmp;
+    }
+  else
+    {
 
-  } else {
+      fputs ("PROLATE ROTOR\n", lu);
+    }
 
-    fputs("PROLATE ROTOR\n", lu);
-  }
+  if (glob.nqnn == 1)
+    {
 
-  if (glob.nqnn == 1) {
+      fputs ("LINEAR MOLECULE QUANTA, K SUPPRESSED\n", lu);
+    }
+  else if (glob.nqnn == 2)
+    {
 
-    fputs("LINEAR MOLECULE QUANTA, K SUPPRESSED\n", lu);
+      fputs ("SYMMETRIC TOP QUANTA\n", lu);
+    }
 
-  } else if (glob.nqnn == 2) {
-
-    fputs("SYMMETRIC TOP QUANTA\n", lu);
-  }
-
-  fputs("    V KMIN KMAX WTPL WTMN ESYMWT NSYM SPINS\n", lu);
+  fputs ("    V KMIN KMAX WTPL WTMN ESYMWT NSYM SPINS\n", lu);
 
   pvinfo = vinfo;
   jj = 0;
 
-  for (iv = 0; iv <= nvibm; ++iv) {
+  for (iv = 0; iv <= nvibm; ++iv)
+    {
 
-    knnmin = pvinfo->knmin[0];
+      knnmin = pvinfo->knmin[0];
 
-    ii = pvinfo->knmin[1];
+      ii = pvinfo->knmin[1];
 
-    if (ii < knnmin)
+      if (ii < knnmin)
 
-      knnmin = ii;
+        knnmin = ii;
 
-    ii = pvinfo->knmin[2];
+      ii = pvinfo->knmin[2];
 
-    if (ii < knnmin)
+      if (ii < knnmin)
 
-      knnmin = ii;
+        knnmin = ii;
 
-    ii = pvinfo->knmin[3];
+      ii = pvinfo->knmin[3];
 
-    if (ii < knnmin)
+      if (ii < knnmin)
 
-      knnmin = ii;
+        knnmin = ii;
 
-    if (knnmin < 0)
+      if (knnmin < 0)
 
-      knnmin = 0;
+        knnmin = 0;
 
-    k = pvinfo->gsym;
-    isym = k >> 1;
+      k = pvinfo->gsym;
+      isym = k >> 1;
 
-    ii = (int)(pvinfo->lvupper >> 2);
+      ii = (int)(pvinfo->lvupper >> 2);
 
-    if ((pvinfo->lvupper & 2) != 0)
+      if ((pvinfo->lvupper & 2) != 0)
 
-      ii += 10;
+        ii += 10;
 
-    if (ODD(k)) {
+      if (ODD (k))
+        {
 
-      isym = -isym;
-      jj = 1;
+          isym = -isym;
+          jj = 1;
+        }
+
+      ii = ii * glob.esymdec + pvinfo->ewt[0];
+
+      fprintf (lu, " %4d %4d %4d %4d %4d %6d %4d", iv, knnmin, pvinfo->knmax,
+
+               pvinfo->wt[0], pvinfo->wt[3], ii, isym);
+
+      jjs = pvinfo->spt;
+
+      ni = jjs[0];
+
+      for (i = 1; i < ni; ++i)
+        {
+
+          ai = jjs[i] * 0.5;
+
+          fprintf (lu, "%5.1f", ai);
+        }
+
+      fputc ('\n', lu);
+
+      if (EVEN (isym))
+        { /* even */
+
+          i = ii;
+          ii -= pvinfo->ewt[0];
+
+          if (isym != 4)
+            ii += pvinfo->ewt[1];
+
+          if (i != ii || pvinfo->wt[0] != pvinfo->wt[2] ||
+
+              pvinfo->wt[3] != pvinfo->wt[1])
+            {
+
+              fprintf (lu, " %4d %4d %4d %4d %4d %6d    B\n", iv, knnmin,
+                       pvinfo->knmax,
+
+                       pvinfo->wt[2], pvinfo->wt[1], ii);
+            }
+        }
+
+      ++pvinfo;
     }
 
-    ii = ii * glob.esymdec + pvinfo->ewt[0];
+  if (jj != 0)
+    {
 
-    fprintf(lu, " %4d %4d %4d %4d %4d %6d %4d", iv, knnmin, pvinfo->knmax,
+      fprintf (lu, "I(TOT) IS LAST QUANTUM BEFORE F AND %s\n",
 
-            pvinfo->wt[0], pvinfo->wt[3], ii, isym);
-
-    jjs = pvinfo->spt;
-
-    ni = jjs[0];
-
-    for (i = 1; i < ni; ++i) {
-
-      ai = jjs[i] * 0.5;
-
-      fprintf(lu, "%5.1f", ai);
+               "IS INDICATED BY NEGATIVE VALUE OF NSYM ABOVE");
     }
-
-    fputc('\n', lu);
-
-    if (EVEN(isym)) { /* even */
-
-      i = ii;
-      ii -= pvinfo->ewt[0];
-
-      if (isym != 4)
-        ii += pvinfo->ewt[1];
-
-      if (i != ii || pvinfo->wt[0] != pvinfo->wt[2] ||
-
-          pvinfo->wt[3] != pvinfo->wt[1]) {
-
-        fprintf(lu, " %4d %4d %4d %4d %4d %6d    B\n", iv, knnmin,
-                pvinfo->knmax,
-
-                pvinfo->wt[2], pvinfo->wt[1], ii);
-      }
-    }
-
-    ++pvinfo;
-  }
-
-  if (jj != 0) {
-
-    fprintf(lu, "I(TOT) IS LAST QUANTUM BEFORE F AND %s\n",
-
-            "IS INDICATED BY NEGATIVE VALUE OF NSYM ABOVE");
-  }
 
   /* bubble sort block number */
 
   lx = ntstat;
 
-  while (lx > 1) {
+  while (lx > 1)
+    {
 
-    lv = 0;
+      lv = 0;
 
-    im = 0;
+      im = 0;
 
-    for (i = 1; i < lx; ++i) {
+      for (i = 1; i < lx; ++i)
+        {
 
-      if (blkptr[im] > blkptr[i] ||
+          if (blkptr[im] > blkptr[i] ||
 
-          (blkptr[im] == blkptr[i] && moldv[im] > moldv[i])) {
+              (blkptr[im] == blkptr[i] && moldv[im] > moldv[i]))
+            {
 
-        lv = i;
+              lv = i;
 
-        jj = blkptr[i];
+              jj = blkptr[i];
 
-        blkptr[i] = blkptr[im];
+              blkptr[i] = blkptr[im];
 
-        blkptr[im] = jj;
+              blkptr[im] = jj;
 
-        jj = moldv[i];
+              jj = moldv[i];
 
-        moldv[i] = moldv[im];
+              moldv[i] = moldv[im];
 
-        moldv[im] = jj;
-      }
+              moldv[im] = jj;
+            }
 
-      im = i;
+          im = i;
+        }
+
+      lx = lv;
     }
 
-    lx = lv;
-  }
+  fputs ("BLOCK - WT - SYM - V - TSP - N  -  other quanta  (rel. to F=0 )\n",
 
-  fputs("BLOCK - WT - SYM - V - TSP - N  -  other quanta  (rel. to F=0 )\n",
-
-        lu);
+         lu);
 
   /* convert block label to pointer */
 
@@ -5043,133 +5400,138 @@ int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
 
   n = nsize = neven = nodd = maxblk = maxsblk = 0;
 
-  for (jj = 0; jj <= ntstat; ++jj) {
+  for (jj = 0; jj <= ntstat; ++jj)
+    {
 
-    if (blkptr[jj] != i) {
+      if (blkptr[jj] != i)
+        {
 
-      ii = jj - blkptr[n++];
+          ii = jj - blkptr[n++];
 
-      if (maxblk < ii)
+          if (maxblk < ii)
 
-        maxblk = ii;
+            maxblk = ii;
 
-      blkptr[n] = jj;
+          blkptr[n] = jj;
 
-      if (neven > nsize)
+          if (neven > nsize)
 
-        nsize = neven;
+            nsize = neven;
 
-      if (nodd > nsize)
+          if (nodd > nsize)
 
-        nsize = nodd;
+            nsize = nodd;
 
-      if (jj == ntstat)
-        break;
+          if (jj == ntstat)
+            break;
 
-      i = blkptr[jj];
+          i = blkptr[jj];
 
-      neven = 0;
+          neven = 0;
 
-      nodd = 0;
+          nodd = 0;
+        }
+
+      jjt = moldv[jj];
+
+      jjt = getqs (jjt, 0, -1, 0, ixcom, iscom, &ii);
+
+      isym = ixcom[XSYM];
+
+      iv = ixcom[XVIB];
+
+      pvinfo = &vinfo[iv];
+
+      iwt = getwt (pvinfo, isym, jjt, ivwt);
+
+      kk = pvinfo->knmin[isym];
+
+      if (kk < 0)
+        {
+
+          ii = ixcom[XISYM]; /* get spin symmetry */
+
+          kk = isym;
+
+          if (is_esym[ii] < 0)
+            kk += 2;
+
+          kk &= 2;
+        }
+
+      ii = pvinfo->knmax - kk + 2;
+
+      if (ii < 0)
+
+        ii = 0;
+
+      ii >>= 1; /* size of even block */
+
+      neven += ii;
+
+      if (ii > maxsblk)
+
+        maxsblk = ii;
+
+      kk = pvinfo->knmin[3 - isym];
+
+      if (kk < 0)
+        {
+
+          ii = ixcom[XISYM]; /* get spin symmetry */
+
+          kk = isym;
+
+          if (is_esym[ii] >= 0)
+            kk += 2;
+
+          kk &= 2;
+        }
+
+      ii = pvinfo->knmax - kk + 2;
+
+      if (ii < 0)
+
+        ii = 0;
+
+      ii >>= 1; /* size of odd block */
+
+      nodd += ii;
+
+      if (ii > maxsblk)
+
+        maxsblk = ii;
+
+      --jjt;
+
+      fprintf (lu, "% 5d %4d    %c %4d %4d", n + 1, iwt, csym[isym], iv, jjt);
+
+      ni = nspin;
+
+      for (ii = 0; ii < nspin; ++ii)
+        {
+
+          ai = iscom[ni] * 0.5;
+
+          fprintf (lu, " %5.1f", ai);
+
+          if (ni == itsym && itsym < itptr)
+
+            ii = itptr;
+
+          ni = ii;
+        }
+
+      fputc ('\n', lu);
     }
-
-    jjt = moldv[jj];
-
-    jjt = getqs(jjt, 0, -1, 0, ixcom, iscom, &ii);
-
-    isym = ixcom[XSYM];
-
-    iv = ixcom[XVIB];
-
-    pvinfo = &vinfo[iv];
-
-    iwt = getwt(pvinfo, isym, jjt, ivwt);
-
-    kk = pvinfo->knmin[isym];
-
-    if (kk < 0) {
-
-      ii = ixcom[XISYM]; /* get spin symmetry */
-
-      kk = isym;
-
-      if (is_esym[ii] < 0)
-        kk += 2;
-
-      kk &= 2;
-    }
-
-    ii = pvinfo->knmax - kk + 2;
-
-    if (ii < 0)
-
-      ii = 0;
-
-    ii >>= 1; /* size of even block */
-
-    neven += ii;
-
-    if (ii > maxsblk)
-
-      maxsblk = ii;
-
-    kk = pvinfo->knmin[3 - isym];
-
-    if (kk < 0) {
-
-      ii = ixcom[XISYM]; /* get spin symmetry */
-
-      kk = isym;
-
-      if (is_esym[ii] >= 0)
-        kk += 2;
-
-      kk &= 2;
-    }
-
-    ii = pvinfo->knmax - kk + 2;
-
-    if (ii < 0)
-
-      ii = 0;
-
-    ii >>= 1; /* size of odd block */
-
-    nodd += ii;
-
-    if (ii > maxsblk)
-
-      maxsblk = ii;
-
-    --jjt;
-
-    fprintf(lu, "% 5d %4d    %c %4d %4d", n + 1, iwt, csym[isym], iv, jjt);
-
-    ni = nspin;
-
-    for (ii = 0; ii < nspin; ++ii) {
-
-      ai = iscom[ni] * 0.5;
-
-      fprintf(lu, " %5.1f", ai);
-
-      if (ni == itsym && itsym < itptr)
-
-        ii = itptr;
-
-      ni = ii;
-    }
-
-    fputc('\n', lu);
-  }
 
   ++maxblk;
 
   glob.maxblk = maxblk;
 
-  fprintf(lu, "Maximum Dimension for Hamiltonian = %d\n", nsize);
+  fprintf (lu, "Maximum Dimension for Hamiltonian = %d\n", nsize);
 
-  fflush(lu);
+  fflush (lu);
 
   *nbkpf = n;
 
@@ -5179,34 +5541,35 @@ int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
 
     *negy = nsize;
 
-  if (ndmx > 0) {
+  if (ndmx > 0)
+    {
 
-    free(ivs);
+      free (ivs);
 
-    ivs = NULL;
+      ivs = NULL;
 
-    free(ikmin);
+      free (ikmin);
 
-    ikmin = NULL;
+      ikmin = NULL;
 
-    free(ibkptr);
+      free (ibkptr);
 
-    ibkptr = NULL;
+      ibkptr = NULL;
 
-    free(idx);
+      free (idx);
 
-    idx = NULL;
+      idx = NULL;
 
-    free(jdx);
+      free (jdx);
 
-    jdx = NULL;
+      jdx = NULL;
 
-    free(wk);
+      free (wk);
 
-    wk = NULL;
+      wk = NULL;
 
-    ndmx = 0;
-  }
+      ndmx = 0;
+    }
 
   ii = maxsblk + maxsblk - 1;
 
@@ -5216,39 +5579,39 @@ int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
 
     ndmx = ii;
 
-  nl = (size_t)(nsize + ndmx) * sizeof(double);
+  nl = (size_t)(nsize + ndmx) * sizeof (double);
 
-  wk = (double *)mallocq(nl);
+  wk = (double *)mallocq (nl);
 
   wk[0] = zero;
 
   /* allocate space for sub-block information */
 
-  nl = (size_t)(ndmx + 1) * sizeof(short);
+  nl = (size_t)(ndmx + 1) * sizeof (short);
 
-  idx = (short *)mallocq(nl);
+  idx = (short *)mallocq (nl);
 
   idx[0] = 0;
 
-  jdx = (short *)mallocq(nl);
+  jdx = (short *)mallocq (nl);
 
   jdx[0] = 0;
 
   maxblk = maxblk + maxblk;
 
-  nl = maxblk * sizeof(short);
+  nl = maxblk * sizeof (short);
 
-  ibkptr = (short *)mallocq(nl);
+  ibkptr = (short *)mallocq (nl);
 
   ibkptr[0] = 0;
 
-  ikmin = (short *)mallocq(nl);
+  ikmin = (short *)mallocq (nl);
 
   ikmin[0] = 0;
 
-  nl = (size_t)maxblk * sizeof(int);
+  nl = (size_t)maxblk * sizeof (int);
 
-  ivs = (int *)mallocq(nl);
+  ivs = (int *)mallocq (nl);
 
   ivs[0] = 0;
 
@@ -5258,7 +5621,8 @@ int setblk(FILE *lu, const int npar, bcd_t *idpar, const double *par,
 
 } /* setblk */
 
-int pasort(FILE *lu, const int npar, bcd_t *idpar, const double *par)
+int
+pasort (FILE *lu, const int npar, bcd_t *idpar, const double *par)
 
 {
 
@@ -5300,80 +5664,86 @@ int pasort(FILE *lu, const int npar, bcd_t *idpar, const double *par)
 
   BOOL isused, first;
 
-  if (glob.parinit > 0) {
+  if (glob.parinit > 0)
+    {
 
-    for (i = 0; i < glob.parinit; ++i) {
+      for (i = 0; i < glob.parinit; ++i)
+        {
 
-      spar_free = spar_head[i];
+          spar_free = spar_head[i];
 
-      while (spar_free != NULL) {
+          while (spar_free != NULL)
+            {
 
-        spar_now = spar_free->next;
+              spar_now = spar_free->next;
 
-        free(spar_free);
+              free (spar_free);
 
-        spar_free = spar_now;
-      }
+              spar_free = spar_now;
+            }
 
-      spar_head[i] = spar_free;
+          spar_head[i] = spar_free;
+        }
+
+      spar_free = spar_now = NULL;
+
+      glob.parinit = 0;
     }
 
-    spar_free = spar_now = NULL;
+  if (npar <= 0)
+    {
 
-    glob.parinit = 0;
-  }
+      free (ipder);
 
-  if (npar <= 0) {
+      ipder = &zipder;
 
-    free(ipder);
+      initl = 0;
 
-    ipder = &zipder;
-
-    initl = 0;
-
-    return 0;
-  }
+      return 0;
+    }
 
   /*  find reduced spin matrix elements */
 
   spfac[0] = 0.;
   spfac2[0] = 0.;
 
-  spfac[1] = sqrt(1.5);
+  spfac[1] = sqrt (1.5);
   spfac2[0] = 0.;
 
   nt = glob.mxspin;
 
-  for (i = 2; i <= nt; ++i) {
+  for (i = 2; i <= nt; ++i)
+    {
 
-    dtmp = 0.5 * i; /* dtmp = I */
+      dtmp = 0.5 * i; /* dtmp = I */
 
-    spfac[i] = sqrt(dtmp * (dtmp + 1.) * (i + 1));
+      spfac[i] = sqrt (dtmp * (dtmp + 1.) * (i + 1));
 
-    spfac2[i] = 0.25 * sqrt((dtmp + 1.5) / (dtmp - 0.5)) / dtmp;
-  }
+      spfac2[i] = 0.25 * sqrt ((dtmp + 1.5) / (dtmp - 0.5)) / dtmp;
+    }
 
   /* initialize SPECFC and DIRCOS */
 
-  specfc(0, 0, 0, 0, 0, 0, 0, &zero, &szero, &szero);
+  specfc (0, 0, 0, 0, 0, 0, 0, &zero, &szero, &szero);
 
-  dircos(idmy, idmy, 0, 0, 0, &zero, &szero, &szero, 0, MODD, 0, &first);
+  dircos (idmy, idmy, 0, 0, 0, &zero, &szero, &szero, 0, MODD, 0, &first);
 
   ifac = glob.vibfac + 1;
   ndecv = glob.vibdec;
 
   ilim = ifac * ifac - 1;
 
-  if (initl > 0) {
+  if (initl > 0)
+    {
 
-    free(ipder);
+      free (ipder);
 
-    ipder = NULL;
-  }
+      ipder = NULL;
+    }
 
-  nl = (size_t)npar * sizeof(int);
+  nl = (size_t)npar * sizeof (int);
 
-  ipder = (int *)mallocq(nl);
+  ipder = (int *)mallocq (nl);
 
   initl = npar;
 
@@ -5385,21 +5755,24 @@ int pasort(FILE *lu, const int npar, bcd_t *idpar, const double *par)
   ibcd = 0;
   nbcd = (int)idpar[0] & 0x7f;
 
-  for (i = 1; i < npar; ++i) {
+  for (i = 1; i < npar; ++i)
+    {
 
-    ibcd += nbcd;
+      ibcd += nbcd;
 
-    if (NEGBCD(idpar[ibcd]) == 0) {
+      if (NEGBCD (idpar[ibcd]) == 0)
+        {
 
-      ipder[i] = kk++;
+          ipder[i] = kk++;
 
-      ityi = i + 1;
+          ityi = i + 1;
+        }
+      else
+        {
 
-    } else {
-
-      ipder[i] = -ityi;
+          ipder[i] = -ityi;
+        }
     }
-  }
 
   glob.nfit = kk;
 
@@ -5417,10 +5790,11 @@ int pasort(FILE *lu, const int npar, bcd_t *idpar, const double *par)
 
   glob.parinit = glob.nvib;
 
-  for (i = 0; i < glob.nvib; ++i) {
+  for (i = 0; i < glob.nvib; ++i)
+    {
 
-    spar_head[i] = NULL;
-  }
+      spar_head[i] = NULL;
+    }
 
   pvib1 = pvib2 = vinfo;
 
@@ -5433,435 +5807,476 @@ int pasort(FILE *lu, const int npar, bcd_t *idpar, const double *par)
 
   isused = FALSE;
 
-  while (ipar >= -1) {
+  while (ipar >= -1)
+    {
 
-    ityi = 0;
-    first = TRUE;
+      ityi = 0;
+      first = TRUE;
 
-    do { /* repeat until parameter subtypes exhausted */
+      do
+        { /* repeat until parameter subtypes exhausted */
 
-      ivdif = 0;
+          ivdif = 0;
 
-      if (ipar < 0) { /* make sure there is a unit operator */
+          if (ipar < 0)
+            { /* make sure there is a unit operator */
 
-        idval = idunit;
+              idval = idunit;
 
-        iv12q = ilim;
+              iv12q = ilim;
+            }
+          else
+            {
 
-      } else {
+              idval = &idpar[ibcd + 1];
 
-        idval = &idpar[ibcd + 1];
+              iv12q = bcd2i (idval[0]);
 
-        iv12q = bcd2i(idval[0]);
+              if (ndecv > 1)
 
-        if (ndecv > 1)
+                iv12q += bcd2i (idval[1]) * 100;
 
-          iv12q += bcd2i(idval[1]) * 100;
+              if (ndecv > 2)
 
-        if (ndecv > 2)
+                iv12q += bcd2i (idval[2]) * 10000;
 
-          iv12q += bcd2i(idval[2]) * 10000;
+              idval += ndecv;
 
-        idval += ndecv;
+              iv2 = iv12q / ifac;
+              iv1 = iv12q - iv2 * ifac;
 
-        iv2 = iv12q / ifac;
-        iv1 = iv12q - iv2 * ifac;
+              ivdif = iv1 - iv2;
 
-        ivdif = iv1 - iv2;
+              if (ivdif < 0)
+                {
 
-        if (ivdif < 0) {
+                  i = iv1;
+                  iv1 = iv2;
+                  iv2 = i;
 
-          i = iv1;
-          iv1 = iv2;
-          iv2 = i;
+                  iv12q = iv2 * ifac + iv1;
+                }
+            }
 
-          iv12q = iv2 * ifac + iv1;
-        }
-      }
+          if (iv12q == ilim)
+            {
 
-      if (iv12q == ilim) {
+              iv1 = iv2 = iv1d;
+              ivdif = 0;
 
-        iv1 = iv2 = iv1d;
-        ivdif = 0;
+              iv12 = iv1d * (ifac + 1);
+            }
+          else
+            {
 
-        iv12 = iv1d * (ifac + 1);
+              if (iv1 >= glob.nvib)
+                break;
 
-      } else {
+              iv12 = iv12q;
+            }
 
-        if (iv1 >= glob.nvib)
-          break;
+          if (idval[1] == (bcd_t)0x91 && idval[0] == (bcd_t)0)
+            {
 
-        iv12 = iv12q;
-      }
+              /* special for rho */
 
-      if (idval[1] == (bcd_t)0x91 && idval[0] == (bcd_t)0) {
+              if (iv1 == iv2)
+                {
 
-        /* special for rho */
+                  isused = TRUE;
 
-        if (iv1 == iv2) {
+                  dtmp = par[ipar];
+
+                  specfc (0, iv1, iv1, 0, 0, 0, 1, &dtmp, &szero, &szero);
+                }
+
+              break;
+            }
+
+          pvib1 = &vinfo[iv1];
+          pvib2 = &vinfo[iv2];
+
+          gsym = pvib1->gsym;
+
+          if ((short)gsym != pvib2->gsym)
+            break;
+
+          gsym = setgsym (gsym);
+          nitot = glob.nitot;
+
+          if (spar_free == NULL)
+            { /* allocate more structures */
+
+              spar_free = (SPAR *)mallocq (sizeof (SPAR));
+            }
+
+          spar_now = spar_free;
+
+          spar_now->flags = 0;
+          spar_now->alpha = C0;
+          spar_now->mldel = C0;
+
+          ityi = idpari (idval, ityi, spar_now);
+
+          if (ityi == 0)
+            break;
+
+          njqt = (int)spar_now->njq;
+
+          if (njqt > nsqmax)
+
+            nsqmax = njqt;
+
+          isym = (int)spar_now->ipsym;
+
+          idpars (spar_now, &ikq, &neuler, &lt, &ld, &kd, &ins, &si1, &si2,
+
+                  &sznz, &ifc, &alpha, &ldel);
+
+          iiv1 = pvib1->spt;
+          iiv2 = pvib2->spt;
+
+          if (si1 > 0 &&
+
+              checksp (first, si1, si2, iiv1, iiv2, &spar_now->zfac) != 0)
+            break;
+
+          if (sznz > 0)
+            { /*  setup for SzNz */
+
+              if (checksp (first, 1, 0, iiv1, iiv2, &spar_now->zfac) != 0)
+                break;
+
+              spar_now->zfac *= 0.5;
+            }
+
+          first = FALSE;
+
+          /* factor of 2 for B-C, etc */
+
+          if (kd != 0 && isym == 0)
+
+            spar_now->zfac *= 2.;
+
+          /* setup flags */
+
+          idflags = 1;
+
+          imag = (kd > ld) ? kd : ld;
+
+          if (ifc < 0)
+
+            ++imag;
+
+          if (si2 < 0)
+
+            ++imag; /* commutator is odd */
+
+          if (pvib1->wt[4] != pvib2->wt[4])
+            break;
+
+          lv1 = pvib1->lvqn;
+          lv2 = pvib2->lvqn;
+
+          if (lv1 + lv2 < 0)
+            break;
+
+          if (ODD (pvib1->lvupper))
+            {
+
+              --iv12;
+
+              --iv1;
+            }
+
+          if (ODD (pvib2->lvupper))
+            {
+
+              iv12 -= ifac;
+
+              --iv2;
+            }
+
+          /* setup for l-doubling */
+
+          ldel = lv1 - lv2;
+
+          if (ldel != 0)
+            { /*  add flag for KL symmetry when off diagonal in l */
+
+              if (ldel < 0)
+
+                ldel = -ldel;
+
+              if (ivdif < 0) /* DELTA K * DELTA L < 0 */
+
+                ldel = -ldel;
+
+              glob.lsym = FALSE;
+            }
+          else if (lv1 != 0)
+            {
+
+              /*  change symmetry for Lz operator */
+
+              i = ((pvib1->lvupper ^ pvib2->lvupper) & 2) >> 1;
+
+              if (ODD (imag + i))
+                {
+
+                  isym = 3 - isym;
+                  ++imag;
+
+                  idflags |= MLZ;
+                }
+            }
+
+          spar_now->mldel = (signed char)ldel;
+
+          if (ODD (imag))
+            {
+
+              if (iv1 == iv2 && ldel == 0)
+                break;
+
+              idflags |= MODD;
+            }
+
+          if (nitot < 3)
+            { /* calculate alpha */
+
+              if (gsym >= 3 && MOD (kd - ldel, gsym) != 0)
+
+                continue; /* matrix element breaks symmetry */
+
+              alpha = 0;
+            }
+          else
+            {
+
+              alpha = MOD (ldel - kd, nitot);
+
+              if (si1 <= itsym)
+                {
+
+                  if (alpha != 0)
+                    continue;
+
+                  idflags |= MIDEN; /* identity spin operator */
+                }
+
+              if (alpha < 0)
+
+                alpha += nitot;
+
+              if (alpha == 0 || (alpha + alpha) == nitot)
+                {
+
+                  if (ityi > 160)
+                    continue;
+
+                  if (ityi > 80 && kd == 0 && lv1 == 0 && lv2 == 0)
+
+                    continue;
+                }
+              else
+                {
+
+                  glob.esym = FALSE;
+
+                  spar_now->zfac *= 0.5;
+                }
+
+              if (ityi >= 80)
+                {
+
+                  i = ityi / 80; /* i = 3,2,1,0 */
+
+                  if (ODD2 (i))
+                    {
+
+                      if (ODD (isym + imag))
+
+                        spar_now->zfac = -spar_now->zfac;
+
+                      idflags |= MSYM2;
+                      isym = 3 - isym;
+                    }
+
+                  if (ODD (i))
+                    {
+
+                      alpha += nitot; /* special for quasi-diagonal */
+                    }
+                }
+            }
+
+          if (ikq != 0 || neuler != 0 || sznz != 0 || ifc != 0)
+
+            idflags |= MNOUNIT; /* no unit matrix */
+
+          spar_now->alpha = (unsigned char)alpha;
+
+          if (isym == 0 && iv1 == iv2 && kd != 0)
+
+            iret = 1;
+
+          ivsym = (unsigned int)isym + ((unsigned int)iv12 << 2);
+
+          spar_now->ipsym = ivsym;
+
+          spar_match = spar_last = NULL;
+
+          for (spar_now = spar_head[iv2]; spar_now != NULL;
+
+               spar_now = spar_now->next)
+            {
+
+              if (spar_now->ipsym <= ivsym)
+                break;
+
+              spar_last = spar_now;
+            }
+
+          if (EVEN (neuler))
+            { /* not Euler denominator parameter */
+
+              kl = idflags & MMASK;
+
+              for (/* no init */; spar_now != NULL; spar_now = spar_now->next)
+                {
+
+                  if (spar_now->ipsym < ivsym)
+                    break;
+
+                  spar_last = spar_now;
+
+                  klp = idpars (spar_now, &ikqp, &neulerp, &ltp, &ldp, &kdp,
+                                &insp,
+
+                                &si1p, &si2p, &sznzp, &ifcp, &alphap, &ldelp);
+
+                  klp &= MMASK;
+
+                  /* check for same K dependence */
+
+                  if (ikq == ikqp && ld == ldp && kd == kdp && kl == klp &&
+
+                      sznz == sznzp && ifc == ifcp && alpha == alphap &&
+
+                      ldel == ldelp && neuler == 0 && neulerp == 0)
+                    {
+
+                      /*  check for same operator except power of N*(N+1) */
+
+                      if (lt == ltp && ins == insp && si1 == si1p
+                          && si2 == si2p)
+                        {
+
+                          idflags |= MNSQ;
+                        }
+                      else
+                        {
+
+                          if ((idflags & MNSQ) != 0)
+                            break;
+                        }
+
+                      spar_match = spar_now;
+                    }
+                  else
+                    { /* operator with different K dependence */
+
+                      if ((idflags & MNSQ) != 0)
+                        break;
+                    }
+
+                } /* end loop over previous parameters */
+            }
 
           isused = TRUE;
 
-          dtmp = par[ipar];
+          if (spar_match != NULL)
+            {
 
-          specfc(0, iv1, iv1, 0, 0, 0, 1, &dtmp, &szero, &szero);
-        }
+              if (ipar < 0)
+                break; /* already have a unit operator */
 
-        break;
-      }
+              idflags |= MCOS_OK;
 
-      pvib1 = &vinfo[iv1];
-      pvib2 = &vinfo[iv2];
-
-      gsym = pvib1->gsym;
-
-      if ((short)gsym != pvib2->gsym)
-        break;
-
-      gsym = setgsym(gsym);
-      nitot = glob.nitot;
-
-      if (spar_free == NULL) { /* allocate more structures */
-
-        spar_free = (SPAR *)mallocq(sizeof(SPAR));
-      }
-
-      spar_now = spar_free;
-
-      spar_now->flags = 0;
-      spar_now->alpha = C0;
-      spar_now->mldel = C0;
-
-      ityi = idpari(idval, ityi, spar_now);
-
-      if (ityi == 0)
-        break;
-
-      njqt = (int)spar_now->njq;
-
-      if (njqt > nsqmax)
-
-        nsqmax = njqt;
-
-      isym = (int)spar_now->ipsym;
-
-      idpars(spar_now, &ikq, &neuler, &lt, &ld, &kd, &ins, &si1, &si2,
-
-             &sznz, &ifc, &alpha, &ldel);
-
-      iiv1 = pvib1->spt;
-      iiv2 = pvib2->spt;
-
-      if (si1 > 0 &&
-
-          checksp(first, si1, si2, iiv1, iiv2, &spar_now->zfac) != 0)
-        break;
-
-      if (sznz > 0) { /*  setup for SzNz */
-
-        if (checksp(first, 1, 0, iiv1, iiv2, &spar_now->zfac) != 0)
-          break;
-
-        spar_now->zfac *= 0.5;
-      }
-
-      first = FALSE;
-
-      /* factor of 2 for B-C, etc */
-
-      if (kd != 0 && isym == 0)
-
-        spar_now->zfac *= 2.;
-
-      /* setup flags */
-
-      idflags = 1;
-
-      imag = (kd > ld) ? kd : ld;
-
-      if (ifc < 0)
-
-        ++imag;
-
-      if (si2 < 0)
-
-        ++imag; /* commutator is odd */
-
-      if (pvib1->wt[4] != pvib2->wt[4])
-        break;
-
-      lv1 = pvib1->lvqn;
-      lv2 = pvib2->lvqn;
-
-      if (lv1 + lv2 < 0)
-        break;
-
-      if (ODD(pvib1->lvupper)) {
-
-        --iv12;
-
-        --iv1;
-      }
-
-      if (ODD(pvib2->lvupper)) {
-
-        iv12 -= ifac;
-
-        --iv2;
-      }
-
-      /* setup for l-doubling */
-
-      ldel = lv1 - lv2;
-
-      if (ldel != 0) { /*  add flag for KL symmetry when off diagonal in l */
-
-        if (ldel < 0)
-
-          ldel = -ldel;
-
-        if (ivdif < 0) /* DELTA K * DELTA L < 0 */
-
-          ldel = -ldel;
-
-        glob.lsym = FALSE;
-
-      } else if (lv1 != 0) {
-
-        /*  change symmetry for Lz operator */
-
-        i = ((pvib1->lvupper ^ pvib2->lvupper) & 2) >> 1;
-
-        if (ODD(imag + i)) {
-
-          isym = 3 - isym;
-          ++imag;
-
-          idflags |= MLZ;
-        }
-      }
-
-      spar_now->mldel = (signed char)ldel;
-
-      if (ODD(imag)) {
-
-        if (iv1 == iv2 && ldel == 0)
-          break;
-
-        idflags |= MODD;
-      }
-
-      if (nitot < 3) { /* calculate alpha */
-
-        if (gsym >= 3 && MOD(kd - ldel, gsym) != 0)
-
-          continue; /* matrix element breaks symmetry */
-
-        alpha = 0;
-
-      } else {
-
-        alpha = MOD(ldel - kd, nitot);
-
-        if (si1 <= itsym) {
-
-          if (alpha != 0)
-            continue;
-
-          idflags |= MIDEN; /* identity spin operator */
-        }
-
-        if (alpha < 0)
-
-          alpha += nitot;
-
-        if (alpha == 0 || (alpha + alpha) == nitot) {
-
-          if (ityi > 160)
-            continue;
-
-          if (ityi > 80 && kd == 0 && lv1 == 0 && lv2 == 0)
-
-            continue;
-
-        } else {
-
-          glob.esym = FALSE;
-
-          spar_now->zfac *= 0.5;
-        }
-
-        if (ityi >= 80) {
-
-          i = ityi / 80; /* i = 3,2,1,0 */
-
-          if (ODD2(i)) {
-
-            if (ODD(isym + imag))
-
-              spar_now->zfac = -spar_now->zfac;
-
-            idflags |= MSYM2;
-            isym = 3 - isym;
-          }
-
-          if (ODD(i)) {
-
-            alpha += nitot; /* special for quasi-diagonal */
-          }
-        }
-      }
-
-      if (ikq != 0 || neuler != 0 || sznz != 0 || ifc != 0)
-
-        idflags |= MNOUNIT; /* no unit matrix */
-
-      spar_now->alpha = (unsigned char)alpha;
-
-      if (isym == 0 && iv1 == iv2 && kd != 0)
-
-        iret = 1;
-
-      ivsym = (unsigned int)isym + ((unsigned int)iv12 << 2);
-
-      spar_now->ipsym = ivsym;
-
-      spar_match = spar_last = NULL;
-
-      for (spar_now = spar_head[iv2]; spar_now != NULL;
-
-           spar_now = spar_now->next) {
-
-        if (spar_now->ipsym <= ivsym)
-          break;
-
-        spar_last = spar_now;
-      }
-
-      if (EVEN(neuler)) { /* not Euler denominator parameter */
-
-        kl = idflags & MMASK;
-
-        for (/* no init */; spar_now != NULL; spar_now = spar_now->next) {
-
-          if (spar_now->ipsym < ivsym)
-            break;
-
-          spar_last = spar_now;
-
-          klp = idpars(spar_now, &ikqp, &neulerp, &ltp, &ldp, &kdp, &insp,
-
-                       &si1p, &si2p, &sznzp, &ifcp, &alphap, &ldelp);
-
-          klp &= MMASK;
-
-          /* check for same K dependence */
-
-          if (ikq == ikqp && ld == ldp && kd == kdp && kl == klp &&
-
-              sznz == sznzp && ifc == ifcp && alpha == alphap &&
-
-              ldel == ldelp && neuler == 0 && neulerp == 0) {
-
-            /*  check for same operator except power of N*(N+1) */
-
-            if (lt == ltp && ins == insp && si1 == si1p && si2 == si2p) {
-
-              idflags |= MNSQ;
-
-            } else {
-
-              if ((idflags & MNSQ) != 0)
-                break;
+              spar_last = spar_match;
             }
 
-            spar_match = spar_now;
+          spar_now = spar_free;
 
-          } else { /* operator with different K dependence */
+          spar_free = NULL;
 
-            if ((idflags & MNSQ) != 0)
-              break;
-          }
+          if (spar_last != NULL)
+            {
 
-        } /* end loop over previous parameters */
-      }
+              spar_now->next = spar_last->next;
 
-      isused = TRUE;
+              spar_last->next = spar_now;
+            }
+          else
+            {
 
-      if (spar_match != NULL) {
+              spar_now->next = spar_head[iv2];
 
-        if (ipar < 0)
-          break; /* already have a unit operator */
+              spar_head[iv2] = spar_now;
+            }
 
-        idflags |= MCOS_OK;
+          spar_last = NULL;
 
-        spar_last = spar_match;
-      }
+          spar_now->ip = ipar;
 
-      spar_now = spar_free;
+          spar_now->flags = (short)idflags;
+        }
+      while (ityi > 1);
 
-      spar_free = NULL;
+      i = ipar;
 
-      if (spar_last != NULL) {
+      if (iv12q == ilim)
+        {
 
-        spar_now->next = spar_last->next;
+          ++iv1d;
 
-        spar_last->next = spar_now;
+          if (iv1d >= glob.nvib)
 
-      } else {
+            --ipar;
+        }
+      else
+        {
 
-        spar_now->next = spar_head[iv2];
+          --ipar;
+        }
 
-        spar_head[iv2] = spar_now;
-      }
+      if (i > ipar)
+        {
 
-      spar_last = NULL;
+          if (!isused)
+            {
 
-      spar_now->ip = ipar;
+              putbcd (sbcd, NSBCD, &idpar[ibcd]);
 
-      spar_now->flags = (short)idflags;
+              fprintf (lu,
 
-    } while (ityi > 1);
+                       " WARNING: parameter %6d %s has no matrix elements\n",
 
-    i = ipar;
+                       (i + 1), sbcd);
+            }
 
-    if (iv12q == ilim) {
+          iv1d = 0;
+          ibcd -= nbcd;
 
-      ++iv1d;
+          isused = FALSE;
+        }
 
-      if (iv1d >= glob.nvib)
-
-        --ipar;
-
-    } else {
-
-      --ipar;
-    }
-
-    if (i > ipar) {
-
-      if (!isused) {
-
-        putbcd(sbcd, NSBCD, &idpar[ibcd]);
-
-        fprintf(lu,
-
-                " WARNING: parameter %6d %s has no matrix elements\n",
-
-                (i + 1), sbcd);
-      }
-
-      iv1d = 0;
-      ibcd -= nbcd;
-
-      isused = FALSE;
-    }
-
-  } /* end ipar loop */
+    } /* end ipar loop */
 
   if (spar_free != NULL)
 
-    free(spar_free);
+    free (spar_free);
 
   if (glob.esym)
 
@@ -5871,7 +6286,8 @@ int pasort(FILE *lu, const int npar, bcd_t *idpar, const double *par)
 
 } /* pasort */
 
-int idpari(bcd_t *idval, int itp, SPAR *pspar)
+int
+idpari (bcd_t *idval, int itp, SPAR *pspar)
 
 {
 
@@ -5889,11 +6305,11 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
 
   /*0  1  2   3   4   5   6   7  8   9 */
 
-  static int itpnxt[10] = {0, 0, 0, 2, 6, 6, 2, 0, 9, 0};
+  static int itpnxt[10] = { 0, 0, 0, 2, 6, 6, 2, 0, 9, 0 };
 
-  static int itpop[10] = {0, 0, 0, 10, 40, 40, 10, 1, 0, 1};
+  static int itpop[10] = { 0, 0, 0, 10, 40, 40, 10, 1, 0, 1 };
 
-  static int zfacv[10] = {1, 2, 6, 3, -8, 8, -6, 2, 4, -4};
+  static int zfacv[10] = { 1, 2, 6, 3, -8, 8, -6, 2, 4, -4 };
 
   int ins, ity, nsx, isy, itysav;
 
@@ -5903,25 +6319,28 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
 
   iphaz = 0;
 
-  if (itp > 0) {
+  if (itp > 0)
+    {
 
-    /* get current sub-parameter type from previous */
+      /* get current sub-parameter type from previous */
 
-    if (itp < 10) {
+      if (itp < 10)
+        {
 
-      itp = itpnxt[itp];
+          itp = itpnxt[itp];
 
-      if (itp == 0)
+          if (itp == 0)
 
-        return 0;
+            return 0;
+        }
+      else
+        {
 
-    } else {
+          iphaz = itp >> 4;
 
-      iphaz = itp >> 4;
-
-      itp = itpnxt[itp & 15];
+          itp = itpnxt[itp & 15];
+        }
     }
-  }
 
   pspar->zfac = 1.;
 
@@ -5937,7 +6356,7 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
   nsx = (int)(ibtmp & 0x0f);
   ksq = (int)(ibtmp >> 4);
 
-  ity = bcd2i(idval[1]);
+  ity = bcd2i (idval[1]);
   itysav = ity * 10 + ksq;
 
   ibtmp = idval[2];
@@ -5956,54 +6375,58 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
   si2 = (int)(ibtmp & 0x0f);
   itmp = (int)(ibtmp >> 4);
 
-  if (si2 > si1) {
+  if (si2 > si1)
+    {
 
-    /*  make sure SI1 > SI2 */
+      /*  make sure SI1 > SI2 */
 
-    i = si1;
-    si1 = si2;
-    si2 = i;
+      i = si1;
+      si1 = si2;
+      si2 = i;
 
-    if (si2 == 0)
+      if (si2 == 0)
 
-      si2 = -1;
-  }
+        si2 = -1;
+    }
 
   if (si1 > nspin)
     return 0;
 
-  if (ity > 90) {
+  if (ity > 90)
+    {
 
-    if (si1 != 0 || ins >= 5)
+      if (si1 != 0 || ins >= 5)
 
-      return 0;
-  }
+        return 0;
+    }
 
   ibtmp = idval[4];
 
-  if (ibtmp != (bcd_t)0) {
+  if (ibtmp != (bcd_t)0)
+    {
 
-    if (ibtmp >= (bcd_t)0x60)
+      if (ibtmp >= (bcd_t)0x60)
 
-      return 0;
+        return 0;
 
-    itmp += 10 * (int)(ibtmp & 0x0f);
+      itmp += 10 * (int)(ibtmp & 0x0f);
 
-    exval = (int)ibtmp & 0xf0;
-  }
+      exval = (int)ibtmp & 0xf0;
+    }
 
-  if (itmp != 0) {
+  if (itmp != 0)
+    {
 
-    i = (itmp - 1) / 10;
+      i = (itmp - 1) / 10;
 
-    itmp -= (i >> 1) * 10;
+      itmp -= (i >> 1) * 10;
 
-    if (ODD(i))
+      if (ODD (i))
 
-      itmp = 9 - itmp;
+        itmp = 9 - itmp;
 
-    pspar->fc = (char)itmp;
-  }
+      pspar->fc = (char)itmp;
+    }
 
   pspar->msi1 = (char)si1;
 
@@ -6013,105 +6436,119 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
 
   /*        exclude S * S and I * S from aa, bb, cc operators */
 
-  if (itp == 2) {
+  if (itp == 2)
+    {
 
-    if (si2 > 0) {
+      if (si2 > 0)
+        {
 
-      itp = itpnxt[itp];
+          itp = itpnxt[itp];
 
-      if (itp == 0 && iphaz == 0)
+          if (itp == 0 && iphaz == 0)
 
-        return 0;
-    }
-  }
-
-  if (itp != 0) {
-
-    if (itp == 6 && si1 == 0) {
-
-      itp = 8;
-
-      pspar->njq = (unsigned char)(nsx + 1);
+            return 0;
+        }
     }
 
-  } else {
+  if (itp != 0)
+    {
 
-    if (iphaz != 0) {
+      if (itp == 6 && si1 == 0)
+        {
 
-      if (ins >= 5)
+          itp = 8;
 
-        iphaz -= 1;
-
-      else if (glob.nitot >= 3)
-
-        iphaz -= 5;
-
-    } else {
-
-      if (ins >= 5)
-
-        iphaz = 4; /* iphaz = 4,3,2,1,0 */
-
-      if (glob.nitot >= 3)
-
-        iphaz += 15;
+          pspar->njq = (unsigned char)(nsx + 1);
+        }
     }
+  else
+    {
 
-    if (ity == 0) {
+      if (iphaz != 0)
+        {
 
-      itp = 1;
+          if (ins >= 5)
 
-    } else if (ity <= 3) {
+            iphaz -= 1;
 
-      itp = ity;
+          else if (glob.nitot >= 3)
 
-      if (glob.oblate)
+            iphaz -= 5;
+        }
+      else
+        {
 
-        itp = revsym[itp];
+          if (ins >= 5)
 
-      itp += 2;
+            iphaz = 4; /* iphaz = 4,3,2,1,0 */
 
-      /*  ITP=3,4,5 for A,B,C */
+          if (glob.nitot >= 3)
 
-      if (itp == 3 && si1 == 0)
+            iphaz += 15;
+        }
 
-        itp = 7;
+      if (ity == 0)
+        {
 
-    } else {
+          itp = 1;
+        }
+      else if (ity <= 3)
+        {
 
-      itp = 1;
+          itp = ity;
 
-      itmp = ity;
+          if (glob.oblate)
 
-      if (ity >= 92)
+            itp = revsym[itp];
 
-        itmp = (ity - 92) >> 1;
+          itp += 2;
 
-      /*  negate odd powers of P+**2 */
+          /*  ITP=3,4,5 for A,B,C */
 
-      if (itmp <= 11 && EVEN(itmp))
+          if (itp == 3 && si1 == 0)
 
-        pspar->zfac = -(pspar->zfac);
+            itp = 7;
+        }
+      else
+        {
+
+          itp = 1;
+
+          itmp = ity;
+
+          if (ity >= 92)
+
+            itmp = (ity - 92) >> 1;
+
+          /*  negate odd powers of P+**2 */
+
+          if (itmp <= 11 && EVEN (itmp))
+
+            pspar->zfac = -(pspar->zfac);
+        }
     }
-  }
 
   isy = ity / 20;
 
-  if (isy > 3) {
+  if (isy > 3)
+    {
 
-    isy = 0;
-
-  } else if (isy > 0) {
-
-    if (glob.oblate) {
-
-      itysav += (revsym[isy] - isy) * 200;
-
-    } else {
-
-      isy = revsym[isy];
+      isy = 0;
     }
-  }
+  else if (isy > 0)
+    {
+
+      if (glob.oblate)
+        {
+
+          itysav += (revsym[isy] - isy) * 200;
+        }
+      else
+        {
+
+          isy = revsym[isy];
+        }
+    }
 
   if ((int)pspar->fc < 0)
 
@@ -6119,24 +6556,26 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
 
   pspar->ipsym = (unsigned int)isy;
 
-  if (itp > 1) {
+  if (itp > 1)
+    {
 
-    itysav += itpop[itp] - ity * 10;
+      itysav += itpop[itp] - ity * 10;
 
-    pspar->zfac *= 2. / (double)zfacv[itp];
-  }
+      pspar->zfac *= 2. / (double)zfacv[itp];
+    }
 
   itp += iphaz << 4;
 
-  if (ins >= 5) {
+  if (ins >= 5)
+    {
 
-    ins -= 5;
+      ins -= 5;
 
-    if (iphaz >= 5)
-      iphaz = MOD(iphaz, 5);
+      if (iphaz >= 5)
+        iphaz = MOD (iphaz, 5);
 
-    pspar->msznz = (unsigned char)(iphaz + 1);
-  }
+      pspar->msznz = (unsigned char)(iphaz + 1);
+    }
 
   pspar->mins = (unsigned char)ins;
 
@@ -6146,98 +6585,112 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
 
   ldt = kdt = 0;
 
-  if (ity <= 3) {
+  if (ity <= 3)
+    {
 
-    if (ity != 0)
+      if (ity != 0)
 
-      ldt = 2;
-
-  } else if (ity < 12) {
-
-    ldt = kdt = ity + ity - 6;
-
-  } else if (ity < 20) {
-
-    kdt = ity + ity - 22;
-
-    ldt = kdt + 1;
-
-  } else if (ity < 80) {
-
-    isy = ity / 20;
-
-    ldt = kdt = ity - isy * 20 + 1;
-
-    if (ODD((isy >> 1) + ldt))
-
-      --kdt;
-
-  } else if (ity < 90) {
-
-    /* K energies coded as 8n  with K=10*n+KSQ */
-
-    if (exval != 0)
-
-      return 0;
-
-    ksq = -1 - 10 * (ity - 80) - ksq;
-
-  } else {
-
-    if (exval != 0)
-
-      return 0;
-
-    i = ity - 90;
-
-    if (ODD(i)) {
-
-      if (ksq > 1) { /* augmented Euler series */
-
-        --i;
-        ksq += 8;
-
-        kdt = i;
-
-      } else {
-
-        pspar->ipsym = 3; /* symmetry = 3 to put first in list */
-      }
-
-    } else {
-
-      kdt = i;
+        ldt = 2;
     }
+  else if (ity < 12)
+    {
 
-    pspar->euler = (unsigned char)(i + 2);
-  }
+      ldt = kdt = ity + ity - 6;
+    }
+  else if (ity < 20)
+    {
+
+      kdt = ity + ity - 22;
+
+      ldt = kdt + 1;
+    }
+  else if (ity < 80)
+    {
+
+      isy = ity / 20;
+
+      ldt = kdt = ity - isy * 20 + 1;
+
+      if (ODD ((isy >> 1) + ldt))
+
+        --kdt;
+    }
+  else if (ity < 90)
+    {
+
+      /* K energies coded as 8n  with K=10*n+KSQ */
+
+      if (exval != 0)
+
+        return 0;
+
+      ksq = -1 - 10 * (ity - 80) - ksq;
+    }
+  else
+    {
+
+      if (exval != 0)
+
+        return 0;
+
+      i = ity - 90;
+
+      if (ODD (i))
+        {
+
+          if (ksq > 1)
+            { /* augmented Euler series */
+
+              --i;
+              ksq += 8;
+
+              kdt = i;
+            }
+          else
+            {
+
+              pspar->ipsym = 3; /* symmetry = 3 to put first in list */
+            }
+        }
+      else
+        {
+
+          kdt = i;
+        }
+
+      pspar->euler = (unsigned char)(i + 2);
+    }
 
   pspar->ksq = (char)ksq;
 
-  if (si1 == 0) {
+  if (si1 == 0)
+    {
 
-    lnt = 0;
+      lnt = 0;
+    }
+  else if (si2 <= 0)
+    {
 
-  } else if (si2 <= 0) {
+      if (isy == 0 || ldt == 0)
 
-    if (isy == 0 || ldt == 0)
+        si2 = 0;
 
-      si2 = 0;
+      else if (si2 < 0)
 
-    else if (si2 < 0)
+        --ldt;
 
-      --ldt;
+      lnt = 1;
+    }
+  else if (ldt < 2)
+    {
 
-    lnt = 1;
+      lnt = 0;
+    }
+  else
+    {
 
-  } else if (ldt < 2) {
-
-    lnt = 0;
-
-  } else {
-
-    lnt = 2;
-  }
+      lnt = 2;
+    }
 
   pspar->mln = (unsigned char)lnt;
 
@@ -6251,38 +6704,42 @@ int idpari(bcd_t *idval, int itp, SPAR *pspar)
 
   pspar->mld = (unsigned char)ldt;
 
-  if (exval != 0) {
+  if (exval != 0)
+    {
 
-    /* check for Euler restrictions */
+      /* check for Euler restrictions */
 
-    ibtmp = (bcd_t)exval;
-    exval = exval >> 3;
+      ibtmp = (bcd_t)exval;
+      exval = exval >> 3;
 
-    if (idval[1] == (bcd_t)0 && idval[2] == (bcd_t)0 &&
+      if (idval[1] == (bcd_t)0 && idval[2] == (bcd_t)0 &&
 
-        idval[3] == (bcd_t)0 && idval[4] == ibtmp) {
+          idval[3] == (bcd_t)0 && idval[4] == ibtmp)
+        {
 
-      /* energy Euler term */
+          /* energy Euler term */
 
-      if (idval[0] == (bcd_t)0)
+          if (idval[0] == (bcd_t)0)
 
-        return 0; /* bad energy-like term */
+            return 0; /* bad energy-like term */
+        }
+      else if (exval == 2)
+        {
 
-    } else if (exval == 2) {
+          exval = 12; /* operator Euler term */
+        }
 
-      exval = 12; /* operator Euler term */
+      pspar->euler = (unsigned char)exval;
     }
-
-    pspar->euler = (unsigned char)exval;
-  }
 
   return itp;
 
 } /* idpari */
 
-int checksp(const BOOL first, int si1, int si2, const short *iiv1,
+int
+checksp (const BOOL first, int si1, int si2, const short *iiv1,
 
-            const short *iiv2, double *zfac)
+         const short *iiv2, double *zfac)
 
 {
 
@@ -6290,108 +6747,120 @@ int checksp(const BOOL first, int si1, int si2, const short *iiv1,
 
   ii = iip = 0;
 
-  if (si2 > 0) {
+  if (si2 > 0)
+    {
 
-    if ((short)si2 < iiv1[0])
+      if ((short)si2 < iiv1[0])
 
-      ii = iiv1[si2];
+        ii = iiv1[si2];
 
-    if ((short)si2 < iiv2[0])
+      if ((short)si2 < iiv2[0])
 
-      iip = iiv2[si2];
+        iip = iiv2[si2];
 
-    if (ii == iip) {
+      if (ii == iip)
+        {
 
-      if (ii == 0)
-        return 2;
+          if (ii == 0)
+            return 2;
 
-      if (si2 == si1) {
+          if (si2 == si1)
+            {
 
-        if (ii < 2)
-          return 3;
+              if (ii < 2)
+                return 3;
 
-        *zfac *= spfac2[ii];
-      }
+              *zfac *= spfac2[ii];
+            }
 
-      *zfac *= spfac[ii];
+          *zfac *= spfac[ii];
+        }
+      else
+        { /* ii != iip */
 
-    } else { /* ii != iip */
+          if (ODD (ii + iip))
+            return 4; /* check multiplicity */
 
-      if (ODD(ii + iip))
-        return 4; /* check multiplicity */
-
-      if (si2 > itsym)
-        return 4;
+          if (si2 > itsym)
+            return 4;
+        }
     }
-  }
 
-  if (si2 != si1) {
+  if (si2 != si1)
+    {
 
-    ii = iip = 0;
+      ii = iip = 0;
 
-    if ((short)si1 < iiv1[0])
+      if ((short)si1 < iiv1[0])
 
-      ii = iiv1[si1];
+        ii = iiv1[si1];
 
-    if ((short)si1 < iiv2[0])
+      if ((short)si1 < iiv2[0])
 
-      iip = iiv2[si1];
+        iip = iiv2[si1];
 
-    if (ii == iip) {
+      if (ii == iip)
+        {
 
-      if (ii == 0)
-        return 5;
+          if (ii == 0)
+            return 5;
 
-      *zfac *= spfac[ii];
+          *zfac *= spfac[ii];
+        }
+      else
+        { /* ii != iip */
 
-    } else { /* ii != iip */
+          if (ODD (ii + iip))
+            return 6; /* check multiplicity */
 
-      if (ODD(ii + iip))
-        return 6; /* check multiplicity */
-
-      if (si1 > itsym)
-        return 6;
+          if (si1 > itsym)
+            return 6;
+        }
     }
-  }
 
-  if (first && si1 > itsym) {
+  if (first && si1 > itsym)
+    {
 
-    iip = 0;
+      iip = 0;
 
-    if (glob.nitot >= 3)
-      iip = si1 - itsym;
+      if (glob.nitot >= 3)
+        iip = si1 - itsym;
 
-    if (si1 == si2) {
+      if (si1 == si2)
+        {
 
-      if (iip > 1)
-        return 1;
+          if (iip > 1)
+            return 1;
 
-      setzitot(2, 0, 2, ii, glob.nitot); /* quadrupole */
+          setzitot (2, 0, 2, ii, glob.nitot); /* quadrupole */
+        }
+      else if (si2 > itsym)
+        {
 
-    } else if (si2 > itsym) {
+          if (iip > 2)
+            return 1;
 
-      if (iip > 2)
-        return 1;
+          setzitot (1, 1, 0, ii, glob.nitot); /* 2-spin product */
 
-      setzitot(1, 1, 0, ii, glob.nitot); /* 2-spin product */
+          setzitot (1, 1, 2, ii, glob.nitot);
+        }
+      else
+        {
 
-      setzitot(1, 1, 2, ii, glob.nitot);
+          if (iip > 1)
+            return 1;
 
-    } else {
-
-      if (iip > 1)
-        return 1;
-
-      setzitot(1, 0, 1, ii, glob.nitot); /* 1-spin vector */
+          setzitot (1, 0, 1, ii, glob.nitot); /* 1-spin vector */
+        }
     }
-  }
 
   return 0;
 
 } /* checksp */
 
-int setwt(SVIB *pvinfov, const int ivib, const int iax, const int iwtpl,
-          const int iwtmn, double vsym)
+int
+setwt (SVIB *pvinfov, const int ivib, const int iax, const int iwtpl,
+       const int iwtmn, double vsym)
 
 {
 
@@ -6422,117 +6891,123 @@ int setwt(SVIB *pvinfov, const int ivib, const int iax, const int iwtpl,
   n = 1;
   nvsym = 0;
 
-  if (ivib < 0) {
+  if (ivib < 0)
+    {
 
-    if (vsym > 0.5)
+      if (vsym > 0.5)
 
-      nvsym = 1;
+        nvsym = 1;
 
-    n = -ivib;
-  }
+      n = -ivib;
+    }
 
   pvinfo = pvinfov;
 
-  for (i = 0; i < n; ++i) {
+  for (i = 0; i < n; ++i)
+    {
 
-    ii = (short)iwtpl;
+      ii = (short)iwtpl;
 
-    jj = (short)iwtmn;
+      jj = (short)iwtmn;
 
-    if (nvsym != 0) {
+      if (nvsym != 0)
+        {
 
-      k = (int)(fmod(vsym, 10.) + 0.5);
+          k = (int)(fmod (vsym, 10.) + 0.5);
 
-      vsym = (vsym - k) / 10.;
+          vsym = (vsym - k) / 10.;
 
-      if (vsym < 0.)
+          if (vsym < 0.)
 
-        nvsym = 0;
+            nvsym = 0;
 
-      if (ODD(k)) {
+          if (ODD (k))
+            {
 
-        itmp = ii;
-        ii = jj;
-        jj = itmp;
-      }
+              itmp = ii;
+              ii = jj;
+              jj = itmp;
+            }
+        }
+
+      switch (iax)
+        {
+
+        case 1: /*  WEIGHTS FOR Z */
+
+          pvinfo->wt[0] = ii;
+
+          pvinfo->wt[1] = jj;
+
+          pvinfo->wt[2] = jj;
+
+          pvinfo->wt[3] = ii;
+
+          pvinfo->wt[4] = 2;
+
+          ii = jj;
+
+          break;
+
+        case 2: /* WEIGHTS FOR B */
+
+          pvinfo->wt[0] = ii;
+
+          pvinfo->wt[1] = jj;
+
+          pvinfo->wt[2] = ii;
+
+          pvinfo->wt[3] = jj;
+
+          pvinfo->wt[4] = 3;
+
+          break;
+
+        case 3: /* WEIGHTS FOR X */
+
+          pvinfo->wt[0] = ii;
+
+          pvinfo->wt[1] = ii;
+
+          pvinfo->wt[2] = jj;
+
+          pvinfo->wt[3] = jj;
+
+          pvinfo->wt[4] = 2;
+
+          break;
+
+        case 4: /* A1, A2 only */
+
+          pvinfo->wt[0] = ii;
+
+          pvinfo->wt[3] = jj;
+
+          pvinfo->wt[4] = 3;
+
+          break;
+
+        case 5: /* B1, B2 only */
+
+          pvinfo->wt[1] = jj;
+
+          pvinfo->wt[2] = ii;
+
+          pvinfo->wt[4] = 3;
+
+          break;
+
+        } /* end switch */
+
+      ++pvinfo;
     }
-
-    switch (iax) {
-
-    case 1: /*  WEIGHTS FOR Z */
-
-      pvinfo->wt[0] = ii;
-
-      pvinfo->wt[1] = jj;
-
-      pvinfo->wt[2] = jj;
-
-      pvinfo->wt[3] = ii;
-
-      pvinfo->wt[4] = 2;
-
-      ii = jj;
-
-      break;
-
-    case 2: /* WEIGHTS FOR B */
-
-      pvinfo->wt[0] = ii;
-
-      pvinfo->wt[1] = jj;
-
-      pvinfo->wt[2] = ii;
-
-      pvinfo->wt[3] = jj;
-
-      pvinfo->wt[4] = 3;
-
-      break;
-
-    case 3: /* WEIGHTS FOR X */
-
-      pvinfo->wt[0] = ii;
-
-      pvinfo->wt[1] = ii;
-
-      pvinfo->wt[2] = jj;
-
-      pvinfo->wt[3] = jj;
-
-      pvinfo->wt[4] = 2;
-
-      break;
-
-    case 4: /* A1, A2 only */
-
-      pvinfo->wt[0] = ii;
-
-      pvinfo->wt[3] = jj;
-
-      pvinfo->wt[4] = 3;
-
-      break;
-
-    case 5: /* B1, B2 only */
-
-      pvinfo->wt[1] = jj;
-
-      pvinfo->wt[2] = ii;
-
-      pvinfo->wt[4] = 3;
-
-      break;
-
-    } /* end switch */
-
-    ++pvinfo;
-  }
 
   return 0;
 
 } /* setwt */
 
-int getwt(SVIB *pvinfo, const int isym, const int iispin, int *ivwt)
+int
+getwt (SVIB *pvinfo, const int isym, const int iispin, int *ivwt)
 
 {
 
@@ -6540,32 +7015,34 @@ int getwt(SVIB *pvinfo, const int isym, const int iispin, int *ivwt)
 
   short *jjs;
 
-  if (iispin == 0) {
+  if (iispin == 0)
+    {
 
-    iwt = 0;
+      iwt = 0;
 
-    if (pvinfo->knmax >= pvinfo->knmin[isym] ||
+      if (pvinfo->knmax >= pvinfo->knmin[isym] ||
 
-        pvinfo->knmax >= pvinfo->knmin[3 - isym])
+          pvinfo->knmax >= pvinfo->knmin[3 - isym])
 
-      iwt = 1;
+        iwt = 1;
 
-    return iwt;
-  }
+      return iwt;
+    }
 
   jsym = isym;
   iwt = pvinfo->wt[4];
   nsym = pvinfo->gsym >> 1;
 
-  if (iwt != 0) { /* resolve Itot symmetries */
+  if (iwt != 0)
+    { /* resolve Itot symmetries */
 
-    jjs = pvinfo->spt;
-    ndm = jjs[0];
+      jjs = pvinfo->spt;
+      ndm = jjs[0];
 
-    if (ODD2(jjs[iispin * ndm + nspin - nsym + 1]))
+      if (ODD2 (jjs[iispin * ndm + nspin - nsym + 1]))
 
-      jsym ^= iwt;
-  }
+        jsym ^= iwt;
+    }
 
   ivwt[0] = pvinfo->wt[jsym];
   iwt = ivwt[0];
@@ -6573,49 +7050,56 @@ int getwt(SVIB *pvinfo, const int isym, const int iispin, int *ivwt)
   ivwt[1] = 0;
   ivwt[2] = 0;
 
-  if (nsym >= 3) {
+  if (nsym >= 3)
+    {
 
-    kodd = isoddk[jsym];
+      kodd = isoddk[jsym];
 
-    if (nsym == 4) {
+      if (nsym == 4)
+        {
 
-      if (kodd != 0) {
+          if (kodd != 0)
+            {
 
-        ivwt[1] = pvinfo->ewt[0]; /* E state for odd K */
+              ivwt[1] = pvinfo->ewt[0]; /* E state for odd K */
 
-        iwt = ivwt[1];
+              iwt = ivwt[1];
+            }
+          else
+            {
 
-      } else {
+              ivwt[2] = pvinfo->wt[jsym ^ 2]; /* check B weights */
 
-        ivwt[2] = pvinfo->wt[jsym ^ 2]; /* check B weights */
+              if (iwt == 0)
+                iwt = ivwt[2];
+            }
+        }
+      else
+        {
 
-        if (iwt == 0)
-          iwt = ivwt[2];
-      }
+          ivwt[1] = pvinfo->ewt[kodd];
 
-    } else {
+          if (nsym == 6 && kodd != 0)
+            {
 
-      ivwt[1] = pvinfo->ewt[kodd];
+              ivwt[0] = 0;
 
-      if (nsym == 6 && kodd != 0) {
+              ivwt[2] = pvinfo->wt[jsym ^ 2]; /* check B weights */
 
-        ivwt[0] = 0;
+              iwt = ivwt[2];
+            }
 
-        ivwt[2] = pvinfo->wt[jsym ^ 2]; /* check B weights */
-
-        iwt = ivwt[2];
-      }
-
-      if (iwt == 0)
-        iwt = ivwt[1];
+          if (iwt == 0)
+            iwt = ivwt[1];
+        }
     }
-  }
 
   return iwt;
 
 } /* getwt */
 
-int setgsym(const int gsym)
+int
+setgsym (const int gsym)
 
 {
 
@@ -6634,47 +7118,53 @@ int setgsym(const int gsym)
 
   is_esym[0] = 0;
 
-  for (k = 1, kk = nsym - 1; k < kk; ++k, --kk) {
+  for (k = 1, kk = nsym - 1; k < kk; ++k, --kk)
+    {
 
-    is_esym[k] = 1;
-    is_esym[kk] = -1;
-  }
+      is_esym[k] = 1;
+      is_esym[kk] = -1;
+    }
 
   if (k == kk)
     is_esym[k] = 0;
 
-  if (ODD(gsym)) {
+  if (ODD (gsym))
+    {
 
-    itptr = nspin - 2;
+      itptr = nspin - 2;
 
-    itsym = nspin - nsym;
+      itsym = nspin - nsym;
 
-    glob.nitot = nsym;
+      glob.nitot = nsym;
+    }
+  else
+    {
 
-  } else {
+      itptr = itsym = nspin + nspin + 1;
 
-    itptr = itsym = nspin + nspin + 1;
-
-    glob.nitot = 0;
-  }
+      glob.nitot = 0;
+    }
 
   /* set up nominal spin coupling map */
 
-  for (k = 0; k < nspin; ++k) {
+  for (k = 0; k < nspin; ++k)
+    {
 
-    ismap[k + k] = k - 1; /* last N,J,F1 .. */
+      ismap[k + k] = k - 1; /* last N,J,F1 .. */
 
-    if (k < itsym) {
+      if (k < itsym)
+        {
 
-      ismap[k + k + 1] = k + nspin + 1; /* S,I1,I2 .. */
+          ismap[k + k + 1] = k + nspin + 1; /* S,I1,I2 .. */
+        }
+      else
+        {
 
-    } else {
+          ismap[k + k + 1] = itptr; /* Itot */
 
-      ismap[k + k + 1] = itptr; /* Itot */
-
-      break;
+          break;
+        }
     }
-  }
 
   ismap[0] = nspin; /* fix up position of N */
 
@@ -6682,7 +7172,8 @@ int setgsym(const int gsym)
 
 } /* setgsym */
 
-int getsp(const bcd_t *ispnx, SVIB *pvinfo)
+int
+getsp (const bcd_t *ispnx, SVIB *pvinfo)
 
 {
 
@@ -6722,12 +7213,13 @@ int getsp(const bcd_t *ispnx, SVIB *pvinfo)
   isbig = 0;
   itmp = ispnx[1];
 
-  if ((int)(itmp & 0x0f) == 0) {
+  if ((int)(itmp & 0x0f) == 0)
+    {
 
-    jj = (int)(itmp >> 4);
+      jj = (int)(itmp >> 4);
 
-    isbig = 1;
-  }
+      isbig = 1;
+    }
 
   /*  decode spins */
 
@@ -6736,93 +7228,102 @@ int getsp(const bcd_t *ispnx, SVIB *pvinfo)
   nl = 1;
   idec = isbig;
 
-  for (i = 1; i <= MAXSPIN; ++i) {
+  for (i = 1; i <= MAXSPIN; ++i)
+    {
 
-    if (isbig == 0 && jj >= 0) {
+      if (isbig == 0 && jj >= 0)
+        {
 
-      ii = jj;
-      jj = -1;
+          ii = jj;
+          jj = -1;
+        }
+      else
+        {
 
-    } else {
+          ++idec;
 
-      ++idec;
+          if (idec >= nspnx)
+            break;
 
-      if (idec >= nspnx)
+          itmp = ispnx[idec];
+
+          ii = (int)(itmp & 0x0f);
+
+          if (isbig != 0)
+
+            ii = ii * 10 + jj;
+
+          jj = (int)(itmp >> 4);
+        }
+
+      if (ii == 0)
         break;
 
-      itmp = ispnx[idec];
+      if (ii >= MAXII)
+        {
 
-      ii = (int)(itmp & 0x0f);
+          ii = 1;
+        }
+      else if (ii > 1)
+        {
 
-      if (isbig != 0)
+          nspinv = i;
+        }
 
-        ii = ii * 10 + jj;
+      nl *= (size_t)ii;
 
-      jj = (int)(itmp >> 4);
+      --ii;
+
+      iis[i] = (short)ii;
+
+      if (ii > glob.mxspin)
+
+        glob.mxspin = ii;
     }
-
-    if (ii == 0)
-      break;
-
-    if (ii >= MAXII) {
-
-      ii = 1;
-
-    } else if (ii > 1) {
-
-      nspinv = i;
-    }
-
-    nl *= (size_t)ii;
-
-    --ii;
-
-    iis[i] = (short)ii;
-
-    if (ii > glob.mxspin)
-
-      glob.mxspin = ii;
-  }
 
   nsstat = (int)nl;
 
   i = (int)(nsstat << glob.msshft);
 
-  if (i < 0 || (size_t)(i >> glob.msshft) != nl) {
+  if (i < 0 || (size_t)(i >> glob.msshft) != nl)
+    {
 
-    puts("spin problem too big");
+      puts ("spin problem too big");
 
-    exit(EXIT_FAILURE);
-  }
+      exit (EXIT_FAILURE);
+    }
 
   nitot = 0;
   iret = nspinv;
   i = pvinfo->gsym;
 
-  if (ODD(i)) {
+  if (ODD (i))
+    {
 
-    nitot = i >> 1;
+      nitot = i >> 1;
 
-    if (nitot > nspinv) {
+      if (nitot > nspinv)
+        {
 
-      iret += nitot;
+          iret += nitot;
 
-      if (iret > MAXSPIN)
+          if (iret > MAXSPIN)
 
-        iret = MAXSPIN;
+            iret = MAXSPIN;
 
-      for (i = nspinv + 1; i <= iret; ++i)
+          for (i = nspinv + 1; i <= iret; ++i)
 
-        iis[i] = 0;
+            iis[i] = 0;
 
-      nspinv = iret;
+          nspinv = iret;
+        }
+
+      if (nitot > 3)
+        {
+
+          iret -= (nitot - 3);
+        }
     }
-
-    if (nitot > 3) {
-
-      iret -= (nitot - 3);
-    }
-  }
 
   pvinfo->nspstat = nsstat;
 
@@ -6832,44 +7333,47 @@ int getsp(const bcd_t *ispnx, SVIB *pvinfo)
 
   ssp_now = &ssp_head;
 
-  do { /*  check previous combinations for match */
+  do
+    { /*  check previous combinations for match */
 
-    icmp = 0;
+      icmp = 0;
 
-    jjs = ssp_now->sspt;
+      jjs = ssp_now->sspt;
 
-    for (i = 0; i < nset; ++i) {
+      for (i = 0; i < nset; ++i)
+        {
 
-      icmp = iis[i] - jjs[i];
+          icmp = iis[i] - jjs[i];
 
-      if (icmp != 0)
-        break;
+          if (icmp != 0)
+            break;
+        }
+
+      if (icmp == 0)
+
+        icmp = nitot - ssp_now->nitot;
+
+      /*  match obtained, so return */
+
+      if (icmp == 0)
+        {
+
+          pvinfo->spt = jjs;
+
+          return iret;
+        }
+
+      ssp_now = ssp_now->next;
     }
+  while (ssp_now != NULL);
 
-    if (icmp == 0)
+  nl = (size_t)(nsstat + 1) * (size_t)nset * sizeof (short);
 
-      icmp = nitot - ssp_now->nitot;
+  jjs = (short *)mallocq (nl);
 
-    /*  match obtained, so return */
+  nl = sizeof (SSP);
 
-    if (icmp == 0) {
-
-      pvinfo->spt = jjs;
-
-      return iret;
-    }
-
-    ssp_now = ssp_now->next;
-
-  } while (ssp_now != NULL);
-
-  nl = (size_t)(nsstat + 1) * (size_t)nset * sizeof(short);
-
-  jjs = (short *)mallocq(nl);
-
-  nl = sizeof(SSP);
-
-  ssp_now = (SSP *)mallocq(nl);
+  ssp_now = (SSP *)mallocq (nl);
 
   ssp_now->next = ssp_head.next;
 
@@ -6883,10 +7387,11 @@ int getsp(const bcd_t *ispnx, SVIB *pvinfo)
 
   jjs[0] = (short)nset;
 
-  for (i = 1; i < nset; ++i) {
+  for (i = 1; i < nset; ++i)
+    {
 
-    jjs[i] = iis[i];
-  }
+      jjs[i] = iis[i];
+    }
 
   pvinfo->spt = jjs;
 
@@ -6894,7 +7399,8 @@ int getsp(const bcd_t *ispnx, SVIB *pvinfo)
 
 } /* getsp */
 
-void setsp(void)
+void
+setsp (void)
 
 {
 
@@ -6932,220 +7438,237 @@ void setsp(void)
 
   ssp_now = &ssp_head; /* head has no spins */
 
-  while ((ssp_now = ssp_now->next) != NULL) { /* loop over spin sets */
+  while ((ssp_now = ssp_now->next) != NULL)
+    { /* loop over spin sets */
 
-    iis = ssp_now->sspt;
+      iis = ssp_now->sspt;
 
-    nspinv = iis[0] - 1;
+      nspinv = iis[0] - 1;
 
-    for (iv = nspinv; iv > nspin; --iv) {
+      for (iv = nspinv; iv > nspin; --iv)
+        {
 
-      if (iis[0] > 0) {
+          if (iis[0] > 0)
+            {
 
-        nspin = iv;
-
-        break;
-      }
-    }
-  }
-
-  ssp_now = &ssp_head; /* head has no spins */
-
-  while ((ssp_now = ssp_now->next) != NULL) { /* loop over spin sets */
-
-    iis = ssp_now->sspt;
-
-    nset = iis[0];
-
-    nspinv = nset - 1;
-
-    if (nspinv > nspin)
-
-      nspinv = nspin;
-
-    ispsum = 0;
-
-    for (iv = 1; iv <= nspinv; ++iv) {
-
-      ispsum += iis[iv];
-    }
-
-    ifhalf = (ispsum & 1);
-
-    iend = iis[nspinv];
-
-    ival = iend + 1;
-    ns = ival;
-
-    pitmix0 = NULL;
-    pitmix = NULL;
-
-    nitot = ssp_now->nitot;
-
-    if (nitot == 0) {
-
-      nlim = nspinv;
-      ibgn = iend;
-
-      itsym0 = itptr0 = nspin + nspin + 1;
-
-    } else { /* Itot coupling */
-
-      itptr0 = nspin - 2;
-
-      itsym0 = nspin - nitot;
-
-      nlim = itsym0 + 1;
-
-      ii = iend;
-
-      for (i = nlim; i < nspinv; ++i) {
-
-        if ((int)iis[i] != ii)
-          break;
-
-        ns *= ival;
-      }
-
-      if (i < nspin) {
-
-        puts("spins under Itot should be the same");
-
-        exit(EXIT_FAILURE);
-      }
-
-      pitmix0 = get_itmix(ii, nitot);
-
-      if (nitot < 3)
-
-        pitmix0 = NULL;
-
-      iend = nitot * ii;
-      ibgn = (iend & 1);
-    }
-
-    knt = ssp_now->ssize;
-    ns0 = knt / ns;
-
-    jjs = iis + nset;
-
-    for (nn = -ispsum; nn <= ispsum; nn += 2) { /* select N quanta */
-
-      minf0 = -ifhalf;
-
-      if (nn < minf0)
-
-        minf0 = nn; /* nn = 2 * (N - F) */
-
-      if (pitmix0 != NULL)
-
-        pitmix = pitmix0->mix;
-
-      for (itot = ibgn; itot <= iend; itot += 2) {
-
-        ns = ns0 * (itot + 1);
-
-        if (pitmix != NULL && itot > ibgn)
-
-          pitmix += 1;
-
-        for (iv = 0; iv < ns; ++iv) { /* try all possible spins */
-
-          jj = nn;
-
-          jjs[0] = (short)nn;
-
-          ival = iv;
-
-          minft = minf0;
-
-          for (i = 1; i < nlim; ++i) {
-
-            ibase = iis[i] + 1;
-
-            itmp = ival;
-
-            ival /= ibase;
-
-            itmp -= ival * ibase;
-
-            jj += itmp - iis[i]; /* jj = J + N - S - 2F */
-
-            if (jj < minft)
-
-              minft = jj;
-
-            jj += itmp; /* jj = 2 * (J - F) */
-
-            jjs[i] = (short)jj;
-          }
-
-          jj += ival - itot;
-
-          if (jj < minft)
-
-            minft = jj;
-
-          jj += ival;
-
-          if (jj == 0) { /* this possibility gives F=0 */
-
-            if (itptr0 < nspinv)
-
-              jjs[itptr0 + 1] = (short)itot;
-
-            jj = ifhalf - minft;
-
-            minft = jj + (jj & 1);
-
-            jjs[nspinv] = (short)minft;
-
-            if (pitmix != NULL) {
-
-              jjs[itsym0 + 1] = pitmix->qsym[0];
-
-              for (i = itsym0 + 2; i <= itptr0; ++i)
-
-                jjs[i] = 0;
-
-              nitot = pitmix->n;
-              jjs0 = jjs;
-
-              for (i = 1; i < nitot; ++i) {
-
-                jjs += nset;
-                --knt;
-
-                for (jj = 0; jj <= nspinv; ++jj)
-
-                  jjs[jj] = jjs0[jj];
-
-                jjs[itsym0 + 1] = pitmix->qsym[i];
-              }
-            }
-
-            if (--knt <= 0) {
-
-              ns0 = 0;
+              nspin = iv;
 
               break;
             }
+        }
+    }
 
-            jjs += nset;
-          }
+  ssp_now = &ssp_head; /* head has no spins */
 
-        } /* end loop over all spins */
+  while ((ssp_now = ssp_now->next) != NULL)
+    { /* loop over spin sets */
 
-      } /* end loop over Itot */
+      iis = ssp_now->sspt;
 
-    } /* end loop over N */
+      nset = iis[0];
 
-  } /* end loop over spin types */
+      nspinv = nset - 1;
+
+      if (nspinv > nspin)
+
+        nspinv = nspin;
+
+      ispsum = 0;
+
+      for (iv = 1; iv <= nspinv; ++iv)
+        {
+
+          ispsum += iis[iv];
+        }
+
+      ifhalf = (ispsum & 1);
+
+      iend = iis[nspinv];
+
+      ival = iend + 1;
+      ns = ival;
+
+      pitmix0 = NULL;
+      pitmix = NULL;
+
+      nitot = ssp_now->nitot;
+
+      if (nitot == 0)
+        {
+
+          nlim = nspinv;
+          ibgn = iend;
+
+          itsym0 = itptr0 = nspin + nspin + 1;
+        }
+      else
+        { /* Itot coupling */
+
+          itptr0 = nspin - 2;
+
+          itsym0 = nspin - nitot;
+
+          nlim = itsym0 + 1;
+
+          ii = iend;
+
+          for (i = nlim; i < nspinv; ++i)
+            {
+
+              if ((int)iis[i] != ii)
+                break;
+
+              ns *= ival;
+            }
+
+          if (i < nspin)
+            {
+
+              puts ("spins under Itot should be the same");
+
+              exit (EXIT_FAILURE);
+            }
+
+          pitmix0 = get_itmix (ii, nitot);
+
+          if (nitot < 3)
+
+            pitmix0 = NULL;
+
+          iend = nitot * ii;
+          ibgn = (iend & 1);
+        }
+
+      knt = ssp_now->ssize;
+      ns0 = knt / ns;
+
+      jjs = iis + nset;
+
+      for (nn = -ispsum; nn <= ispsum; nn += 2)
+        { /* select N quanta */
+
+          minf0 = -ifhalf;
+
+          if (nn < minf0)
+
+            minf0 = nn; /* nn = 2 * (N - F) */
+
+          if (pitmix0 != NULL)
+
+            pitmix = pitmix0->mix;
+
+          for (itot = ibgn; itot <= iend; itot += 2)
+            {
+
+              ns = ns0 * (itot + 1);
+
+              if (pitmix != NULL && itot > ibgn)
+
+                pitmix += 1;
+
+              for (iv = 0; iv < ns; ++iv)
+                { /* try all possible spins */
+
+                  jj = nn;
+
+                  jjs[0] = (short)nn;
+
+                  ival = iv;
+
+                  minft = minf0;
+
+                  for (i = 1; i < nlim; ++i)
+                    {
+
+                      ibase = iis[i] + 1;
+
+                      itmp = ival;
+
+                      ival /= ibase;
+
+                      itmp -= ival * ibase;
+
+                      jj += itmp - iis[i]; /* jj = J + N - S - 2F */
+
+                      if (jj < minft)
+
+                        minft = jj;
+
+                      jj += itmp; /* jj = 2 * (J - F) */
+
+                      jjs[i] = (short)jj;
+                    }
+
+                  jj += ival - itot;
+
+                  if (jj < minft)
+
+                    minft = jj;
+
+                  jj += ival;
+
+                  if (jj == 0)
+                    { /* this possibility gives F=0 */
+
+                      if (itptr0 < nspinv)
+
+                        jjs[itptr0 + 1] = (short)itot;
+
+                      jj = ifhalf - minft;
+
+                      minft = jj + (jj & 1);
+
+                      jjs[nspinv] = (short)minft;
+
+                      if (pitmix != NULL)
+                        {
+
+                          jjs[itsym0 + 1] = pitmix->qsym[0];
+
+                          for (i = itsym0 + 2; i <= itptr0; ++i)
+
+                            jjs[i] = 0;
+
+                          nitot = pitmix->n;
+                          jjs0 = jjs;
+
+                          for (i = 1; i < nitot; ++i)
+                            {
+
+                              jjs += nset;
+                              --knt;
+
+                              for (jj = 0; jj <= nspinv; ++jj)
+
+                                jjs[jj] = jjs0[jj];
+
+                              jjs[itsym0 + 1] = pitmix->qsym[i];
+                            }
+                        }
+
+                      if (--knt <= 0)
+                        {
+
+                          ns0 = 0;
+
+                          break;
+                        }
+
+                      jjs += nset;
+                    }
+
+                } /* end loop over all spins */
+
+            } /* end loop over Itot */
+
+        } /* end loop over N */
+
+    } /* end loop over spin types */
 
 } /* setsp */
 
-int getqq(const int iblk, int *f, int *iwtb, short *sbkptr, short *kmin,
-          int *vs)
+int
+getqq (const int iblk, int *f, int *iwtb, short *sbkptr, short *kmin, int *vs)
 
 {
 
@@ -7201,96 +7724,100 @@ int getqq(const int iblk, int *f, int *iwtb, short *sbkptr, short *kmin,
 
   iend = blkptr[isblk + 1];
 
-  for (i = ibgn; i < iend; ++i) {
+  for (i = ibgn; i < iend; ++i)
+    {
 
-    mvs = (unsigned int)moldv[i];
+      mvs = (unsigned int)moldv[i];
 
-    ksym = (int)mvs & 3;
+      ksym = (int)mvs & 3;
 
-    iv = (int)(mvs >> 2) & glob.msmask;
+      iv = (int)(mvs >> 2) & glob.msmask;
 
-    mss = (int)(mvs >> glob.msshft);
+      mss = (int)(mvs >> glob.msshft);
 
-    pvinfo = &vinfo[iv];
+      pvinfo = &vinfo[iv];
 
-    if (i == ibgn)
-      setgsym((int)pvinfo->gsym);
+      if (i == ibgn)
+        setgsym ((int)pvinfo->gsym);
 
-    jjs = pvinfo->spt;
+      jjs = pvinfo->spt;
 
-    nset = jjs[0];
+      nset = jjs[0];
 
-    jjs += nset * mss;
+      jjs += nset * mss;
 
-    if (ff < jjs[nset - 1])
-      continue;
+      if (ff < jjs[nset - 1])
+        continue;
 
-    nn = jjs[0] + ff;
+      nn = jjs[0] + ff;
 
-    n = nn >> 1;
+      n = nn >> 1;
 
-    if (ODD(n))
+      if (ODD (n))
 
-      ksym = 3 - ksym;
+        ksym = 3 - ksym;
 
-    k = pvinfo->knmin[ksym];
+      k = pvinfo->knmin[ksym];
 
-    if (k < 0) {
+      if (k < 0)
+        {
 
-      kk = MOD(jjs[itsym + 1] >> 2, glob.nitot); /* get spin symmetry */
+          kk = MOD (jjs[itsym + 1] >> 2, glob.nitot); /* get spin symmetry */
 
-      k = ksym;
+          k = ksym;
 
-      if (is_esym[kk] < 0)
-        k += 2;
+          if (is_esym[kk] < 0)
+            k += 2;
 
-      k &= 2;
+          k &= 2;
+        }
+
+      kk = pvinfo->knmax;
+
+      if (kk > n)
+
+        kk = n;
+
+      kk -= k;
+
+      if (kk >= 0)
+        {
+
+          sbkptr[nsblk] = (short)nsize;
+
+          kmin[nsblk] = (short)k;
+
+          vs[nsblk] = (int)mvs;
+
+          nsize += 1 + (kk >> 1);
+
+          if (nsblk == 0)
+            {
+
+              *f = ff - (nn & 1);
+
+              k = pvinfo->wt[4];
+
+              if (k != 0 && ODD2 (jjs[itsym + 1]))
+
+                mvs ^= k;
+
+              mvs &= 3;
+
+              iwtb[0] = pvinfo->wt[mvs];
+
+              iwtb[1] = pvinfo->ewt[isoddk[mvs]];
+
+              iwtb[2] = pvinfo->wt[mvs ^ 2];
+
+              iwtb[3] = pvinfo->gsym;
+
+              iwtb[4] = pvinfo->nqn;
+            }
+
+          ++nsblk;
+        }
     }
-
-    kk = pvinfo->knmax;
-
-    if (kk > n)
-
-      kk = n;
-
-    kk -= k;
-
-    if (kk >= 0) {
-
-      sbkptr[nsblk] = (short)nsize;
-
-      kmin[nsblk] = (short)k;
-
-      vs[nsblk] = (int)mvs;
-
-      nsize += 1 + (kk >> 1);
-
-      if (nsblk == 0) {
-
-        *f = ff - (nn & 1);
-
-        k = pvinfo->wt[4];
-
-        if (k != 0 && ODD2(jjs[itsym + 1]))
-
-          mvs ^= k;
-
-        mvs &= 3;
-
-        iwtb[0] = pvinfo->wt[mvs];
-
-        iwtb[1] = pvinfo->ewt[isoddk[mvs]];
-
-        iwtb[2] = pvinfo->wt[mvs ^ 2];
-
-        iwtb[3] = pvinfo->gsym;
-
-        iwtb[4] = pvinfo->nqn;
-      }
-
-      ++nsblk;
-    }
-  }
 
   if (nsblk > 0)
 
@@ -7300,8 +7827,8 @@ int getqq(const int iblk, int *f, int *iwtb, short *sbkptr, short *kmin,
 
 } /* getqq */
 
-int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
-          int *idgn)
+int
+getqn (const int iblk, const int indx, const int maxqn, short *iqn, int *idgn)
 
 {
 
@@ -7333,83 +7860,90 @@ int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
 
   /*     look at last used then oldest */
 
-  if (iblk == cgetv[0].cblk) {
+  if (iblk == cgetv[0].cblk)
+    {
 
-    cgetq = cgetv;
+      cgetq = cgetv;
 
-    last = 0;
+      last = 0;
 
-    ioff = 0;
+      ioff = 0;
 
-    nsblk = cgetq->cnblk;
-
-  } else if (iblk == cgetv[1].cblk) {
-
-    cgetq = &cgetv[1];
-
-    last = 1;
-
-    ioff = glob.maxblk;
-
-    nsblk = cgetq->cnblk;
-
-  } else if (last != 0) {
-
-    cgetq = cgetv;
-
-    nsblk = getqq(iblk, &cgetq->cff, cgetq->cwt, ibkptr, ikmin, ivs);
-
-    if (nsblk == 0) {
-
-      *idgn = 0;
-
-      return glob.nqn;
+      nsblk = cgetq->cnblk;
     }
+  else if (iblk == cgetv[1].cblk)
+    {
 
-    last = 0;
+      cgetq = &cgetv[1];
 
-    ioff = 0;
+      last = 1;
 
-    cgetq->cnblk = nsblk;
+      ioff = glob.maxblk;
 
-    cgetq->cblk = iblk;
-
-    cgetq->csblk = 0;
-
-  } else {
-
-    cgetq = &cgetv[1];
-
-    ioff = glob.maxblk;
-
-    nsblk = getqq(iblk, &cgetq->cff, cgetq->cwt, &ibkptr[ioff],
-
-                  &ikmin[ioff], &ivs[ioff]);
-
-    if (nsblk == 0) {
-
-      *idgn = 0;
-
-      return glob.nqn;
+      nsblk = cgetq->cnblk;
     }
+  else if (last != 0)
+    {
 
-    last = 1;
+      cgetq = cgetv;
 
-    cgetq->cnblk = nsblk;
+      nsblk = getqq (iblk, &cgetq->cff, cgetq->cwt, ibkptr, ikmin, ivs);
 
-    cgetq->cblk = iblk;
+      if (nsblk == 0)
+        {
 
-    cgetq->csblk = ioff;
-  }
+          *idgn = 0;
+
+          return glob.nqn;
+        }
+
+      last = 0;
+
+      ioff = 0;
+
+      cgetq->cnblk = nsblk;
+
+      cgetq->cblk = iblk;
+
+      cgetq->csblk = 0;
+    }
+  else
+    {
+
+      cgetq = &cgetv[1];
+
+      ioff = glob.maxblk;
+
+      nsblk = getqq (iblk, &cgetq->cff, cgetq->cwt, &ibkptr[ioff],
+
+                     &ikmin[ioff], &ivs[ioff]);
+
+      if (nsblk == 0)
+        {
+
+          *idgn = 0;
+
+          return glob.nqn;
+        }
+
+      last = 1;
+
+      cgetq->cnblk = nsblk;
+
+      cgetq->cblk = iblk;
+
+      cgetq->csblk = ioff;
+    }
 
   /*  check for request of size */
 
-  if (indx <= 0) {
+  if (indx <= 0)
+    {
 
-    *idgn = ibkptr[nsblk + ioff];
+      *idgn = ibkptr[nsblk + ioff];
 
-    return glob.nqn;
-  }
+      return glob.nqn;
+    }
 
   /*  search for sub-block */
 
@@ -7423,11 +7957,12 @@ int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
 
     ibgn = ioff;
 
-  for (i = ibgn + 1; i < iend; ++i) {
+  for (i = ibgn + 1; i < iend; ++i)
+    {
 
-    if (ix < ibkptr[i])
-      break;
-  }
+      if (ix < ibkptr[i])
+        break;
+    }
 
   cgetq->csblk = ibgn = i - 1;
 
@@ -7437,11 +7972,11 @@ int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
 
   ldgn = cgetq->cwt[0];
 
-  ngsym = (short)setgsym(cgetq->cwt[3]);
+  ngsym = (short)setgsym (cgetq->cwt[3]);
 
   iqf = cgetq->cff;
 
-  iqsp = getqs(ivs[ibgn], iqf, 0, 0, ixcom, iscom, &ivbase) - 1;
+  iqsp = getqs (ivs[ibgn], iqf, 0, 0, ixcom, iscom, &ivbase) - 1;
 
   iv = ixcom[XVIB];
 
@@ -7453,80 +7988,90 @@ int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
 
   kq = ikmin[ibgn] + (k << 1);
 
-  if (ngsym >= 3) {
+  if (ngsym >= 3)
+    {
 
-    mgsym = (short)MOD(kq - ixcom[XLVAL] + ixcom[XISYM] + ngsym, ngsym);
+      mgsym = (short)MOD (kq - ixcom[XLVAL] + ixcom[XISYM] + ngsym, ngsym);
 
-    if (mgsym != 0) {
+      if (mgsym != 0)
+        {
 
-      if ((mgsym + mgsym) == ngsym) { /* B symmetry */
+          if ((mgsym + mgsym) == ngsym)
+            { /* B symmetry */
 
-        ldgn = cgetq->cwt[2];
+              ldgn = cgetq->cwt[2];
+            }
+          else
+            { /* E symmetry */
 
-      } else { /* E symmetry */
+              if (glob.esym)
 
-        if (glob.esym)
+                isym = 4;
 
-          isym = 4;
-
-        ldgn = cgetq->cwt[1];
-      }
+              ldgn = cgetq->cwt[1];
+            }
+        }
     }
-  }
 
   lv = ixcom[XLVAL];
 
-  if (lv != 0) { /* l-doubled state */
+  if (lv != 0)
+    { /* l-doubled state */
 
-    if (glob.lsym)
+      if (glob.lsym)
 
-      isym = 4;
+        isym = 4;
 
-    ncod = 1;
+      ncod = 1;
 
-    if (kq == 0 && isym == 3) {
+      if (kq == 0 && isym == 3)
+        {
 
-      if (iv == ivbase)
+          if (iv == ivbase)
 
-        ++iv;
+            ++iv;
 
+          else
+
+            --iv;
+        }
+    }
+
+  if (glob.nqnn == 2)
+    {
+
+      if (ODD (isym))
+
+        kq = -kq;
+
+      ncod = 1;
+    }
+  else
+    {
+
+      if (isym <= 3)
+
+        lower = (n + isym) & 1;
+
+      else /* degenerate state */
+
+        lower = (lv > 0) ? 1 : 0;
+
+      if (glob.oblate)
+        {
+
+          iqn[2] = (short)kq;
+
+          kq = n - kq + lower;
+
+          ncod = -ncod;
+        }
       else
+        {
 
-        --iv;
+          iqn[2] = (short)(n - kq + lower);
+        }
     }
-  }
-
-  if (glob.nqnn == 2) {
-
-    if (ODD(isym))
-
-      kq = -kq;
-
-    ncod = 1;
-
-  } else {
-
-    if (isym <= 3)
-
-      lower = (n + isym) & 1;
-
-    else /* degenerate state */
-
-      lower = (lv > 0) ? 1 : 0;
-
-    if (glob.oblate) {
-
-      iqn[2] = (short)kq;
-
-      kq = n - kq + lower;
-
-      ncod = -ncod;
-
-    } else {
-
-      iqn[2] = (short)(n - kq + lower);
-    }
-  }
 
   iqn[0] = (short)n;
 
@@ -7538,23 +8083,26 @@ int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
 
     iqn[k++] = (short)iv;
 
-  if (cgetq->cwt[4] > maxqn) {
+  if (cgetq->cwt[4] > maxqn)
+    {
 
-    iqn[k++] = (short)iqsp;
+      iqn[k++] = (short)iqsp;
 
-    iqn[k] = (short)((iqf + 1) >> 1);
-
-  } else {
-
-    for (i = 0; k < maxqn; ++i) {
-
-      iqn[k++] = (short)((iscom[i] + 1) >> 1);
-
-      if (i == itsym && ngsym > 3)
-
-        i += ngsym - 3;
+      iqn[k] = (short)((iqf + 1) >> 1);
     }
-  }
+  else
+    {
+
+      for (i = 0; k < maxqn; ++i)
+        {
+
+          iqn[k++] = (short)((iscom[i] + 1) >> 1);
+
+          if (i == itsym && ngsym > 3)
+
+            i += ngsym - 3;
+        }
+    }
 
   ldgn *= iqf + 1;
 
@@ -7568,9 +8116,10 @@ int getqn(const int iblk, const int indx, const int maxqn, short *iqn,
 
 } /* getqn */
 
-int dircos(const int *xbra, const int *xket, const int ld, const int kd,
-           const int ncmax, double *direl, short *ibra, short *iket,
-           const int ifup, const int loff, int mask, BOOL *isunit)
+int
+dircos (const int *xbra, const int *xket, const int ld, const int kd,
+        const int ncmax, double *direl, short *ibra, short *iket,
+        const int ifup, const int loff, int mask, BOOL *isunit)
 
 { /*  SUBROUTINE TO  CALCULATE DIRECTION COSINE ELEMENTS */
 
@@ -7680,26 +8229,29 @@ int dircos(const int *xbra, const int *xket, const int ld, const int kd,
 
   isym = (isbra ^ isket) & 3;
 
-  if ((loff & MODD) != 0) {
+  if ((loff & MODD) != 0)
+    {
 
-    if (ncmax == 0) { /* initialize */
+      if (ncmax == 0)
+        { /* initialize */
 
-      fac[0] = 0.5;
+          fac[0] = 0.5;
 
-      for (lld = 1; lld < NFAC_DIRCOS; ++lld) {
+          for (lld = 1; lld < NFAC_DIRCOS; ++lld)
+            {
 
-        ele = lld - 0.5;
+              ele = lld - 0.5;
 
-        fac[lld] = fac[lld - 1] * sqrt(lld / ele);
-      }
+              fac[lld] = fac[lld - 1] * sqrt (lld / ele);
+            }
 
-      fac[0] = 1. / fac[1];
+          fac[0] = 1. / fac[1];
 
-      return 0;
-    };
+          return 0;
+        };
 
-    isym = 3 - isym;
-  }
+      isym = 3 - isym;
+    }
 
   /****** set up state phases, isum is power of i */
 
@@ -7713,7 +8265,7 @@ int dircos(const int *xbra, const int *xket, const int ld, const int kd,
 
     ++isum;
 
-  if (ODD(isum) && xbra[XVIB] < xket[XVIB])
+  if (ODD (isum) && xbra[XVIB] < xket[XVIB])
 
     isum += 2; /* imaginary vibration phase assumed */
 
@@ -7727,100 +8279,110 @@ int dircos(const int *xbra, const int *xket, const int ld, const int kd,
 
   /*********** TRY SCALAR ******************************/
 
-  if (kd == 0 && ld == 0 && (mask & 5) != 0) {
+  if (kd == 0 && ld == 0 && (mask & 5) != 0)
+    {
 
-    mask &= 2;
+      mask &= 2;
 
-    ii = 0;
-    ncase = nsket;
-    n = nsbra;
+      ii = 0;
+      ncase = nsket;
+      n = nsbra;
 
-    kdel = kbra0 - kket0;
-    kk = kbra0;
+      kdel = kbra0 - kket0;
+      kk = kbra0;
 
-    if (kdel != 0) {
+      if (kdel != 0)
+        {
 
-      if (kdel > 0) {
+          if (kdel > 0)
+            {
 
-        kdel = kdel >> 1;
-        ncase -= kdel;
+              kdel = kdel >> 1;
+              ncase -= kdel;
 
-        if (ncase < 0)
-          ncase = 0;
+              if (ncase < 0)
+                ncase = 0;
+            }
+          else
+            {
 
-      } else {
+              ii = (-kdel) >> 1;
+              kdel = -ii;
+              n -= ii;
 
-        ii = (-kdel) >> 1;
-        kdel = -ii;
-        n -= ii;
+              if (n < 0)
+                n = 0;
 
-        if (n < 0)
-          n = 0;
-
-        kk = kket0;
-      }
-    }
-
-    if (ncase > n)
-
-      ncase = n;
-
-    if (ncase > 0) {
-
-      idif = ncmax - ncase;
-
-      if (idif < 0)
-
-        return idif;
-
-      if (kk == 0) { /* kk = max beginning k */
-
-        if (kbra0x == kket0x) {
-
-          if (kbra0x == 0)
-            mask = 0;
-
-          *isunit = TRUE;
-          kk = -1;
-
-        } else {
-
-          *isunit = FALSE;
-          mask = 0; /* kk = 0 */
+              kk = kket0;
+            }
         }
 
-      } else { /* kk > 0 */
+      if (ncase > n)
 
-        *isunit = TRUE;
-        mask = 0;
-      }
+        ncase = n;
 
-      ele = 1.;
+      if (ncase > 0)
+        {
 
-      if (ODD(isgn + isrev))
+          idif = ncmax - ncase;
 
-        ele = -ele;
+          if (idif < 0)
 
-      for (k = 0; k < ncase; ++k) {
+            return idif;
 
-        direl[k] = ele;
+          if (kk == 0)
+            { /* kk = max beginning k */
 
-        ibra[k] = (short)ii;
+              if (kbra0x == kket0x)
+                {
 
-        iket[k] = (short)(ii + kdel);
+                  if (kbra0x == 0)
+                    mask = 0;
 
-        ++ii;
-      }
+                  *isunit = TRUE;
+                  kk = -1;
+                }
+              else
+                {
 
-      if (kk == 0)
-        direl[0] *= fac[0];
-    }
+                  *isunit = FALSE;
+                  mask = 0; /* kk = 0 */
+                }
+            }
+          else
+            { /* kk > 0 */
 
-    if (mask == 0)
+              *isunit = TRUE;
+              mask = 0;
+            }
 
-      return ncase; /* no quasi-diagonal delta K = 0 */
+          ele = 1.;
 
-  } /************** end Scalar *********/
+          if (ODD (isgn + isrev))
+
+            ele = -ele;
+
+          for (k = 0; k < ncase; ++k)
+            {
+
+              direl[k] = ele;
+
+              ibra[k] = (short)ii;
+
+              iket[k] = (short)(ii + kdel);
+
+              ++ii;
+            }
+
+          if (kk == 0)
+            direl[0] *= fac[0];
+        }
+
+      if (mask == 0)
+
+        return ncase; /* no quasi-diagonal delta K = 0 */
+
+    } /************** end Scalar *********/
 
   *isunit = FALSE;
 
@@ -7831,18 +8393,20 @@ int dircos(const int *xbra, const int *xket, const int ld, const int kd,
 
   ikdel = kdel - ld;
 
-  if (ikdel <= 0) {
+  if (ikdel <= 0)
+    {
 
-    kkdel = kdel;
+      kkdel = kdel;
+    }
+  else
+    {
 
-  } else {
+      k = kbra0 + ikdel + ((nsbra - 1) << 1);
 
-    k = kbra0 + ikdel + ((nsbra - 1) << 1);
+      ffcal (nbra, k, ff);
 
-    ffcal(nbra, k, ff);
-
-    kkdel = ld;
-  }
+      kkdel = ld;
+    }
 
   kdel2 = kkdel + kkdel;
 
@@ -7852,359 +8416,389 @@ int dircos(const int *xbra, const int *xket, const int ld, const int kd,
 
   nnket = nket + nket;
 
-  if (ld > 0) {
+  if (ld > 0)
+    {
 
-    ele = (double)(nnbra + 1);
+      ele = (double)(nnbra + 1);
 
-    if (nnket != nnbra)
+      if (nnket != nnbra)
 
-      ele = sqrt(ele * (nnket + 1));
+        ele = sqrt (ele * (nnket + 1));
 
-    if (kkdel != 0)
+      if (kkdel != 0)
 
-      ele *= fac[ld];
+        ele *= fac[ld];
 
-    isgn += nbra + kket0 + kkdel;
+      isgn += nbra + kket0 + kkdel;
+    }
+  else
+    {
 
-  } else {
+      ele = 1.;
 
-    ele = 1.;
+      if (kdel != 0)
 
-    if (kdel != 0)
-
-      ele = 0.5;
-  }
+        ele = 0.5;
+    }
 
   matsym = TRUE;
 
   k = mask & 5;
 
-  if (kdel == 0) {
+  if (kdel == 0)
+    {
 
-    if (k != 0)
+      if (k != 0)
 
-      mask = (mask & 2) + 1;
-
-    matsym = FALSE;
-
-  } else {
-
-    if (k == 1 || k == 4)
+        mask = (mask & 2) + 1;
 
       matsym = FALSE;
-  }
+    }
+  else
+    {
 
-  if (matsym) {
-
-    for (k = 1; k <= 5; ++k) {
-
-      if (xbra[k] != xket[k]) {
+      if (k == 1 || k == 4)
 
         matsym = FALSE;
-        break;
-      }
     }
-  }
 
-  if (ODD(isgn + isrev))
+  if (matsym)
+    {
+
+      for (k = 1; k <= 5; ++k)
+        {
+
+          if (xbra[k] != xket[k])
+            {
+
+              matsym = FALSE;
+              break;
+            }
+        }
+    }
+
+  if (ODD (isgn + isrev))
 
     ele = -ele;
 
-  for (iphaz = 1; iphaz <= 4; iphaz = iphaz << 1) {
+  for (iphaz = 1; iphaz <= 4; iphaz = iphaz << 1)
+    {
 
-    /* iphaz = 1,2,4 */
+      /* iphaz = 1,2,4 */
 
-    if (mask < iphaz)
-      break;
+      if (mask < iphaz)
+        break;
 
-    if (iphaz != 2) {
+      if (iphaz != 2)
+        {
 
-      /* iphaz = 1: +KDEL, iphaz = 4: -KDEL */
+          /* iphaz = 1: +KDEL, iphaz = 4: -KDEL */
 
-      /*  START CALCULATION OF  <K ....K-KDEL> */
+          /*  START CALCULATION OF  <K ....K-KDEL> */
 
-      /*     KBRA=KBRA0+ (IL+ i)*KINC   IL >= 0 */
+          /*     KBRA=KBRA0+ (IL+ i)*KINC   IL >= 0 */
 
-      /*     KKET=KKET0+ (IR+ i)*KINC   IR >= 0, i=0,... */
+          /*     KKET=KKET0+ (IR+ i)*KINC   IR >= 0, i=0,... */
 
-      /*     KBRA=KKET+KDEL */
+          /*     KBRA=KKET+KDEL */
 
-      if ((mask & iphaz) == 0)
-        continue;
+          if ((mask & iphaz) == 0)
+            continue;
 
-      if (iphaz == 4) {
+          if (iphaz == 4)
+            {
 
-        if (matsym)
-          break;
+              if (matsym)
+                break;
 
-        kdel = -kdel;
-        kkdel = -kkdel;
-      }
+              kdel = -kdel;
+              kkdel = -kkdel;
+            }
 
-      isum = kdel + kket0 - kbra0; /* ISUM = (IL-IR)*KINC */
+          isum = kdel + kket0 - kbra0; /* ISUM = (IL-IR)*KINC */
 
-      if (isum >= 0) {
+          if (isum >= 0)
+            {
 
-        il = isum >> 1;
-        ir = 0;
+              il = isum >> 1;
+              ir = 0;
 
-        kbra = kdel + kket0;
-        kket = kket0;
+              kbra = kdel + kket0;
+              kket = kket0;
+            }
+          else
+            {
 
-      } else {
+              il = 0;
+              ir = (-isum) >> 1;
 
-        il = 0;
-        ir = (-isum) >> 1;
+              kbra = kbra0;
+              kket = kbra0 - kdel;
+            }
 
-        kbra = kbra0;
-        kket = kbra0 - kdel;
-      }
+          n = nsket - ir;
+          i = nsbra - il;
 
-      n = nsket - ir;
-      i = nsbra - il;
+          if (n > i)
 
-      if (n > i)
+            n = i;
 
-        n = i;
+          if (n <= 0)
+            continue;
 
-      if (n <= 0)
-        continue;
+          nbgn = ncase;
+          ncase += n;
+          idif = ncmax - ncase;
 
-      nbgn = ncase;
+          if (idif < 0)
+
+            return idif;
+
+          kket2 = kket + kket;
+
+          if (ld == 0)
+            {
+
+              for (n = nbgn; n < ncase; ++n)
+                {
+
+                  direl[n] = ele;
+
+                  ibra[n] = (short)il;
+                  iket[n] = (short)ir;
+
+                  ++il;
+                  ++ir;
+                }
+            }
+          else
+            {
+
+              for (n = nbgn; n < ncase; ++n)
+                {
+
+                  kk = -kdel2 - kket2;
+
+                  direl[n] = ele * c3jj (nnbra, lld, nnket, kk, kdel2, kket2);
+
+                  kket2 += 4;
+
+                  ibra[n] = (short)il;
+                  iket[n] = (short)ir;
+
+                  ++il;
+                  ++ir;
+                }
+            }
+
+          il = ir = 1;
+
+          if (kbra == 0)
+            il = kbra0x;
+
+          if (kket == 0)
+            ir = kket0x;
+
+          if (ODD (il + ir)) /*  CORRECT FOR K=0 */
+
+            direl[nbgn] *= fac[0];
+
+          if (ikdel > 0)
+            { /* ADD ON P- OR P+ OPERATOR TO LEFT */
+
+              kbgn = kbra;
+
+              if (kdel > 0)
+
+                kbgn -= ikdel;
+
+              for (n = nbgn; n < ncase; ++n)
+                {
+
+                  eletmp = direl[n];
+                  kk = kbgn + ikdel;
+
+                  for (k = kbgn; k < kk; ++k)
+                    {
+
+                      eletmp *= ff[k];
+                    }
+
+                  direl[n] = eletmp;
+
+                  kbgn += 2;
+                }
+            }
+        }
+      else
+        { /* iphaz == 2 */
+
+          /*  DO QUASI-DIAGONAL PART */
+
+          /*   <KDEL-K ..... K>   K=1,...,KDEL-1 */
+
+          /*       KBRA=KBRA0+ (IL - i)*KINC  IL >= n-1 */
+
+          /*       KKET=KKET0+ (IR + i)*KINC  IR >= 0  , i=0 .. n-1 */
+
+          /*       KDEL=KKET+KBRA */
+
+          kdel2 = -kdel2;
+
+          if (ODD (isrev))
+            ele = -ele;
+
+          if ((mask & 2) == 0)
+            continue;
+
+          isum = kdel - kbra0 - kket0;
+
+          if (isum < 0)
+            continue;
+
+          isum = isum >> 1; /* isum = (IL + IR) */
+
+          ir = 0; /* IR = 0 */
+
+          if (isum >= nsbra)
+
+            ir = isum - nsbra + 1;
+
+          else if (kket0x == 0)
+
+            ++ir;
+
+          n = isum + 1;
+
+          if (n > nsket)
+
+            n = nsket;
+
+          else if (kbra0x == 0)
+
+            --n;
+
+          n -= ir;
+
+          if (n <= 0)
+            continue;
+
+          il = isum - ir;
+
+          if (matsym)
+
+            n = (il - ir + 2) >> 1;
+
+          kket = kket0 + (ir << 1);
+
+          kbra = kdel - kket;
+
+          nbgn = ncase;
+
+          ncase += n;
+
+          idif = ncmax - ncase;
+
+          if (idif < 0)
+
+            return idif;
+
+          if (ODD2 (isbra + nnbra))
+            {
+
+              elex = -ele;
+            }
+          else
+            {
+
+              elex = ele;
+            }
+
+          kket2 = kket + kket;
+
+          for (n = nbgn; n < ncase; ++n)
+            {
+
+              ibra[n] = (short)il;
+              iket[n] = (short)ir;
+
+              eletmp = elex;
+
+              if (ld != 0)
+                {
+
+                  ks = -kdel2 - kket2;
+
+                  eletmp *= c3jj (nnbra, lld, nnket, ks, kdel2, kket2);
+
+                  kket2 += 4;
+                }
+
+              for (kk = 0; kk < ikdel; ++kk)
+                {
+
+                  k = kbra - kk;
+
+                  if (k <= 0)
+                    {
+
+                      eletmp *= ff[-k];
+                    }
+                  else
+                    {
+
+                      eletmp *= ff[k - 1];
+                    }
+                }
+
+              direl[n] = eletmp;
+
+              --il;
+              ++ir;
+
+              kbra -= 2;
+
+            } /* loop over elements */
+        }
+
+    } /* loop over 3 cases */
+
+  if (matsym && ncase > 0 && ifup != 0)
+    {
+
+      n = ncase - 1;
+
+      if (ibra[n] != iket[n])
+
+        ++n;
+
+      k = ncase;
+
       ncase += n;
+
       idif = ncmax - ncase;
 
       if (idif < 0)
 
         return idif;
 
-      kket2 = kket + kket;
+      for (i = 0; i < n; ++i, ++k)
+        {
 
-      if (ld == 0) {
+          direl[k] = direl[i];
 
-        for (n = nbgn; n < ncase; ++n) {
+          ibra[k] = iket[i];
 
-          direl[n] = ele;
-
-          ibra[n] = (short)il;
-          iket[n] = (short)ir;
-
-          ++il;
-          ++ir;
+          iket[k] = ibra[i];
         }
-
-      } else {
-
-        for (n = nbgn; n < ncase; ++n) {
-
-          kk = -kdel2 - kket2;
-
-          direl[n] = ele * c3jj(nnbra, lld, nnket, kk, kdel2, kket2);
-
-          kket2 += 4;
-
-          ibra[n] = (short)il;
-          iket[n] = (short)ir;
-
-          ++il;
-          ++ir;
-        }
-      }
-
-      il = ir = 1;
-
-      if (kbra == 0)
-        il = kbra0x;
-
-      if (kket == 0)
-        ir = kket0x;
-
-      if (ODD(il + ir)) /*  CORRECT FOR K=0 */
-
-        direl[nbgn] *= fac[0];
-
-      if (ikdel > 0) { /* ADD ON P- OR P+ OPERATOR TO LEFT */
-
-        kbgn = kbra;
-
-        if (kdel > 0)
-
-          kbgn -= ikdel;
-
-        for (n = nbgn; n < ncase; ++n) {
-
-          eletmp = direl[n];
-          kk = kbgn + ikdel;
-
-          for (k = kbgn; k < kk; ++k) {
-
-            eletmp *= ff[k];
-          }
-
-          direl[n] = eletmp;
-
-          kbgn += 2;
-        }
-      }
-
-    } else { /* iphaz == 2 */
-
-      /*  DO QUASI-DIAGONAL PART */
-
-      /*   <KDEL-K ..... K>   K=1,...,KDEL-1 */
-
-      /*       KBRA=KBRA0+ (IL - i)*KINC  IL >= n-1 */
-
-      /*       KKET=KKET0+ (IR + i)*KINC  IR >= 0  , i=0 .. n-1 */
-
-      /*       KDEL=KKET+KBRA */
-
-      kdel2 = -kdel2;
-
-      if (ODD(isrev))
-        ele = -ele;
-
-      if ((mask & 2) == 0)
-        continue;
-
-      isum = kdel - kbra0 - kket0;
-
-      if (isum < 0)
-        continue;
-
-      isum = isum >> 1; /* isum = (IL + IR) */
-
-      ir = 0; /* IR = 0 */
-
-      if (isum >= nsbra)
-
-        ir = isum - nsbra + 1;
-
-      else if (kket0x == 0)
-
-        ++ir;
-
-      n = isum + 1;
-
-      if (n > nsket)
-
-        n = nsket;
-
-      else if (kbra0x == 0)
-
-        --n;
-
-      n -= ir;
-
-      if (n <= 0)
-        continue;
-
-      il = isum - ir;
-
-      if (matsym)
-
-        n = (il - ir + 2) >> 1;
-
-      kket = kket0 + (ir << 1);
-
-      kbra = kdel - kket;
-
-      nbgn = ncase;
-
-      ncase += n;
-
-      idif = ncmax - ncase;
-
-      if (idif < 0)
-
-        return idif;
-
-      if (ODD2(isbra + nnbra)) {
-
-        elex = -ele;
-
-      } else {
-
-        elex = ele;
-      }
-
-      kket2 = kket + kket;
-
-      for (n = nbgn; n < ncase; ++n) {
-
-        ibra[n] = (short)il;
-        iket[n] = (short)ir;
-
-        eletmp = elex;
-
-        if (ld != 0) {
-
-          ks = -kdel2 - kket2;
-
-          eletmp *= c3jj(nnbra, lld, nnket, ks, kdel2, kket2);
-
-          kket2 += 4;
-        }
-
-        for (kk = 0; kk < ikdel; ++kk) {
-
-          k = kbra - kk;
-
-          if (k <= 0) {
-
-            eletmp *= ff[-k];
-
-          } else {
-
-            eletmp *= ff[k - 1];
-          }
-        }
-
-        direl[n] = eletmp;
-
-        --il;
-        ++ir;
-
-        kbra -= 2;
-
-      } /* loop over elements */
     }
-
-  } /* loop over 3 cases */
-
-  if (matsym && ncase > 0 && ifup != 0) {
-
-    n = ncase - 1;
-
-    if (ibra[n] != iket[n])
-
-      ++n;
-
-    k = ncase;
-
-    ncase += n;
-
-    idif = ncmax - ncase;
-
-    if (idif < 0)
-
-      return idif;
-
-    for (i = 0; i < n; ++i, ++k) {
-
-      direl[k] = direl[i];
-
-      ibra[k] = iket[i];
-
-      iket[k] = ibra[i];
-    }
-  }
 
   return ncase;
 
 } /* dircos */
 
-int ffcal(const int nff, const int kff, double *ff)
+int
+ffcal (const int nff, const int kff, double *ff)
 
 {
 
@@ -8216,24 +8810,26 @@ int ffcal(const int nff, const int kff, double *ff)
 
   int k;
 
-  if (nff != nlast) {
+  if (nff != nlast)
+    {
 
-    nlast = nff;
+      nlast = nff;
 
-    sq = (double)nff;
+      sq = (double)nff;
 
-    sq *= nff + 1;
+      sq *= nff + 1;
 
-    k = 0;
+      k = 0;
+    }
+  else
+    {
 
-  } else {
+      if (klast >= kff)
 
-    if (klast >= kff)
+        return 0;
 
-      return 0;
-
-    k = klast;
-  }
+      k = klast;
+    }
 
   klast = kff;
 
@@ -8241,14 +8837,15 @@ int ffcal(const int nff, const int kff, double *ff)
 
     klast = nff;
 
-  while (k < klast) {
+  while (k < klast)
+    {
 
-    ff[k] = sqrt(sq);
+      ff[k] = sqrt (sq);
 
-    ++k;
+      ++k;
 
-    sq -= k + k;
-  }
+      sq -= k + k;
+    }
 
   return 0;
 
