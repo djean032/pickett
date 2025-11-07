@@ -1,0 +1,14 @@
+/Users/dairenjean/projects/pickett/build/CMakeFiles/splib.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/spfit.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/spcat.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/calmrg.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/dpfit.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/dpcat.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/iamcalc.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/moiam.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/stark.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/termval.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/sortn.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/calbak.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/edit_cache.dir
+/Users/dairenjean/projects/pickett/build/CMakeFiles/rebuild_cache.dir

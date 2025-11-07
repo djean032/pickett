@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-int sortn (char *impname, char *outname, int dokey);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+  int sortn (char *impname, char *outname, int dokey);
+#ifdef __cplusplus
+}
+#endif
 
 int
 main (int argc, char *argv[])

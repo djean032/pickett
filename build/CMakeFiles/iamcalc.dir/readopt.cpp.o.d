@@ -1,0 +1,28 @@
+CMakeFiles/iamcalc.dir/readopt.cpp.o: \
+  /Users/dairenjean/projects/pickett/readopt.cpp \
+  /Users/dairenjean/projects/pickett/catutil.h \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/ctype.h \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__config \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__config_site \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__configuration/abi.h \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__configuration/compiler.h \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__configuration/platform.h \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__configuration/availability.h \
+  /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__configuration/language.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/ctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/_ctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/cdefs.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_symbol_aliasing.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_posix_availability.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/_bounds.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/runetype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/machine/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/arm/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_pthread/_pthread_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_types/_size_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_types/_ct_rune_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_types/_rune_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_types/_wchar_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/sys/_types/_wint_t.h

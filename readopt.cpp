@@ -28,7 +28,7 @@ readopt (char *line, double *dval, int nval)
     }
   if (c != '\0' || kbgn < 1024)
     {
-      iret = pcard (&line[kbgn], dval, nval, NULL);
+      iret = pcard (&line[kbgn], dval, nval, nullptr);
       return kbgn;
     }
   return 0;
