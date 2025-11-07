@@ -1,4 +1,4 @@
-CXX=g++
+CC=CC
 CFLAGS=-g -Wall
 #CFLAGS=-O2 -Wall
 EXEQ=spfit spcat calmrg dpfit dpcat
@@ -19,44 +19,44 @@ test: spfit
 install:  
 	-mv ${EXEA} /usr/local/bin 
 	-chmod o+rx /usr/local/bin/*
-dpfit: calfit.o subfit.o dpi.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-dpcat: calcat.o sortsub.o dpi.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-spfit: calfit.o subfit.o spinv.o spinit.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-spcat: calcat.o sortsub.o spinv.o spinit.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-calmrg: calmrg.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-calbak: calbak.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-termval: termval.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-stark: stark.o splib.a ; g++ -o $@ $^ $(BLASLIB) -lm
-moiam: moiam.o ftran.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-iamcalc: iamcalc.o ftran.o splib.a; g++ -o $@ $^ $(BLASLIB) -lm
-calbak: calbak.o splib.a ; g++ -o $@ $^ $(BLASLIB) -lm
-cnvwn: cnvwn.o splib.a ; g++ -o $@ $^ $(BLASLIB) -lm
+dpfit: calfit.o subfit.o dpi.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+dpcat: calcat.o sortsub.o dpi.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+spfit: calfit.o subfit.o spinv.o spinit.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+spcat: calcat.o sortsub.o spinv.o spinit.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+calmrg: calmrg.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+calbak: calbak.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+termval: termval.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+stark: stark.o splib.a ; gcc -o $@ $^ $(BLASLIB) -lm
+moiam: moiam.o ftran.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+iamcalc: iamcalc.o ftran.o splib.a; gcc -o $@ $^ $(BLASLIB) -lm
+calbak: calbak.o splib.a ; gcc -o $@ $^ $(BLASLIB) -lm
+cnvwn: cnvwn.o splib.a ; gcc -o $@ $^ $(BLASLIB) -lm
 
-splib.a: ulib.o cnjj.o slibg++.o catutil.o lsqfit.o $(LBLAS)
+splib.a: ulib.o cnjj.o slibgcc.o catutil.o lsqfit.o $(LBLAS)
 	ar r splib.a $^
 	ranlib splib.a
 
-calfit.o:calfit.cpp calpgm.h
-subfit.o:subfit.cpp calpgm.h
-lsqfit.o:lsqfit.cpp lsqfit.h
-calcat.o:calcat.cpp calpgm.h
-sortsub.o: sortsub.cpp calpgm.h
-calmrg.o:calmrg.cpp calpgm.h
-termval.o:termval.cpp calpgm.h
-stark.o:stark.cpp calpgm.h
-iamcalc.o:iamcalc.cpp calpgm.h
-moiam.o:moiam.cpp calpgm.h
-ulib.o:ulib.cpp calpgm.h
-cnjj.o:cnjj.cpp cnjj.h
-slibg++.o:slibg++.cpp calpgm.h
-spinv.o:spinv.cpp calpgm.h spinit.h
-spinit.o:spinit.cpp calpgm.h spinit.h
-dpi.o:dpi.cpp calpgm.h
-ftran.o:ftran.cpp
-sortn.o: sortn.cpp
-sortsub.o: sortsub.cpp
-dblas.o: dblas.cpp
-util.o:util.cpp
-calbak.o:calbak.cpp
-cnvwn.o:cnvwn.cpp
-sortn: sortn.o sortsub.o; g++ -o $@ $^
+calfit.o:calfit.c calpgm.h
+subfit.o:subfit.c calpgm.h
+lsqfit.o:lsqfit.c lsqfit.h
+calcat.o:calcat.c calpgm.h
+sortsub.o: sortsub.c calpgm.h
+calmrg.o:calmrg.c calpgm.h
+termval.o:termval.c calpgm.h
+stark.o:stark.c calpgm.h
+iamcalc.o:iamcalc.c calpgm.h
+moiam.o:moiam.c calpgm.h
+ulib.o:ulib.c calpgm.h
+cnjj.o:cnjj.c cnjj.h
+slibgcc.o:slibgcc.c calpgm.h
+spinv.o:spinv.c calpgm.h spinit.h
+spinit.o:spinit.c calpgm.h spinit.h
+dpi.o:dpi.c calpgm.h
+ftran.o:ftran.c
+sortn.o: sortn.c
+sortsub.o: sortsub.c
+dblas.o: dblas.c
+util.o:util.c
+calbak.o:calbak.c
+cnvwn.o:cnvwn.c
+sortn: sortn.o sortsub.o; gcc -o $@ $^

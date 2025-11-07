@@ -1,1 +1,0 @@
-/opt/homebrew/Cellar/llvm/21.1.4/bin/clang++ -O3 -Wall -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names -L/opt/homebrew/Cellar/llvm/21.1.4/lib CMakeFiles/dpfit.dir/calfit.cpp.o CMakeFiles/dpfit.dir/subfit.cpp.o CMakeFiles/dpfit.dir/dpi.cpp.o -o dpfit  libsplib.a -framework Accelerate -lm

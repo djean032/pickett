@@ -1,2 +1,0 @@
-/opt/anaconda3/bin/ar qc libsplib.a CMakeFiles/splib.dir/ulib.cpp.o CMakeFiles/splib.dir/cnjj.cpp.o CMakeFiles/splib.dir/slibgcc.cpp.o CMakeFiles/splib.dir/catutil.cpp.o CMakeFiles/splib.dir/lsqfit.cpp.o CMakeFiles/splib.dir/dblas.cpp.o
-/opt/homebrew/Cellar/llvm/21.1.4/bin/llvm-ranlib libsplib.a

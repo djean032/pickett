@@ -3,7 +3,6 @@
 /*   NASA Contract NAS7-918 is acknowledged. */
 
 /*   Herbert M. Pickett, 20 March 1989 */
-#include <stddef.h>
 #define MAXITOT 6
 typedef struct
 {

@@ -4,24 +4,17 @@
 #include <string.h>
 #define NDILINE 130
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-  int sortn (char *inpname, char *outname, BOOL dokey);
-  int fillbuf (FILE *finp, char *tbuf, int nlim, char **pbuf);
-  int getkey (int *key, char *tbuf, char *wbuf);
-  int bufcmp (const char *b1, const char *b2, const int *key);
-  int memsort (int nline, const int *key, char **pbuf);
-  int memfind (int ibgn, int nbuf, const int *key, const char *buf0,
-               char **pbuf);
-#ifdef __cplusplus
-}
-#endif
+int sortn (char *inpname, char *outname, int dokey);
+int fillbuf (FILE *finp, char *tbuf, int nlim, char **pbuf);
+int getkey (int *key, char *tbuf, char *wbuf);
+int bufcmp (const char *b1, const char *b2, const int *key);
+int memsort (int nline, const int *key, char **pbuf);
+int memfind (int ibgn, int nbuf, const int *key, const char *buf0,
+             char **pbuf);
 
 static int ndline;
 
-extern "C" int
+int
 sortn (char *inpname, char *outname, BOOL dokey)
 {
   FILE *finp, *fout, *ftmp, *fscr;
